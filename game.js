@@ -210,7 +210,6 @@ let gameState = {
     
     createZombie: function (scene,inX,inY){
         var zombie = gameState.zombies.create(inX,inY,`zombie`).setDepth(1);
-        zombie.anims.play(`zombieWalk`);
         zombie.health = 100;
         function zombieB(zom){
             var attack = scene.time.addEvent({
@@ -236,7 +235,7 @@ let gameState = {
                         var dist = Phaser.Math.Distance.BetweenPoints(gameState.character, zom);
                         if(dist > 30){
                             attack.paused = true;
-                            scene.physics.moveTo(zom,gameState.character.x, gameState.character.y,125);
+                            scene.physics.moveTo(zom,gameState.character.x, gameState.character.y,120);
                             zom.anims.play('zombieWalk',true);
                         }
                         else {
@@ -257,12 +256,21 @@ let gameState = {
                 repeat: -1
             });
         };
-        zombieB(zombie);
+        zombie.anims.play('zombieSpawn');
+        scene.time.addEvent({
+            delay: 800,
+            callback: ()=>{
+                zombieB(zombie);
+            },  
+            startAt: 0,
+            timeScale: 1
+        });
     },
     creatHealthBar: function(scene){
         gameState.bars = [];
         var x = 100;
         var xTimes = 1;
+        var barBg = scene.add.image(120, 3, 'healthBarBg').setDepth(window.innerHeight+1).setOrigin(0,0);
         for (var i = 0; i < 100;i++){
             var bar = scene.add.image(120+(10*xTimes), 20, 'healthBar').setDepth(window.innerHeight+1);
             gameState.bars.push(bar);
@@ -271,7 +279,7 @@ let gameState = {
         var checkHealth = scene.time.addEvent({
             delay: 1,
             callback: ()=>{
-                if (gameState.health < gameState.bars.length && gameState.bars.length > 0){
+                if ((gameState.health/(gameState.characterStats.health/100)) < gameState.bars.length && gameState.bars.length > 0){
                     gameState.bars[gameState.bars.length-1].destroy();
                     gameState.bars.pop();
                     console.log(gameState.bars.length);

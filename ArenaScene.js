@@ -24,6 +24,8 @@ class ArenaScene extends Phaser.Scene {
     }
     create(){
         gameState.globalScene = this;
+        var bg = this.physics.add.sprite(0,0,'background').setOrigin(0,0);
+        bg.anims.play('bganimate','true');
         gameState.character = this.physics.add.sprite(window.innerWidth/2-16,window.innerHeight/2+16,'character');
         gameState.character.body.width = 50;
         
@@ -41,7 +43,7 @@ class ArenaScene extends Phaser.Scene {
        
         this.physics.add.collider(gameState.character, gameState.buildings);
         gameState.spawnZombies = this.time.addEvent({
-            delay: 1000,
+            delay: 1200,
             callback: ()=>{
                 gameState.createZombie(this,Math.ceil(Math.random()*window.innerWidth),Math.ceil(Math.random()*window.innerHeight));
             },
