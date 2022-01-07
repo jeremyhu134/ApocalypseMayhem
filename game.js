@@ -26,22 +26,25 @@ const game = new Phaser.Game(config);
 
 
 let gameState = {
-    
+    coins: 0,
     characterStats: {
-        speed : 250,
+        speed : 150,
         health: 100,
         ammo: 25,
         fireRate: 175,
         damage: 25,
         bulletSpeed: 1000,
+        kills: 0,
         fireReady: true
     },
-    speed : 175,
+    speed : 150,
     health: 100,
     ammo: 25,
     fireRate: 175,
     damage: 25,
     bulletSpeed: 1000,
+    kills: 0,
+    bossSummonKills: 50,
     chracterControls : function(scene){
         if(gameState.health > 0){
             gameState.character.depth = gameState.character.y-50;
@@ -208,14 +211,31 @@ let gameState = {
         }
     },
     
-    createZombie: function (scene,inX,inY){
-        var zombie = gameState.zombies.create(inX,inY,`zombie`).setDepth(1);
-        zombie.health = 100;
+    
+    zombie :{
+        speed: 75,
+        health : 100,
+        damage : 10,
+        image: 'zombie'
+    },
+    sarmsZombie :{
+        speed: 45,
+        runSpeed: 160,
+        health : 3500,
+        damage : 30,
+        name: 'sarmsZombie'
+    },
+    
+    
+    createZombie: function (scene,inX,inY,zomStats){
+        var zombie = gameState.zombies.create(inX,inY,`${zomStats.image}`).setDepth(1);
+        zombie.health = zomStats.health;
         function zombieB(zom){
+            zom.setCollideWorldBounds(true);
             var attack = scene.time.addEvent({
                 delay: 500,
                 callback: ()=>{
-                    gameState.health -= 10;
+                    gameState.health -= zomStats.damage;
                 },  
                 startAt: 0,
                 timeScale: 1,
@@ -227,7 +247,7 @@ let gameState = {
                     if (zom.health > 0){
                         zom.depth = zom.y-40;
                         if(gameState.character.x > zom.x){
-                                zom.flipX = false;
+                            zom.flipX = false;
                         }
                         else if(gameState.character.x < zom.x){
                             zom.flipX = true;
@@ -235,20 +255,49 @@ let gameState = {
                         var dist = Phaser.Math.Distance.BetweenPoints(gameState.character, zom);
                         if(dist > 30){
                             attack.paused = true;
-                            scene.physics.moveTo(zom,gameState.character.x, gameState.character.y,120);
+                            scene.physics.moveTo(zom,gameState.character.x, gameState.character.y,zomStats.speed);
                             zom.anims.play('zombieWalk',true);
                         }
                         else {
+                            attack.paused = false;
+                            zom.anims.play('zombieStrike',true);
                             zom.setVelocityX(0);
                             zom.setVelocityY(0);
-                            zom.anims.play('zombieStrike',true);
-                            attack.paused = false;
                         }
                     }
                     else {
+                        var random = Math.ceil(Math.random()*2);
+                        if(random == 2){
+                            var coin = scene.physics.add.sprite(zom.x,zom.y,'coin');
+                            coin.anims.play('canimate','true');
+                            var gone = scene.time.addEvent({
+                                delay: 10000,
+                                callback: ()=>{
+                                    coin.destroy();
+                                },  
+                                startAt: 0,
+                                timeScale: 1
+                            });
+                            scene.physics.add.overlap(gameState.character, coin,(character, coin)=>{
+                                gameState.coins ++;
+                                coin.destroy();
+                                gone.destroy();
+                            });
+                        }
+                        gameState.kills++;
                         loop.destroy();
-                        zom.destroy();
                         attack.destroy();
+                        zom.setVelocityX(0);
+                        zom.setVelocityY(0);
+                        zom.anims.play('zombieDeath','true');
+                        scene.time.addEvent({
+                            delay: 400,
+                            callback: ()=>{
+                                zom.destroy();
+                            },  
+                            startAt: 0,
+                            timeScale: 1
+                        });
                     }
                 },  
                 startAt: 0,
@@ -266,28 +315,204 @@ let gameState = {
             timeScale: 1
         });
     },
-    creatHealthBar: function(scene){
-        gameState.bars = [];
-        var x = 100;
+    
+    
+    createSarmsZombie: function (scene,inX,inY){
+        var zombie = gameState.zombies.create(inX,inY,`sarmsZombie`).setDepth(1);
+        zombie.health = gameState.sarmsZombie.health;
+        zombie.rage = false;
+        zombie.breathe = false;
+        function zombieB(zom){
+            zom.setCollideWorldBounds(true);
+            var attack = scene.time.addEvent({
+                delay: 300,
+                callback: ()=>{
+                    gameState.health -= gameState.sarmsZombie.damage;
+                },  
+                startAt: 0,
+                timeScale: 1,
+                repeat: -1
+            });
+            var breatheLoop;
+            var rageTimer = scene.time.addEvent({
+                delay: 9000,
+                callback: ()=>{
+                    zom.rage = true;
+                    rageTimer.paused = true;
+                    breatheLoop = scene.time.addEvent({
+                        delay: 6500,
+                        callback: ()=>{
+                            zom.rage = false;
+                            breatheTimer.paused = false;
+                            zom.breathe = true;
+                            zom.anims.play('sarmsZombieBreathe','true');
+                            zom.setVelocityX(0);
+                            zom.setVelocityY(0);
+                        },  
+                        startAt: 0,
+                        timeScale: 1
+                    });
+                },  
+                startAt: 0,
+                timeScale: 1,
+                repeat: -1
+            });
+            var breatheTimer = scene.time.addEvent({
+                delay: 5000,
+                callback: ()=>{
+                    console.log("lok");
+                    rageTimer.paused = false;
+                    breatheTimer.paused = true;
+                    zom.breathe = false;
+                },  
+                startAt: 0,
+                timeScale: 1,
+                repeat: -1
+            });
+            breatheTimer.paused = true;
+            var bars = scene.add.group();
+            var barBg = scene.add.image(10, 55, 'healthBarBg').setDepth(window.innerHeight+1).setOrigin(0,0);
+            for (var i = 0; i < 100;i++){
+                var bar = bars.create(10+(10*(i+1)), barBg.y+17, 'zombieHealthBar').setDepth(window.innerHeight+1);
+            }
+            var checkHealthBar = scene.time.addEvent({
+                delay: 1,
+                callback:()=>{
+                    if ((zom.health/(gameState.sarmsZombie.health/100)) < bars.getChildren().length && bars.getChildren().length > 0){
+                        bars.getChildren()[bars.getChildren().length-1].destroy();
+                    }
+                },  
+                startAt: 0,
+                timeScale: 1,
+                repeat: -1
+            });
+            var loop = scene.time.addEvent({
+                delay: 1,
+                callback: ()=>{
+                    if (zom.health > 0){
+                        zom.depth = zom.y-40;
+                        if(gameState.character.x > zom.x){
+                            zom.flipX = false;
+                        }
+                        else if(gameState.character.x < zom.x){
+                            zom.flipX = true;
+                        }
+                        var dist = Phaser.Math.Distance.BetweenPoints(gameState.character, zom);
+                        if(dist > 50){
+                            if(zom.breathe == false){
+                                attack.paused = true;
+                                if(zom.rage == true){
+                                    zom.anims.play('sarmsZombieRun',true);
+                                    scene.physics.moveTo(zom,gameState.character.x, gameState.character.y,gameState.sarmsZombie.runSpeed);
+                                }else {
+                                    zom.anims.play('sarmsZombieWalk',true);
+                                    scene.physics.moveTo(zom,gameState.character.x, gameState.character.y,gameState.sarmsZombie.speed);
+                                }
+                            }
+                        }
+                        else {
+                            if(zom.breathe == false){
+                                attack.paused = false;
+                                zom.anims.play('sarmsZombieStrike',true);
+                                zom.setVelocityX(0);
+                                zom.setVelocityY(0);
+                            }
+                        }
+                    }
+                    else {
+                        var random = Math.ceil(Math.random()*2);
+                        if(random == 2){
+                            var coin = scene.physics.add.sprite(zom.x,zom.y,'coin');
+                            coin.anims.play('canimate','true');
+                            var gone = scene.time.addEvent({
+                                delay: 10000,
+                                callback: ()=>{
+                                    coin.destroy();
+                                },  
+                                startAt: 0,
+                                timeScale: 1
+                            });
+                            scene.physics.add.overlap(gameState.character, coin,(character, coin)=>{
+                                gameState.coins ++;
+                                coin.destroy();
+                                gone.destroy();
+                            });
+                        }
+                        loop.destroy();
+                        attack.destroy();
+                        rageTimer.destroy();
+                        checkHealthBar.destroy();
+                        breatheLoop.destroy();
+                        barBg.destroy();
+                        zom.setVelocityX(0);
+                        zom.setVelocityY(0);
+                        zom.anims.play('sarmsZombieDeath','true');
+                        gameState.checkBoss.paused = false;
+                        scene.time.addEvent({
+                            delay: 400,
+                            callback: ()=>{
+                                zom.destroy();
+                                console.log(gameState.kills);
+                                gameState.spawnZombies.paused = false;
+                            },  
+                            startAt: 0,
+                            timeScale: 1
+                        });
+                    }
+                },  
+                startAt: 0,
+                timeScale: 1,
+                repeat: -1
+            });
+        };
+        zombie.anims.play('zombieSpawn');
+        scene.time.addEvent({
+            delay: 800,
+            callback: ()=>{
+                zombieB(zombie);
+            },  
+            startAt: 0,
+            timeScale: 1
+        });
+    },
+    
+    
+    createHealthBar: function(scene,x,y){
+        var bars = [];
         var xTimes = 1;
-        var barBg = scene.add.image(120, 3, 'healthBarBg').setDepth(window.innerHeight+1).setOrigin(0,0);
+        var barBg = scene.add.image(x, y, 'healthBarBg').setDepth(window.innerHeight+1).setOrigin(0,0);
         for (var i = 0; i < 100;i++){
-            var bar = scene.add.image(120+(10*xTimes), 20, 'healthBar').setDepth(window.innerHeight+1);
-            gameState.bars.push(bar);
+            var bar = scene.add.image(x+(10*xTimes), y+17, 'healthBar').setDepth(window.innerHeight+1);
+            bars.push(bar);
             xTimes ++;
         }
         var checkHealth = scene.time.addEvent({
             delay: 1,
             callback: ()=>{
-                if ((gameState.health/(gameState.characterStats.health/100)) < gameState.bars.length && gameState.bars.length > 0){
-                    gameState.bars[gameState.bars.length-1].destroy();
-                    gameState.bars.pop();
-                    console.log(gameState.bars.length);
+                if ((gameState.health/(gameState.characterStats.health/100)) < bars.length && bars.length > 0){
+                    bars[bars.length-1].destroy();
+                    bars.pop();
                 }
             },  
             startAt: 0,
             timeScale: 1,
             repeat: -1
+        });
+    },
+    createTempText:function(scene,x,y,text,time,size){
+        var text = scene.add.text(x, y, `${text}`, {
+            fill: '#000000', 
+            fontSize: `${size}px`,
+            fontFamily: 'Qahiri',
+            strokeThickness: 5,
+        }).setDepth(window.innerHeight+3);
+        scene.time.addEvent({
+            delay: time,
+            callback: ()=>{
+                text.destroy();
+            },  
+            startAt: 0,
+            timeScale: 1
         });
     }
 }
