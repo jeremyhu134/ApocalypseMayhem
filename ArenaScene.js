@@ -1,20 +1,35 @@
-class ChooseHeroScene extends Phaser.Scene {
+class UpgradeScene extends Phaser.Scene {
     constructor() {
-		super({ key: 'ChooseHeroScene' })
+		super({ key: 'UpgradeScene' })
 	}
     preload(){
-        //this.load.image('menubg','tf2arenaimages/menubg.png');
         
-        //this.load.spritesheet('redscout','tf2arenaimages/redscout.png',{frameWidth: 33,frameHeight:53});
     }
     create(){
-        
+        //create background
+        this.physics.add.sprite(0,0,'background').setOrigin(0,0).setScale(window.innerHeight/675).setDepth(-100);
+        //Reference scene in local variable and create a back button
+        var back = this.add.image(window.innerWidth-75,10,'backButton').setOrigin(0,0).setInteractive();
+        var scene = this;
+        back.on('pointerup', () => {
+            scene.scene.stop("UpgradeScene");
+            scene.scene.start(`${gameState.currentScene}`);
+		});
+        //add gold icon and amound
+        this.add.image(20,20,"coin").setOrigin(0,0).setDepth(-100).setScale(2);
+        var coinsText = this.add.text(125, 40, `${gameState.coins}`, {
+            fill: '#ADD8E6', 
+            fontSize: `30px`,
+            fontFamily: 'Qahiri',
+            strokeThickness: 4,
+        }).setDepth(window.innerHeight+3);
     }
     update(){
         
     }
 }
 
+//Create ArenaScene Phaser SubClass
 class ArenaScene extends Phaser.Scene {
     constructor() {
 		super({ key: 'ArenaScene' })
@@ -23,31 +38,47 @@ class ArenaScene extends Phaser.Scene {
         
     }
     create(){
+        //Variables to reference the scene globally
+        gameState.currentScene = "ArenaScene";
         gameState.globalScene = this;
+        //Background image and animation start
         var bg = this.physics.add.sprite(0,0,'background').setOrigin(0,0).setScale(window.innerHeight/675).setDepth(-100);
         bg.anims.play('bganimate','true');
+        //Create the player
         gameState.character = this.physics.add.sprite(window.innerWidth/2-16,window.innerHeight/2+16,'character');
         gameState.character.body.width = 50;
         
         //Kill Tracker
         this.add.image(1025,5,"skull").setOrigin(0,0).setDepth(-100);
         this.add.image(1025,60,"redSkull").setOrigin(0,0).setDepth(-100);
+        
         var killsText = this.add.text(1085, 10, `${gameState.kills}`, {
             fill: 'WHITE', 
             fontSize: `30px`,
             fontFamily: 'Qahiri',
             strokeThickness: 4,
         }).setDepth(window.innerHeight+3);
+        
         var bossKillsText = this.add.text(1085, 65, `${gameState.bossSummonKills}`, {
             fill: '#A30000', 
             fontSize: `30px`,
             fontFamily: 'Qahiri',
             strokeThickness: 4,
         }).setDepth(window.innerHeight+3);
+        //Coins
+        this.add.image(1140,25,"coin").setOrigin(0,0).setDepth(-100).setScale(2);
+        var coinsText = this.add.text(1220, 40, `${gameState.coins}`, {
+            fill: '#ADD8E6', 
+            fontSize: `30px`,
+            fontFamily: 'Qahiri',
+            strokeThickness: 4,
+        }).setDepth(window.innerHeight+3);
+        //Phaser loop to constantly check for kills and summon random boss
         gameState.checkBoss = this.time.addEvent({
             delay: 10,
             callback: ()=>{
                 killsText.setText(gameState.kills);
+                coinsText.setText(gameState.coins);
                 bossKillsText.setText(gameState.bossSummonKills);
                 if (gameState.kills >= gameState.bossSummonKills){
                     gameState.spawnZombies.paused = true;
@@ -93,7 +124,7 @@ class ArenaScene extends Phaser.Scene {
        
         this.physics.add.collider(gameState.zombies, gameState.barriers);
         gameState.spawnZombies = this.time.addEvent({
-            delay: 4000,
+            delay: 3000,
             callback: ()=>{
                 var rand = Math.ceil(Math.random()*4);
                 this.time.addEvent({

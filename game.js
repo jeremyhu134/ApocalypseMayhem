@@ -14,7 +14,7 @@ const config = {
             //debug: true
         }
     },
-    scene:[MenuScene,PauseScene,ArenaScene,ChooseHeroScene],
+    scene:[MenuScene,PauseScene,ArenaScene,UpgradeScene],
     scale: {
         zoom: 1,
         mode: Phaser.Scale.FIT,
@@ -44,7 +44,9 @@ let gameState = {
     damage: 25,
     bulletSpeed: 1000,
     kills: 0,
-    bossSummonKills: 50,
+    bossSummonKills: 25,
+    disableReload: false,
+    
     chracterControls : function(scene){
         if(gameState.health > 0){
             gameState.character.depth = gameState.character.y-50;
@@ -151,6 +153,7 @@ let gameState = {
             }
             else if (gameState.keys.R.isDown){
                 gameState.reload(scene);
+                console.log(gameState.ammo);
             }
             else {
                 if(gameState.ammo<= 0){
@@ -165,7 +168,7 @@ let gameState = {
             scene.time.addEvent({
                 delay: 5000,
                 callback: ()=>{
-                    location.reload();
+                    
                     /*scene.scene.stop('ArenaScene');
                     scene.scene.start('MenuScene');*/
                 },  
@@ -175,7 +178,7 @@ let gameState = {
         }
     },
     reload: function (scene){
-        if(gameState.characterStats.fireReady == true){
+        if(gameState.characterStats.fireReady == true && gameState.disableReload == false){
             gameState.characterStats.fireReady = false;
             var clip = scene.physics.add.image(gameState.character.x+5, gameState.character.y+12, 'gunMagazine').setGravityY(1000);
             if (gameState.character.x > scene.input.x){
@@ -211,6 +214,110 @@ let gameState = {
         }
     },
     
+    createItem: function(scene,x,y){
+        var random = Math.ceil(Math.random()*100);
+        if(random <= 50){
+            var coin = scene.physics.add.sprite(x,y,'coin');
+            coin.anims.play('canimate','true');
+            var gone = scene.time.addEvent({
+                delay: 10000,
+                callback: ()=>{
+                    coin.destroy();
+                },  
+                startAt: 0,
+                timeScale: 1
+            });
+            scene.physics.add.overlap(gameState.character, coin,(character, coin)=>{
+                gameState.coins ++;
+                coin.destroy();
+                gone.destroy();
+            });
+        }else if(random<=100 && random >=96){
+            var iBI = scene.physics.add.sprite(x,y,'infiniteBulletsImage');
+            iBI.anims.play('shine','true');
+            var gone = scene.time.addEvent({
+                delay: 10000,
+                callback: ()=>{
+                    iBI.destroy();
+                },  
+                startAt: 0,
+                timeScale: 1
+            });
+            scene.physics.add.overlap(gameState.character, iBI,(character, iBI)=>{
+                gameState.disableReload = true;
+                iBI.destroy();
+                gone.destroy();
+                gameState.fireRate = gameState.characterStats.fireRate - 35;
+                gameState.ammo = 9999;
+                gameState.createTempText(scene,window.innerWidth/2-100,window.innerHeight/2,"! INFINITE BULLETS !",10000,25);
+                scene.time.addEvent({
+                    delay: 10000,
+                    callback: ()=>{
+                        gameState.fireRate = gameState.characterStats.fireRate;
+                        gameState.ammo = gameState.characterStats.ammo;
+                        gameState.disableReload = false;
+                    },  
+                    startAt: 0,
+                    timeScale: 1
+                });
+            });
+        }else if(random<=95 && random >=90){
+            var grenade = scene.physics.add.sprite(x,y,'grenadeImage');
+            grenade.anims.play('shine2','true');
+            var gone = scene.time.addEvent({
+                delay: 10000,
+                callback: ()=>{
+                    grenade.destroy();
+                },  
+                startAt: 0,
+                timeScale: 1
+            });
+            scene.physics.add.overlap(gameState.character, grenade,(character, grenade)=>{
+                gameState.createTempText(scene,window.innerWidth/2-100,window.innerHeight/2,"! GRENADE !",1500,25);
+                gone.destroy();
+                grenade.destroy();
+                var gren = scene.physics.add.sprite(gameState.character.x,gameState.character.y,'grenadeObj');
+                if( gameState.zombies.getChildren().length >0){
+                    var closest = 10000;
+                    var dist;
+                    var target;
+                    for (var i = 0; i < gameState.zombies.getChildren().length; i++){ 
+                        dist = Phaser.Math.Distance.BetweenPoints(gameState.zombies.getChildren()[i], gameState.character);
+                        if(dist<closest){
+                            closest = dist;
+                            target = gameState.zombies.getChildren()[i];
+                        }
+                    }
+                    scene.physics.moveToObject(gren,target,0,500);
+                    scene.time.addEvent({
+                        delay: 500,
+                        callback: ()=>{
+                            var explosion = scene.physics.add.sprite(gren.x,gren.y,'');
+                            explosion.anims.play('explode','true');
+                            scene.time.addEvent({
+                                delay: 1000,
+                                callback: ()=>{
+                                    explosion.destroy();
+                                },  
+                                startAt: 0,
+                                timeScale: 1
+                            });
+                            gren.destroy();
+                            for (var i = 0; i < gameState.zombies.getChildren().length; i++){
+                                if(Phaser.Math.Distance.BetweenPoints(gameState.zombies.getChildren()[i], gameState.character)<200){
+                                    gameState.zombies.getChildren()[i].health -= 100;
+                                }
+                            }
+                        },  
+                        startAt: 0,
+                        timeScale: 1
+                    });
+                } else{
+                    gren.destroy();
+                }
+            });
+        }
+    },
     
     zombie :{
         speed: 75,
@@ -266,24 +373,7 @@ let gameState = {
                         }
                     }
                     else {
-                        var random = Math.ceil(Math.random()*2);
-                        if(random == 2){
-                            var coin = scene.physics.add.sprite(zom.x,zom.y,'coin');
-                            coin.anims.play('canimate','true');
-                            var gone = scene.time.addEvent({
-                                delay: 10000,
-                                callback: ()=>{
-                                    coin.destroy();
-                                },  
-                                startAt: 0,
-                                timeScale: 1
-                            });
-                            scene.physics.add.overlap(gameState.character, coin,(character, coin)=>{
-                                gameState.coins ++;
-                                coin.destroy();
-                                gone.destroy();
-                            });
-                        }
+                        gameState.createItem(scene,zom.x,zom.y);
                         gameState.kills++;
                         loop.destroy();
                         attack.destroy();
@@ -420,24 +510,7 @@ let gameState = {
                         }
                     }
                     else {
-                        var random = Math.ceil(Math.random()*2);
-                        if(random == 2){
-                            var coin = scene.physics.add.sprite(zom.x,zom.y,'coin');
-                            coin.anims.play('canimate','true');
-                            var gone = scene.time.addEvent({
-                                delay: 10000,
-                                callback: ()=>{
-                                    coin.destroy();
-                                },  
-                                startAt: 0,
-                                timeScale: 1
-                            });
-                            scene.physics.add.overlap(gameState.character, coin,(character, coin)=>{
-                                gameState.coins ++;
-                                coin.destroy();
-                                gone.destroy();
-                            });
-                        }
+                        gameState.createItem(scene,zom.x,zom.y);
                         loop.destroy();
                         attack.destroy();
                         rageTimer.destroy();
@@ -452,7 +525,6 @@ let gameState = {
                             delay: 400,
                             callback: ()=>{
                                 zom.destroy();
-                                console.log(gameState.kills);
                                 gameState.spawnZombies.paused = false;
                             },  
                             startAt: 0,
@@ -505,7 +577,7 @@ let gameState = {
             fontSize: `${size}px`,
             fontFamily: 'Qahiri',
             strokeThickness: 5,
-        }).setDepth(window.innerHeight+3);
+        }).setDepth(-100);
         scene.time.addEvent({
             delay: time,
             callback: ()=>{
