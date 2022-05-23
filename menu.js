@@ -32,6 +32,7 @@ class MenuScene extends Phaser.Scene {
         this.load.image('upgradeButton','images/upgradeButton.png');
         this.load.image('backButton','images/backButton.png');
         this.load.image('settingsButton','images/settingsButton.png');
+        this.load.spritesheet('upgradeOptions','images/upgradeOptions.png',{frameWidth: 400,frameHeight:200});
         
          this.load.image('grenadeObj','images/grenadeObj.png');
         
@@ -122,8 +123,27 @@ class MenuScene extends Phaser.Scene {
         });
         
         
-        
-        
+        //Upgrade options spritesheet
+        this.anims.create({
+            key: 'health',
+            frameRate: 0,
+            frames:this.anims.generateFrameNames('upgradeOptions',{start: 2,end: 2})
+        });
+        this.anims.create({
+            key: 'ammocap',
+            frameRate: 0,
+            frames:this.anims.generateFrameNames('upgradeOptions',{start: 1,end: 1})
+        });
+        this.anims.create({
+            key: 'speed',
+            frameRate: 0,
+            frames:this.anims.generateFrameNames('upgradeOptions',{start: 3,end: 3})
+        });
+        this.anims.create({
+            key: 'damage',
+            frameRate: 18,
+            frames:this.anims.generateFrameNames('upgradeOptions',{start: 0,end: 0})
+        });
         
         //objects
         this.anims.create({
@@ -197,6 +217,8 @@ class MenuScene extends Phaser.Scene {
                 timeScale: 1
             });
         });
+        //Update Characters Stats so upgrades and such apply
+        gameState.updateStats();
         //Upgrades Button
         var Ubutton = this.add.image(window.innerWidth/2+60,window.innerHeight/2+60,'upgradeButton').setInteractive();
         Ubutton.on('pointerdown', function(pointer){

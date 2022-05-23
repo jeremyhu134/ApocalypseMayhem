@@ -26,7 +26,7 @@ const game = new Phaser.Game(config);
 
 
 let gameState = {
-    coins: 0,
+    coins: 1000,
     characterStats: {
         speed : 150,
         health: 100,
@@ -34,7 +34,6 @@ let gameState = {
         fireRate: 175,
         damage: 25,
         bulletSpeed: 1000,
-        kills: 0,
         fireReady: true
     },
     speed : 150,
@@ -46,6 +45,19 @@ let gameState = {
     kills: 0,
     bossSummonKills: 25,
     disableReload: false,
+    updateStats: function(){
+        //resets players stats
+        gameState.speed = gameState.characterStats.speed;
+        gameState.health = gameState.characterStats.health;
+        gameState.ammo = gameState.characterStats.ammo;
+        gameState.fireRate = gameState.characterStats.fireRate;
+        gameState.damage = gameState.characterStats.damage;
+        gameState.kills = 0;
+        gameState.fireReady = true;
+        
+        //reset zombie stats
+        gameState.zombie.speed =  75;
+    },
     
     chracterControls : function(scene){
         if(gameState.health > 0){
@@ -169,8 +181,8 @@ let gameState = {
                 delay: 5000,
                 callback: ()=>{
                     
-                    /*scene.scene.stop('ArenaScene');
-                    scene.scene.start('MenuScene');*/
+                    scene.scene.stop('ArenaScene');
+                    scene.scene.start('MenuScene');
                 },  
                 startAt: 0,
                 timeScale: 1
@@ -185,10 +197,10 @@ let gameState = {
                 clip.flipX = true;
             }
             clip.depth = clip.y +1;
+            gameState.ammo = gameState.characterStats.ammo;
             scene.time.addEvent({
                 delay: 2500,
                 callback: ()=>{
-                    gameState.ammo = gameState.characterStats.ammo;
                     gameState.characterStats.fireReady = true;
                 },  
                 startAt: 0,
@@ -304,7 +316,7 @@ let gameState = {
                             });
                             gren.destroy();
                             for (var i = 0; i < gameState.zombies.getChildren().length; i++){
-                                if(Phaser.Math.Distance.BetweenPoints(gameState.zombies.getChildren()[i], gameState.character)<200){
+                                if(Phaser.Math.Distance.BetweenPoints(gameState.zombies.getChildren()[i], gren)<200){
                                     gameState.zombies.getChildren()[i].health -= 100;
                                 }
                             }
@@ -526,6 +538,9 @@ let gameState = {
                             callback: ()=>{
                                 zom.destroy();
                                 gameState.spawnZombies.paused = false;
+                                if(gameState.zombie.speed <= 115){
+                                    gameState.zombie.speed += 5;
+                                }
                             },  
                             startAt: 0,
                             timeScale: 1
