@@ -26,7 +26,7 @@ const game = new Phaser.Game(config);
 
 
 let gameState = {
-    coins: 1000,
+    coins: 150,
     characterStats: {
         speed : 150,
         health: 100,
@@ -57,6 +57,7 @@ let gameState = {
         
         //reset zombie stats
         gameState.zombie.speed =  75;
+        gameState.bossSummonKills = 25;
     },
     
     chracterControls : function(scene){
@@ -338,11 +339,17 @@ let gameState = {
         image: 'zombie'
     },
     sarmsZombie :{
-        speed: 45,
-        runSpeed: 160,
-        health : 3500,
-        damage : 30,
+        speed: 55,
+        runSpeed: 170,
+        health : 4000,
+        damage : 27,
         name: 'sarmsZombie'
+    },
+    quadZombie :{
+        health : 2500,
+        damage : 50,
+        damageRange : 125,
+        name: 'quadZombie'
     },
     
     
@@ -417,6 +424,11 @@ let gameState = {
             timeScale: 1
         });
     },
+    buffZombies: function(){
+        if(gameState.zombie.speed <= 150){
+            gameState.zombie.speed += 15;
+        }
+    },
     
     
     createSarmsZombie: function (scene,inX,inY){
@@ -437,7 +449,7 @@ let gameState = {
             });
             var breatheLoop;
             var rageTimer = scene.time.addEvent({
-                delay: 9000,
+                delay: 10000,
                 callback: ()=>{
                     zom.rage = true;
                     rageTimer.paused = true;
@@ -460,7 +472,7 @@ let gameState = {
                 repeat: -1
             });
             var breatheTimer = scene.time.addEvent({
-                delay: 5000,
+                delay: 3000,
                 callback: ()=>{
                     console.log("lok");
                     rageTimer.paused = false;
@@ -538,9 +550,7 @@ let gameState = {
                             callback: ()=>{
                                 zom.destroy();
                                 gameState.spawnZombies.paused = false;
-                                if(gameState.zombie.speed <= 115){
-                                    gameState.zombie.speed += 5;
-                                }
+                                gameState.buffZombies();
                             },  
                             startAt: 0,
                             timeScale: 1
@@ -563,6 +573,170 @@ let gameState = {
         });
     },
     
+    
+    createQuadZombie: function (scene,inX,inY){
+        var zombie = gameState.zombies.create(inX,inY,`quadZombie`).setDepth(1);
+        zombie.health = gameState.quadZombie.health;
+        function zombieB(zom){
+            var attack = scene.time.addEvent({  
+                delay: 5000,
+                callback: ()=>{
+                    zom.anims.play('quadZombieBend');
+                    gameState.one = scene.time.addEvent({
+                        delay: 500,
+                        callback: ()=>{
+                            gameState.two = zom.anims.play('quadZombieLaunch');
+                            scene.time.addEvent({
+                                delay: 200,
+                                callback: ()=>{
+                                    scene.physics.moveTo(zom,zom.x,zom.y-1,1200);
+                                },  
+                                startAt: 0,
+                                timeScale: 1
+                            });
+                            gameState.three = scene.time.addEvent({
+                                delay: 500,
+                                callback: ()=>{
+                                    zom.x = 10000;
+                                    zom.y = 10000;
+                                    zom.anims.play('quadZombieBend');
+                                },  
+                                startAt: 0,
+                                timeScale: 1
+                            });
+                        },  
+                        startAt: 0,
+                        timeScale: 1
+                    });
+                    gameState.four = scene.time.addEvent({
+                        delay: 3000,
+                        callback: ()=>{
+                            var targeter = scene.add.sprite(gameState.character.x, gameState.character.y,'quadZombieAbility').setDepth(0);
+                            targeter.anims.play('quadZombieTarget');
+                            var spoty;
+                            var spotx;
+                            spoty = targeter.y;
+                            spotx = targeter.x;
+                            gameState.five = scene.time.addEvent({
+                                delay: 1000,
+                                callback: ()=>{
+                                    zom.x = spotx;
+                                    zom.y = -160;
+                                    scene.physics.moveToObject(zom,targeter,0,150);
+                                    targeter.destroy();
+                                    gameState.six = scene.time.addEvent({
+                                        delay: 150,
+                                        callback: ()=>{
+                                            zom.setVelocityX(0);
+                                            zom.setVelocityY(0);
+                                            for (var i = 0; i < gameState.zombies.getChildren().length; i++){
+                                                if(Phaser.Math.Distance.BetweenPoints(zom, gameState.character)<gameState.quadZombie.damageRange){
+                                                    gameState.health -= gameState.quadZombie.damage;
+                                                }
+                                            }
+                                            var quake = scene.add.sprite(zom.x, zom.y,'quadZombieAbility').setDepth(0);
+                                            quake.anims.play('quadZombieQuake');
+                                            scene.time.addEvent({
+                                                delay: 1000,
+                                                callback: ()=>{
+                                                    quake.destroy();
+                                                },  
+                                                startAt: 0,
+                                                timeScale: 1
+                                            });
+                                        },  
+                                        startAt: 0,
+                                        timeScale: 1
+                                    });
+                                },  
+                                startAt: 0,
+                                timeScale: 1
+                            });
+                        },  
+                        startAt: 0,
+                        timeScale: 1
+                    });
+                },  
+                startAt: 0,
+                timeScale: 1,
+                repeat: -1
+            });
+            var bars = scene.add.group();
+            var barBg = scene.add.image(10, 55, 'healthBarBg').setDepth(window.innerHeight+1).setOrigin(0,0);
+            for (var i = 0; i < 100;i++){
+                var bar = bars.create(10+(10*(i+1)), barBg.y+17, 'zombieHealthBar').setDepth(window.innerHeight+1);
+            }
+            var checkHealthBar = scene.time.addEvent({
+                delay: 1,
+                callback:()=>{
+                    if ((zom.health/(gameState.quadZombie.health/100)) < bars.getChildren().length && bars.getChildren().length > 0){
+                        bars.getChildren()[bars.getChildren().length-1].destroy();
+                    }
+                },  
+                startAt: 0,
+                timeScale: 1,
+                repeat: -1
+            });
+            var loop = scene.time.addEvent({
+                delay: 1,
+                callback: ()=>{
+                    if (zom.health > 0){
+                        var dist = Phaser.Math.Distance.BetweenPoints(gameState.character, zom);
+                        if(dist > 50){
+                            
+                        }
+                        else {
+                            if(zom.breathe == false){
+                                attack.paused = false;
+                                zom.anims.play('sarmsZombieStrike',true);
+                                zom.setVelocityX(0);
+                                zom.setVelocityY(0);
+                            }
+                        }
+                    }
+                    else {
+                        gameState.createItem(scene,zom.x,zom.y);
+                        loop.destroy();
+                        attack.destroy();
+                        checkHealthBar.destroy();
+                        barBg.destroy();
+                        zom.setVelocityX(0);
+                        zom.setVelocityY(0);
+                        zom.anims.play('quadZombieDeath','true');
+                        gameState.one.destroy();
+                        gameState.two.destroy();
+                        gameState.three.destroy();
+                        gameState.four.destroy();
+                        gameState.five.destroy();
+                        gameState.six.destroy();
+                        gameState.checkBoss.paused = false;
+                        scene.time.addEvent({
+                            delay: 1000,
+                            callback: ()=>{
+                                zom.destroy();
+                                gameState.spawnZombies.paused = false;
+                                gameState.buffZombies();
+                            },  
+                            startAt: 0,
+                            timeScale: 1
+                        });
+                    }
+                },  
+                startAt: 0,
+                timeScale: 1,
+                repeat: -1
+            });
+        };
+        zombie.anims.play('quadZombieSpawn');
+        scene.time.addEvent({
+            delay: 800,
+            callback: ()=>{
+                zombieB(zombie);
+            },  
+            startAt: 0,
+            timeScale: 1
+        });
+    },
     
     createHealthBar: function(scene,x,y){
         var bars = [];

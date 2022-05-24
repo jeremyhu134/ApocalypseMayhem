@@ -69,7 +69,7 @@ class UpgradeScene extends Phaser.Scene {
 		});
         var speed = this.add.sprite(window.innerWidth/4,window.innerHeight/2+window.innerHeight/4,'upgradeOptions').setInteractive();
         for (var i = 0; i < gameState.characterStats.speed-150; i += 5){
-            this.add.rectangle(window.innerWidth/4+33+(i/5*18), window.innerHeight/4+402, 15, 15, 0x39FF14);
+            this.add.rectangle(window.innerWidth/4+33+(i/5*18), window.innerHeight/2+window.innerHeight/4+54, 15, 15, 0x39FF14);
         }
         speed.anims.play('speed');
         speed.on('pointerup', () => {
@@ -78,7 +78,7 @@ class UpgradeScene extends Phaser.Scene {
                 coinsText.setText(`${gameState.coins}`);
                 gameState.characterStats.speed += 5;
                 for (var i = 0; i < gameState.characterStats.speed-150; i += 5){
-                    this.add.rectangle(window.innerWidth/4+33+(i/5*18), window.innerHeight/4+402, 15, 15, 0x39FF14);
+                    this.add.rectangle(window.innerWidth/4+33+(i/5*18), window.innerHeight/2+window.innerHeight/4+54, 15, 15, 0x39FF14);
                 }
                 alert("Increased Speed : PURCHASED");
             } else{
@@ -87,7 +87,7 @@ class UpgradeScene extends Phaser.Scene {
 		});
         var ammoCap = this.add.sprite(window.innerWidth/2+window.innerWidth/4,window.innerHeight/2+window.innerHeight/4,'upgradeOptions').setInteractive();
         for (var i = 0; i < gameState.characterStats.ammo-25; i += 5){
-            this.add.rectangle(window.innerWidth/2+window.innerWidth/4+33+(i/5*18), window.innerHeight/4+402, 15, 15, 0x39FF14);
+            this.add.rectangle(window.innerWidth/2+window.innerWidth/4+33+(i/5*18), window.innerHeight/2+window.innerHeight/4+54, 15, 15, 0x39FF14);
         }
         ammoCap.anims.play('ammocap');
         ammoCap.on('pointerup', () => {
@@ -96,7 +96,7 @@ class UpgradeScene extends Phaser.Scene {
                 coinsText.setText(`${gameState.coins}`);
                 gameState.characterStats.ammo += 5;
                 for (var i = 0; i < gameState.characterStats.ammo-25; i += 5){
-                    this.add.rectangle(window.innerWidth/2+window.innerWidth/4+33+(i/5*18), window.innerHeight/4+402, 15, 15, 0x39FF14);
+                    this.add.rectangle(window.innerWidth/2+window.innerWidth/4+33+(i/5*18), window.innerHeight/2+window.innerHeight/4+54, 15, 15, 0x39FF14);
                 }
                 alert("Increased Ammo Capacity : PURCHASED");
             } else{
@@ -136,6 +136,13 @@ class ArenaScene extends Phaser.Scene {
         //Background image and animation start
         var bg = this.physics.add.sprite(0,0,'background').setOrigin(0,0).setScale(window.innerHeight/675).setDepth(-100);
         bg.anims.play('bganimate','true');
+        //A pause button for exiting
+        var Sbutton = this.add.image(window.innerWidth-30,window.innerHeight-30,'settingsButton').setInteractive().setScale(.7);
+        Sbutton.on('pointerdown', function(pointer){
+            //ADD SAVE
+            gameState.globalScene.scene.pause("ArenaScene");
+            gameState.globalScene.scene.launch('PauseScene');
+        });
         //Create the player
         gameState.character = this.physics.add.sprite(window.innerWidth/2-16,window.innerHeight/2+16,'character');
         gameState.character.body.width = 50;
@@ -144,22 +151,22 @@ class ArenaScene extends Phaser.Scene {
         this.add.image(1025,5,"skull").setOrigin(0,0).setDepth(-100);
         this.add.image(1025,60,"redSkull").setOrigin(0,0).setDepth(-100);
         
-        var killsText = this.add.text(1085, 10, `${gameState.kills}`, {
+        var killsText = this.add.text(1075, 10, `${gameState.kills}`, {
             fill: 'WHITE', 
             fontSize: `30px`,
             fontFamily: 'Qahiri',
             strokeThickness: 4,
         }).setDepth(window.innerHeight+3);
         
-        var bossKillsText = this.add.text(1085, 65, `${gameState.bossSummonKills}`, {
+        var bossKillsText = this.add.text(1075, 65, `${gameState.bossSummonKills}`, {
             fill: '#A30000', 
             fontSize: `30px`,
             fontFamily: 'Qahiri',
             strokeThickness: 4,
         }).setDepth(window.innerHeight+3);
         //Coins
-        this.add.image(1140,25,"coin").setOrigin(0,0).setDepth(-100).setScale(2);
-        var coinsText = this.add.text(1220, 40, `${gameState.coins}`, {
+        this.add.image(1130,30,"coin").setOrigin(0,0).setDepth(-100).setScale(1.5);
+        var coinsText = this.add.text(1180, 40, `${gameState.coins}`, {
             fill: '#ADD8E6', 
             fontSize: `30px`,
             fontFamily: 'Qahiri',
@@ -183,9 +190,13 @@ class ArenaScene extends Phaser.Scene {
                         this.time.addEvent({
                             delay: 1000,
                             callback: ()=>{
-                                gameState.bossSummonKills += 50*(gameState.bossSummonKills/50);
-                                gameState.createSarmsZombie(this,window.innerWidth/2,window.innerHeight/2);
-                                console.log(gameState.kills);
+                                gameState.bossSummonKills += 25*(gameState.bossSummonKills/25);
+                                var rand = Math.ceil(Math.random()*2);
+                                if (rand == 1){
+                                    gameState.createSarmsZombie(this,window.innerWidth/2,window.innerHeight/2);
+                                } else {
+                                    gameState.createQuadZombie(this,window.innerWidth/2,window.innerHeight/2);
+                                }
                             },
                             startAt: 0,
                             timeScale: 1

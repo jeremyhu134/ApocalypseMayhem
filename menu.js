@@ -11,7 +11,10 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('zombie','images/zombie.png',{frameWidth: 44,frameHeight:65});
         this.load.spritesheet('sarmsZombie','images/sarmsZombie.png',{frameWidth: 70,frameHeight:70});
         
+        this.load.spritesheet('quadZombie','images/quadZombie.png',{frameWidth: 44,frameHeight:80});
+        this.load.spritesheet('quadZombieAbility','images/quadZombieAbility.png',{frameWidth: 200,frameHeight:200});
         
+        //Items
         this.load.spritesheet('gunFlash','images/gunFlash.png',{frameWidth: 20,frameHeight:20});
         this.load.spritesheet('explosion','images/explosion.png',{frameWidth: 75,frameHeight:75});
         this.load.spritesheet('bulletBlood','images/bulletBlood.png',{frameWidth: 20,frameHeight:20});
@@ -32,6 +35,9 @@ class MenuScene extends Phaser.Scene {
         this.load.image('upgradeButton','images/upgradeButton.png');
         this.load.image('backButton','images/backButton.png');
         this.load.image('settingsButton','images/settingsButton.png');
+        //pause menu
+        this.load.image('pauseMainMenuButton','images/pauseMainMenuButton.png');
+        this.load.image('pauseMenu','images/pauseMenu.png');
         this.load.spritesheet('upgradeOptions','images/upgradeOptions.png',{frameWidth: 400,frameHeight:200});
         
          this.load.image('grenadeObj','images/grenadeObj.png');
@@ -86,6 +92,7 @@ class MenuScene extends Phaser.Scene {
             frameRate: 12,
             frames:this.anims.generateFrameNames('zombie',{start: 26,end: 29})
         });
+        
         //sarmszombie
         this.anims.create({
             key: 'sarmsZombieWalk',
@@ -120,6 +127,38 @@ class MenuScene extends Phaser.Scene {
             key: 'sarmsZombieDeath',
             frameRate: 12,
             frames:this.anims.generateFrameNames('sarmsZombie',{start: 21,end: 25})
+        });
+        
+        //quad zombie
+        this.anims.create({
+            key: 'quadZombieBend',
+            frameRate: 6,
+            frames:this.anims.generateFrameNames('quadZombie',{start: 0,end: 5})
+        });
+        this.anims.create({
+            key: 'quadZombieLaunch',
+            frameRate: 20,
+            frames:this.anims.generateFrameNames('quadZombie',{start: 6,end: 12})
+        });
+        this.anims.create({
+            key: 'quadZombieSpawn',
+            frameRate: 30,
+            frames:this.anims.generateFrameNames('quadZombie',{start: 13,end: 23})
+        });
+        this.anims.create({
+            key: 'quadZombieDeath',
+            frameRate: 12,
+            frames:this.anims.generateFrameNames('quadZombie',{start: 24,end: 27})
+        });
+        this.anims.create({
+            key: 'quadZombieQuake',
+            frameRate: 23,
+            frames:this.anims.generateFrameNames('quadZombieAbility',{start: 10,end: 16})
+        });
+        this.anims.create({
+            key: 'quadZombieTarget',
+            frameRate: 10,
+            frames:this.anims.generateFrameNames('quadZombieAbility',{start: 0,end: 9})
         });
         
         
@@ -202,6 +241,9 @@ class MenuScene extends Phaser.Scene {
         gameState.globalScene = this;
         this.physics.add.sprite(0,0,'background').setOrigin(0,0).setScale(window.innerHeight/675).setDepth(-100);
         this.add.sprite(window.innerWidth/2,100,'titleImage').setScale(1.5);
+        
+        //Changes cursor icon image
+        this.input.setDefaultCursor('url(images/cursor.cur), pointer');
         
         var button = this.add.image(window.innerWidth/2,window.innerHeight/2,'startButton').setInteractive();
         button.on('pointerdown', function(pointer){
