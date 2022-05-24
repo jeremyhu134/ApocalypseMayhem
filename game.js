@@ -95,7 +95,7 @@ let gameState = {
             else {
                 gameState.character.flipX = true;
             }
-            if (gameState.mouse.isDown && gameState.ammo > 0){
+            if (gameState.keys.SPACE.isDown && gameState.ammo > 0){
                 if (gameState.characterStats.fireReady == true){
                     gameState.ammo --;
                     gameState.characterStats.fireReady = false;
