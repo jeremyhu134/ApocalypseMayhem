@@ -57,7 +57,7 @@ let gameState = {
         
         //reset zombie stats
         gameState.zombie.speed =  75;
-        gameState.bossSummonKills = 25;
+        gameState.bossSummonKills = 1;
     },
     
     chracterControls : function(scene){
@@ -241,7 +241,7 @@ let gameState = {
                 timeScale: 1
             });
             scene.physics.add.overlap(gameState.character, coin,(character, coin)=>{
-                gameState.coins ++;
+                gameState.coins += 10;
                 coin.destroy();
                 gone.destroy();
             });
@@ -393,7 +393,9 @@ let gameState = {
                     }
                     else {
                         gameState.createItem(scene,zom.x,zom.y);
-                        gameState.kills++;
+                        if(gameState.spawnZombies.isPaused == false){
+                            gameState.kills++;
+                        }
                         loop.destroy();
                         attack.destroy();
                         zom.setVelocityX(0);
@@ -449,7 +451,7 @@ let gameState = {
             });
             var breatheLoop;
             var rageTimer = scene.time.addEvent({
-                delay: 10000,
+                delay: 4000,
                 callback: ()=>{
                     zom.rage = true;
                     rageTimer.paused = true;
@@ -618,7 +620,7 @@ let gameState = {
                             spoty = targeter.y;
                             spotx = targeter.x;
                             gameState.five = scene.time.addEvent({
-                                delay: 1000,
+                                delay: 150,
                                 callback: ()=>{
                                     zom.x = spotx;
                                     zom.y = -160;

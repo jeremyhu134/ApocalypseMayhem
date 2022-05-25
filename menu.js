@@ -157,7 +157,7 @@ class MenuScene extends Phaser.Scene {
         });
         this.anims.create({
             key: 'quadZombieTarget',
-            frameRate: 10,
+            frameRate: 17,
             frames:this.anims.generateFrameNames('quadZombieAbility',{start: 0,end: 9})
         });
         
