@@ -620,7 +620,7 @@ let gameState = {
                             spoty = targeter.y;
                             spotx = targeter.x;
                             gameState.five = scene.time.addEvent({
-                                delay: 150,
+                                delay: 600,
                                 callback: ()=>{
                                     zom.x = spotx;
                                     zom.y = -160;
