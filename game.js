@@ -399,6 +399,7 @@ let gameState = {
                         attack.destroy();
                         zom.setVelocityX(0);
                         zom.setVelocityY(0);
+                        gameState.kills++;
                         zom.anims.play('zombieDeath','true');
                         scene.time.addEvent({
                             delay: 400,
