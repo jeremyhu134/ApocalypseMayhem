@@ -243,7 +243,7 @@ let gameState = {
                 timeScale: 1
             });
             scene.physics.add.overlap(gameState.character, coin,(character, coin)=>{
-                gameState.coins += 10;
+                gameState.coins += 5;
                 coin.destroy();
                 gone.destroy();
             });
