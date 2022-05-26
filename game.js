@@ -57,7 +57,7 @@ let gameState = {
         
         //reset zombie stats
         gameState.zombie.speed =  75;
-        gameState.bossSummonKills = 1;
+        gameState.bossSummonKills = 25;
     },
     
     chracterControls : function(scene){
