@@ -54,6 +54,8 @@ let gameState = {
         gameState.damage = gameState.characterStats.damage;
         gameState.kills = 0;
         gameState.fireReady = true;
+        gameState.characterStats.fireReady == true;
+        gameState.disableReload == false;
         
         //reset zombie stats
         gameState.zombie.speed =  75;
@@ -393,9 +395,6 @@ let gameState = {
                     }
                     else {
                         gameState.createItem(scene,zom.x,zom.y);
-                        if(gameState.spawnZombies.isPaused == false){
-                            gameState.kills++;
-                        }
                         loop.destroy();
                         attack.destroy();
                         zom.setVelocityX(0);
