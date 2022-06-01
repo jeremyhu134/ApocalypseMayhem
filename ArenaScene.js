@@ -199,7 +199,7 @@ class ArenaScene extends Phaser.Scene {
                         for (var i = 0; i < gameState.zombies.getChildren().length; i++){
                             gameState.zombies.getChildren()[i].health = 0;
                         }
-                        gameState.kills = gameState.bossSummonKills;
+                        gameState.kills = 0;
                         gameState.checkBoss.paused = true;
                         this.time.addEvent({
                             delay: 1000,
