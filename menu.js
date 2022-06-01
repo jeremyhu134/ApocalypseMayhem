@@ -293,7 +293,6 @@ class MenuScene extends Phaser.Scene {
         //Changes cursor icon image
         this.input.setDefaultCursor('url(images/cursor.cur), pointer');
         
-	gameState.save();
         gameState.loadSave();
         gameState.updateStats();
 	

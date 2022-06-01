@@ -199,11 +199,11 @@ class ArenaScene extends Phaser.Scene {
                         for (var i = 0; i < gameState.zombies.getChildren().length; i++){
                             gameState.zombies.getChildren()[i].health = 0;
                         }
-                        gameState.kills = 0;
                         gameState.checkBoss.paused = true;
                         this.time.addEvent({
                             delay: 1000,
                             callback: ()=>{
+                                gameState.kills = 0;
                                 var rand = Math.ceil(Math.random()*3);
                                 if (rand == 1){
                                     gameState.createSarmsZombie(this,window.innerWidth/2,window.innerHeight/2);
