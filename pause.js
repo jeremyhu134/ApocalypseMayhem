@@ -7,6 +7,7 @@ class PauseScene extends Phaser.Scene {
     }
     create() {
         this.scene.bringToTop();
+        gameState.save();
         this.add.image(window.innerWidth/2,window.innerHeight/2,'pauseMenu');
         var scene = this;
         

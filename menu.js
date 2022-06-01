@@ -4,9 +4,9 @@ class MenuScene extends Phaser.Scene {
 	}
     preload(){
         this.load.spritesheet('loading','images/loadingSprite.png',{frameWidth: 30,frameHeight:3});
-        
+        //people
         this.load.spritesheet('character','images/character.png',{frameWidth: 50,frameHeight:50});
-        
+        this.load.spritesheet('merchant','images/merchantSprite.png',{frameWidth: 100,frameHeight:90});
         //zombies
         this.load.spritesheet('zombie','images/zombie.png',{frameWidth: 44,frameHeight:65});
         this.load.spritesheet('sarmsZombie','images/sarmsZombie.png',{frameWidth: 70,frameHeight:70});
@@ -43,11 +43,18 @@ class MenuScene extends Phaser.Scene {
          this.load.image('grenadeObj','images/grenadeObj.png');
         
         //audio
-        this.load.audio('gunShootSound', 'audio/gunShootSound.mp3');
+        this.load.audio('menuBgMusic', 'audio/menuBgMusic.mp3');
     }
     create() {
         gameState.currentScene = "MenuScene";
         //audio
+        gameState.loopSound = {
+            loop: true,
+            volume: 100
+        }
+        var bgM = this.sound.add('menuBgMusic');
+        bgM.play(gameState.loopSound);
+        
         //Loading Animations
         this.anims.create({
             key: 'load',
@@ -67,6 +74,13 @@ class MenuScene extends Phaser.Scene {
             frameRate: 25,
             repeat: -1,
             frames:this.anims.generateFrameNames('character',{start: 0,end: 11})
+        });
+        //merchant animation
+        this.anims.create({
+            key: 'move',
+            frameRate: 1,
+            repeat: -1,
+            frames:this.anims.generateFrameNames('merchant',{start: 0,end: 11})
         });
         
         //zombie
@@ -239,11 +253,20 @@ class MenuScene extends Phaser.Scene {
         });
         
         gameState.globalScene = this;
-        this.physics.add.sprite(0,0,'background').setOrigin(0,0).setScale(window.innerHeight/675).setDepth(-100);
+        //create and animate background
+        var bg = this.physics.add.sprite(0,0,'background').setOrigin(0,0).setScale(window.innerHeight/675).setDepth(-100);
+        bg.anims.play('bganimate','true');
+        
+        //add title
         this.add.sprite(window.innerWidth/2,100,'titleImage').setScale(1.5);
         
         //Changes cursor icon image
         this.input.setDefaultCursor('url(images/cursor.cur), pointer');
+        
+        gameState.loadSave();
+        gameState.updateStats();
+        
+        
         
         var button = this.add.image(window.innerWidth/2,window.innerHeight/2,'startButton').setInteractive();
         button.on('pointerdown', function(pointer){

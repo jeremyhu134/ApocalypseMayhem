@@ -7,8 +7,11 @@ class UpgradeScene extends Phaser.Scene {
         
     }
     create(){
-        //create background
-        this.physics.add.sprite(0,0,'background').setOrigin(0,0).setScale(window.innerHeight/675).setDepth(-100);
+        //create and animate background
+        var bg = this.physics.add.sprite(0,0,'background').setOrigin(0,0).setScale(window.innerHeight/675).setDepth(-100);
+        bg.anims.play('bganimate','true');
+        
+        
         //Reference scene in local variable and create a back button
         var scene = this;
         
@@ -26,6 +29,13 @@ class UpgradeScene extends Phaser.Scene {
             strokeThickness: 4,
         }).setDepth(window.innerHeight+3);
         
+        //merchant and interact
+        var merch = this.add.sprite(window.innerWidth/2,100,'merchant').setInteractive().setScale(2.5);
+        merch.anims.play('move');
+        merch.on('pointerup', () => {
+            alert("Merchant: Each upgrade be 100 coins lad.");
+		});
+        
         //Upgrade Buttons
         
             //Health Upgrade Button
@@ -39,12 +49,13 @@ class UpgradeScene extends Phaser.Scene {
                 gameState.coins -= 100;
                 coinsText.setText(`${gameState.coins}`);
                 gameState.characterStats.health += 20;
+                gameState.save();
                 for (var i = 0; i < gameState.characterStats.health-100; i += 20){
                     this.add.rectangle(window.innerWidth/4+33+(i/20*18), window.innerHeight/4+153, 15, 15, 0x39FF14);
                 }
-                alert("Additional Health : PURCHASED");
+                alert("Merchant: Additional Health PURCHASED");
             } else{
-                alert("Can't do that");
+                alert("Merchant: Can't do that");
             }
 		});
         
@@ -59,12 +70,13 @@ class UpgradeScene extends Phaser.Scene {
                 gameState.coins -= 100;
                 coinsText.setText(`${gameState.coins}`);
                 gameState.characterStats.damage += 5;
+                gameState.save();
                 for (var i = 0; i < gameState.characterStats.damage-25; i += 5){
                     this.add.rectangle(window.innerWidth/2+window.innerWidth/4+33+(i/5*18), window.innerHeight/4+153, 15, 15, 0x39FF14);
                 }
-                alert("Additional Damage : PURCHASED");
+                alert("Merchant: Additional Damage PURCHASED");
             } else{
-                alert("Can't do that");
+                alert("Merchant: Can't do that");
             }
 		});
         var speed = this.add.sprite(window.innerWidth/4,window.innerHeight/2+window.innerHeight/4,'upgradeOptions').setInteractive();
@@ -77,12 +89,13 @@ class UpgradeScene extends Phaser.Scene {
                 gameState.coins -= 100;
                 coinsText.setText(`${gameState.coins}`);
                 gameState.characterStats.speed += 5;
+                gameState.save();
                 for (var i = 0; i < gameState.characterStats.speed-150; i += 5){
                     this.add.rectangle(window.innerWidth/4+33+(i/5*18), window.innerHeight/2+window.innerHeight/4+54, 15, 15, 0x39FF14);
                 }
-                alert("Increased Speed : PURCHASED");
+                alert("Merchant: Increased Speed PURCHASED");
             } else{
-                alert("Can't do that");
+                alert("Merchant: Can't do that");
             }
 		});
         var ammoCap = this.add.sprite(window.innerWidth/2+window.innerWidth/4,window.innerHeight/2+window.innerHeight/4,'upgradeOptions').setInteractive();
@@ -95,12 +108,13 @@ class UpgradeScene extends Phaser.Scene {
                 gameState.coins -= 100;
                 coinsText.setText(`${gameState.coins}`);
                 gameState.characterStats.ammo += 5;
+                gameState.save();
                 for (var i = 0; i < gameState.characterStats.ammo-25; i += 5){
                     this.add.rectangle(window.innerWidth/2+window.innerWidth/4+33+(i/5*18), window.innerHeight/2+window.innerHeight/4+54, 15, 15, 0x39FF14);
                 }
-                alert("Increased Ammo Capacity : PURCHASED");
+                alert("Merchant: Increased Ammo Capacity PURCHASED");
             } else{
-                alert("Can't do that");
+                alert("Merchant: Can't do that");
             }
 		});
     }
@@ -184,13 +198,13 @@ class ArenaScene extends Phaser.Scene {
                     if(gameState.zombies.getChildren().length > 0){
                         for (var i = 0; i < gameState.zombies.getChildren().length; i++){
                             gameState.zombies.getChildren()[i].health = 0;
-                            gameState.kills = gameState.bossSummonKills;
                         }
+                        gameState.kills = gameState.bossSummonKills;
                         gameState.checkBoss.paused = true;
                         this.time.addEvent({
                             delay: 1000,
                             callback: ()=>{
-                                gameState.bossSummonKills += 25*(gameState.bossSummonKills/25);
+                                gameState.bossSummonKills += 30;
                                 var rand = Math.ceil(Math.random()*2);
                                 if (rand == 1){
                                     gameState.createSarmsZombie(this,window.innerWidth/2,window.innerHeight/2);

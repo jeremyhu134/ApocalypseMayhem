@@ -54,13 +54,41 @@ let gameState = {
         gameState.damage = gameState.characterStats.damage;
         gameState.kills = 0;
         gameState.fireReady = true;
-        gameState.characterStats.fireReady == true;
-        gameState.disableReload == false;
+        
         
         //reset zombie stats
         gameState.zombie.speed =  75;
         gameState.bossSummonKills = 25;
     },
+    
+    
+    //saves variable values to local storage
+    save: function(){
+        localStorage.setItem(1, gameState.coins);
+        localStorage.setItem(2, gameState.characterStats.health);
+        localStorage.setItem(3, gameState.characterStats.damage);
+        localStorage.setItem(4, gameState.characterStats.ammo);
+        localStorage.setItem(5, gameState.characterStats.speed);
+    },
+    //loads variable values from localstorage
+    loadSave: function(){
+        if(localStorage.getItem(1)){//If variable exists in localStorage
+            gameState.coins = parseInt(localStorage.getItem(1));
+        }
+        if(localStorage.getItem(2)){//If variable exists in localStorage
+            gameState.characterStats.health = parseInt(localStorage.getItem(2));
+        }
+        if(localStorage.getItem(3)){//If variable exists in localStorage
+            gameState.characterStats.damage = parseInt(localStorage.getItem(3));
+        }
+        if(localStorage.getItem(4)){//If variable exists in localStorage
+            gameState.characterStats.ammo = parseInt(localStorage.getItem(4));
+        }
+        if(localStorage.getItem(5)){//If variable exists in localStorage
+            gameState.characterStats.speed = parseInt(localStorage.getItem(5));
+        }
+    },
+    
     
     chracterControls : function(scene){
         if(gameState.health > 0){
@@ -168,7 +196,7 @@ let gameState = {
             }
             else if (gameState.keys.R.isDown){
                 gameState.reload(scene);
-                console.log(gameState.ammo);
+                
             }
             else {
                 if(gameState.ammo<= 0){
@@ -243,7 +271,8 @@ let gameState = {
                 timeScale: 1
             });
             scene.physics.add.overlap(gameState.character, coin,(character, coin)=>{
-                gameState.coins += 5;
+                var rand = Math.ceil(Math.random()*2)+3;
+                gameState.coins += rand;
                 coin.destroy();
                 gone.destroy();
             });
@@ -254,7 +283,7 @@ let gameState = {
                 delay: 10000,
                 callback: ()=>{
                     iBI.destroy();
-                },  
+                }, 
                 startAt: 0,
                 timeScale: 1
             });
@@ -318,9 +347,11 @@ let gameState = {
                                 timeScale: 1
                             });
                             gren.destroy();
+                            var maxKills = 10;
                             for (var i = 0; i < gameState.zombies.getChildren().length; i++){
-                                if(Phaser.Math.Distance.BetweenPoints(gameState.zombies.getChildren()[i], gren)<200){
+                                if(Phaser.Math.Distance.BetweenPoints(gameState.zombies.getChildren()[i], gren)<150&&maxKills>0){
                                     gameState.zombies.getChildren()[i].health -= 100;
+                                    maxKills--;
                                 }
                             }
                         },  
@@ -341,14 +372,14 @@ let gameState = {
         image: 'zombie'
     },
     sarmsZombie :{
-        speed: 55,
+        speed: 60,
         runSpeed: 170,
         health : 4000,
         damage : 27,
         name: 'sarmsZombie'
     },
     quadZombie :{
-        health : 2500,
+        health : 2000,
         damage : 50,
         damageRange : 125,
         name: 'quadZombie'
@@ -394,12 +425,12 @@ let gameState = {
                         }
                     }
                     else {
+                        gameState.kills++;
                         gameState.createItem(scene,zom.x,zom.y);
                         loop.destroy();
                         attack.destroy();
                         zom.setVelocityX(0);
                         zom.setVelocityY(0);
-                        gameState.kills++;
                         zom.anims.play('zombieDeath','true');
                         scene.time.addEvent({
                             delay: 400,
@@ -476,7 +507,6 @@ let gameState = {
             var breatheTimer = scene.time.addEvent({
                 delay: 3000,
                 callback: ()=>{
-                    console.log("lok");
                     rageTimer.paused = false;
                     breatheTimer.paused = true;
                     zom.breathe = false;
@@ -620,7 +650,7 @@ let gameState = {
                             spoty = targeter.y;
                             spotx = targeter.x;
                             gameState.five = scene.time.addEvent({
-                                delay: 600,
+                                delay: 150,
                                 callback: ()=>{
                                     zom.x = spotx;
                                     zom.y = -160;
