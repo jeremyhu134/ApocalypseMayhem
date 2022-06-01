@@ -43,7 +43,7 @@ let gameState = {
     damage: 25,
     bulletSpeed: 1000,
     kills: 0,
-    bossSummonKills: 25,
+    bossSummonKills: 30,
     disableReload: false,
     updateStats: function(){
         //resets players stats
@@ -58,7 +58,7 @@ let gameState = {
         
         //reset zombie stats
         gameState.zombie.speed =  75;
-        gameState.bossSummonKills = 25;
+        gameState.bossSummonKills = 30;
     },
     
     
