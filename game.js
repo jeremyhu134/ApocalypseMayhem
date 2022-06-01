@@ -276,7 +276,8 @@ let gameState = {
                 coin.destroy();
                 gone.destroy();
             });
-        }else if(random<=100 && random >=96){
+        }
+        else if(random<=100 && random >=96){
             var iBI = scene.physics.add.sprite(x,y,'infiniteBulletsImage');
             iBI.anims.play('shine','true');
             var gone = scene.time.addEvent({
@@ -305,7 +306,8 @@ let gameState = {
                     timeScale: 1
                 });
             });
-        }else if(random<=95 && random >=90){
+        }
+        else if(random<=95 && random >=90){
             var grenade = scene.physics.add.sprite(x,y,'grenadeImage');
             grenade.anims.play('shine2','true');
             var gone = scene.time.addEvent({
@@ -360,6 +362,25 @@ let gameState = {
                     });
                 } else{
                     gren.destroy();
+                }
+            });
+        }
+        else if(random<=89 && random >= 85){
+            var medic = scene.physics.add.sprite(x,y,'medicImage');
+            medic.anims.play('shine3','true');
+            var gone = scene.time.addEvent({
+                delay: 10000,
+                callback: ()=>{
+                    medic.destroy();
+                },  
+                startAt: 0,
+                timeScale: 1
+            });
+            scene.physics.add.overlap(gameState.character, medic,(character, medic)=>{
+                medic.destroy();
+                gameState.health += 50;
+                if(gameState.health > gameState.characterStats.health){
+                    gameState.health = gameState.characterStats.health;
                 }
             });
         }
@@ -785,6 +806,12 @@ let gameState = {
                 if ((gameState.health/(gameState.characterStats.health/100)) < bars.length && bars.length > 0){
                     bars[bars.length-1].destroy();
                     bars.pop();
+                    xTimes--;
+                }
+                else if ((gameState.health/(gameState.characterStats.health/100)) > bars.length && bars.length < 100){
+                    var bar = scene.add.image(x+(10*xTimes), y+17, 'healthBar').setDepth(window.innerHeight+1);
+                    bars.push(bar);
+                    xTimes ++;
                 }
             },  
             startAt: 0,

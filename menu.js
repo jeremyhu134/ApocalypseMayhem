@@ -24,6 +24,7 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('background','images/background.png',{frameWidth: 1397,frameHeight:675});
         this.load.spritesheet('infiniteBulletsImage','images/infiniteBulletsImage.png',{frameWidth: 35,frameHeight:35});
         this.load.spritesheet('grenadeImage','images/grenadeImage.png',{frameWidth: 35,frameHeight:35});
+        this.load.spritesheet('medicImage','images/medicImage.png',{frameWidth: 35,frameHeight:35});
         this.load.image('healthBar','images/healthBar.png');
         this.load.image('zombieHealthBar','images/zombieHealthBar.png');
         this.load.image('healthBarBg','images/healthBarBg.png');
@@ -250,6 +251,12 @@ class MenuScene extends Phaser.Scene {
             frameRate: 11,
             repeat: -1,
             frames:this.anims.generateFrameNames('grenadeImage',{start: 0,end: 7})
+        });
+        this.anims.create({
+            key: 'shine3',
+            frameRate: 7,
+            repeat: -1,
+            frames:this.anims.generateFrameNames('medicImage',{start: 0,end: 6})
         });
         
         gameState.globalScene = this;
