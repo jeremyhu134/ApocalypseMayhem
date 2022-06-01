@@ -764,7 +764,7 @@ let gameState = {
                         gameState.six.destroy();
                         gameState.checkBoss.paused = false;
                         scene.time.addEvent({
-                            delay: 1000,
+                            delay: 400,
                             callback: ()=>{
                                 zom.destroy();
                                 gameState.spawnZombies.paused = false;
