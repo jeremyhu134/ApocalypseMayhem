@@ -650,14 +650,14 @@ let gameState = {
                             spoty = targeter.y;
                             spotx = targeter.x;
                             gameState.five = scene.time.addEvent({
-                                delay: 150,
+                                delay: 600,
                                 callback: ()=>{
                                     zom.x = spotx;
                                     zom.y = -160;
-                                    scene.physics.moveToObject(zom,targeter,0,150);
+                                    scene.physics.moveToObject(zom,targeter,0,600);
                                     targeter.destroy();
                                     gameState.six = scene.time.addEvent({
-                                        delay: 150,
+                                        delay: 600,
                                         callback: ()=>{
                                             zom.setVelocityX(0);
                                             zom.setVelocityY(0);
