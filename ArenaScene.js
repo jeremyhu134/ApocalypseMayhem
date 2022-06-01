@@ -204,7 +204,6 @@ class ArenaScene extends Phaser.Scene {
                         this.time.addEvent({
                             delay: 1000,
                             callback: ()=>{
-                                gameState.bossSummonKills += 30;
                                 var rand = Math.ceil(Math.random()*2);
                                 if (rand == 1){
                                     gameState.createSarmsZombie(this,window.innerWidth/2,window.innerHeight/2);
