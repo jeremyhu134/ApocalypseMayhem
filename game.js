@@ -14,7 +14,7 @@ const config = {
             //debug: true
         }
     },
-    scene:[MenuScene,PauseScene,ArenaScene,UpgradeScene],
+    scene:[MenuScene,PauseScene,ArenaScene,UpgradeScene,DeathScene],
     scale: {
         zoom: 1,
         mode: Phaser.Scale.FIT,
@@ -209,11 +209,10 @@ let gameState = {
             gameState.character.destroy();
             scene.physics.pause();
             scene.time.addEvent({
-                delay: 5000,
+                delay: 3000,
                 callback: ()=>{
-                    
-                    scene.scene.stop('ArenaScene');
-                    scene.scene.start('MenuScene');
+                    gameState.globalScene.scene.pause("ArenaScene");
+                    gameState.globalScene.scene.launch('DeathScene');
                 },  
                 startAt: 0,
                 timeScale: 1
@@ -405,6 +404,14 @@ let gameState = {
         damageRange : 130,
         name: 'quadZombie'
     },
+    cloneZombie :{
+        health : 2000,
+        damage : 25,
+        grenDamage: 50,
+        speed : 150,
+        projectileSpeed: 200,
+        name: 'Clone Zombie'
+    },
     
     
     createZombie: function (scene,inX,inY,zomStats){
@@ -587,7 +594,7 @@ let gameState = {
                         }
                     }
                     else {
-                        gameState.createItem(scene,zom.x,zom.y);
+                        gameState.coins += 50;
                         loop.destroy();
                         attack.destroy();
                         rageTimer.destroy();
@@ -748,7 +755,7 @@ let gameState = {
                         }
                     }
                     else {
-                        gameState.createItem(scene,zom.x,zom.y);
+                        gameState.coins += 50;
                         loop.destroy();
                         attack.destroy();
                         checkHealthBar.destroy();
@@ -790,6 +797,198 @@ let gameState = {
             timeScale: 1
         });
     },
+    
+    
+    createCloneZombie: function (scene,inX,inY){
+        var zombie = gameState.zombies.create(inX,inY,`zombieClone`).setDepth(1);
+        zombie.health = gameState.cloneZombie.health;
+        function zombieB(zom){
+            zom.setCollideWorldBounds(true);
+            zom.anims.play('cloneZombieMove');
+            var attackBursts;
+            scene.physics.moveTo(zom,Math.random()*window.innerWidth,Math.random()*window.innerHeight,0,3000);
+            var attack = scene.time.addEvent({
+                delay: 4000,
+                callback: ()=>{
+                    attackBursts = scene.time.addEvent({
+                        delay: 200,
+                        callback: ()=>{
+                            var flash;
+                            var bullet;
+                            if (zom.flipX == false){
+                                flash = scene.physics.add.sprite(zom.x + 43, zom.y+10,'gunFlash').setDepth(1);
+                                bullet = gameState.bullets.create(zom.x + 37,zom.y+5,'bullet1');
+                            }else {
+                                flash = scene.physics.add.sprite(zom.x - 25, zom.y+10,'gunFlash').setDepth(1);
+                                zom.flipX = true;
+                                bullet = gameState.bullets.create(zom.x-25,zom.y+5,'bullet1');
+                            }
+                            var rand = Math.ceil(Math.random()*3);
+                            if (rand == 1){
+                                flash.anims.play('flash1','true');
+                            }else if (rand == 2){
+                                flash.anims.play('flash2','true');
+                            }else {
+                                flash.anims.play('flash3','true');
+                            }
+                            scene.time.addEvent({
+                                delay: 10,
+                                callback: ()=>{
+                                    flash.destroy();
+                                },  
+                                startAt: 0,
+                                timeScale: 1
+                            });
+                            gameState.angle=Phaser.Math.Angle.Between(bullet.x,bullet.y,gameState.character.x,gameState.character.y);
+                            bullet.setRotation(gameState.angle); 
+                            scene.physics.moveToObject(bullet,gameState.character,gameState.characterStats.bulletSpeed/1.25);
+                            var bulletLoop = scene.time.addEvent({
+                                delay: 5000,
+                                callback: ()=>{
+                                    bullet.destroy();
+                                },  
+                                startAt: 0,
+                                timeScale: 1
+                            });
+                            scene.physics.add.overlap(bullet, gameState.character,(bulletT, target)=>{
+                                var angle = Phaser.Math.Angle.Between(bulletT.x,bulletT.y,target.x,target.y);
+                                var blood = scene.physics.add.sprite(target.x+10,target.y, 'bulletBlood');
+                                blood.setRotation(angle);
+                                blood.anims.play('animate','true');
+                                scene.time.addEvent({
+                                    delay: 200,
+                                    callback: ()=>{
+                                        blood.destroy();
+                                    },  
+                                    startAt: 0,
+                                    timeScale: 1
+                                });
+                                bulletLoop.destroy();
+                                bulletT.destroy();
+                                gameState.health -= gameState.cloneZombie.damage;
+                            });
+                        },  
+                        startAt: 0,
+                        timeScale: 1,
+                        repeat: 4
+                    });
+                },  
+                startAt: 0,
+                timeScale: 1,
+                repeat: -1
+            });
+            var move = scene.time.addEvent({
+                delay: 3000,
+                callback: ()=>{
+                    scene.physics.moveTo(zom,Math.random()*window.innerWidth,Math.random()*window.innerHeight,0,3000);
+                },  
+                startAt: 0,
+                timeScale: 1,
+                repeat: -1
+            });
+            var grenadeTimer = scene.time.addEvent({
+                delay: 10000,
+                callback: ()=>{
+                    var gren = scene.physics.add.sprite(zom.x,zom.y,'grenadeObj');
+                    scene.physics.moveToObject(gren,gameState.character,0,1000);
+                    scene.time.addEvent({
+                        delay: 1000,
+                        callback: ()=>{
+                            var explosion = scene.physics.add.sprite(gren.x,gren.y,'');
+                            explosion.anims.play('explode','true');
+                            scene.time.addEvent({
+                                delay: 1000,
+                                callback: ()=>{
+                                    explosion.destroy();
+                                },  
+                                startAt: 0,
+                                timeScale: 1
+                            });
+                            gren.destroy();
+                            if(Phaser.Math.Distance.BetweenPoints(gameState.character, gren)<75){
+                                gameState.health -= gameState.cloneZombie.grenDamage;
+                            }
+                        },  
+                        startAt: 0,
+                        timeScale: 1
+                    });
+                },  
+                startAt: 0,
+                timeScale: 1,
+                repeat: -1
+            });
+            var bars = scene.add.group();
+            var barBg = scene.add.image(10, 55, 'healthBarBg').setDepth(window.innerHeight+1).setOrigin(0,0);
+            for (var i = 0; i < 100;i++){
+                var bar = bars.create(10+(10*(i+1)), barBg.y+17, 'zombieHealthBar').setDepth(window.innerHeight+1);
+            }
+            var checkHealthBar = scene.time.addEvent({
+                delay: 1,
+                callback:()=>{
+                    if ((zom.health/(gameState.cloneZombie.health/100)) < bars.getChildren().length && bars.getChildren().length > 0){
+                        bars.getChildren()[bars.getChildren().length-1].destroy();
+                    }
+                },  
+                startAt: 0,
+                timeScale: 1,
+                repeat: -1
+            });
+            var loop = scene.time.addEvent({
+                delay: 1,
+                callback: ()=>{
+                    if (zom.health > 0){
+                        zom.depth = zom.y-40;
+                        if(gameState.character.x > zom.x){
+                            zom.flipX = false;
+                        }
+                        else if(gameState.character.x < zom.x){
+                            zom.flipX = true;
+                        }
+                    }
+                    else {
+                        gameState.coins += 50;
+                        loop.destroy();
+                        move.destroy();
+                        attack.destroy();
+                        attackBursts.destroy();
+                        grenadeTimer.destroy();
+                        checkHealthBar.destroy();
+                        barBg.destroy();
+                        zom.setVelocityX(0);
+                        zom.setVelocityY(0);
+                        zom.anims.play('cloneZombieDeath','true');
+                        gameState.checkBoss.paused = false;
+                        scene.time.addEvent({
+                            delay: 400,
+                            callback: ()=>{
+                                zom.destroy();
+                                gameState.spawnZombies.paused = false;
+                                gameState.buffZombies();
+                            },  
+                            startAt: 0,
+                            timeScale: 1
+                        });
+                    }
+                },  
+                startAt: 0,
+                timeScale: 1,
+                repeat: -1
+            });
+        };
+        zombie.anims.play('cloneZombieSpawn');
+        scene.time.addEvent({
+            delay: 800,
+            callback: ()=>{
+                zombieB(zombie);
+            },  
+            startAt: 0,
+            timeScale: 1
+        });
+    },
+    
+    
+    
+    
     
     createHealthBar: function(scene,x,y){
         var bars = [];

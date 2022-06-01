@@ -204,10 +204,12 @@ class ArenaScene extends Phaser.Scene {
                         this.time.addEvent({
                             delay: 1000,
                             callback: ()=>{
-                                var rand = Math.ceil(Math.random()*2);
+                                var rand = Math.ceil(Math.random()*3);
                                 if (rand == 1){
                                     gameState.createSarmsZombie(this,window.innerWidth/2,window.innerHeight/2);
-                                } else {
+                                } else if (rand == 2){
+                                    gameState.createCloneZombie(this,window.innerWidth/2,window.innerHeight/2);
+                                }else {
                                     gameState.createQuadZombie(this,window.innerWidth/2,window.innerHeight/2);
                                 }
                             },

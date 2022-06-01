@@ -28,3 +28,31 @@ class PauseScene extends Phaser.Scene {
         
     }
 }
+
+
+
+
+class DeathScene extends Phaser.Scene {
+    constructor() {
+		super({ key: 'DeathScene' })
+	}
+    preload(){
+        
+    }
+    create() {
+        this.scene.bringToTop();
+        gameState.save();
+        this.add.image(window.innerWidth/2,window.innerHeight/2,'deathMenu');
+        var scene = this;
+        
+        var mainMenu = this.add.image(window.innerWidth/2,window.innerHeight/2+200,'pauseMainMenuButton').setInteractive();
+        mainMenu.on('pointerup', () => {
+            scene.scene.stop(`${gameState.currentScene}`);
+            scene.scene.stop("DeathScene");
+            scene.scene.start("MenuScene");
+		});
+	}
+    update(){
+        
+    }
+}

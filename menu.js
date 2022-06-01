@@ -13,6 +13,7 @@ class MenuScene extends Phaser.Scene {
         
         this.load.spritesheet('quadZombie','images/quadZombie.png',{frameWidth: 44,frameHeight:80});
         this.load.spritesheet('quadZombieAbility','images/quadZombieAbility.png',{frameWidth: 200,frameHeight:200});
+        this.load.spritesheet('zombieClone','images/zombieClone.png',{frameWidth: 50,frameHeight:50});
         
         //Items
         this.load.spritesheet('gunFlash','images/gunFlash.png',{frameWidth: 20,frameHeight:20});
@@ -39,7 +40,10 @@ class MenuScene extends Phaser.Scene {
         //pause menu
         this.load.image('pauseMainMenuButton','images/pauseMainMenuButton.png');
         this.load.image('pauseMenu','images/pauseMenu.png');
+        //upgrade sprites
         this.load.spritesheet('upgradeOptions','images/upgradeOptions.png',{frameWidth: 400,frameHeight:200});
+        //death menu
+        this.load.image('deathMenu','images/deathMenu.png');
         
          this.load.image('grenadeObj','images/grenadeObj.png');
         
@@ -175,6 +179,25 @@ class MenuScene extends Phaser.Scene {
             frameRate: 17,
             frames:this.anims.generateFrameNames('quadZombieAbility',{start: 0,end: 9})
         });
+        
+        //clone zombie
+        this.anims.create({
+            key: 'cloneZombieMove',
+            frameRate: 14,
+            repeat: -1,
+            frames:this.anims.generateFrameNames('zombieClone',{start: 11,end: 22})
+        });
+        this.anims.create({
+            key: 'cloneZombieSpawn',
+            frameRate: 13,
+            frames:this.anims.generateFrameNames('zombieClone',{start: 0,end: 10})
+        });
+        this.anims.create({
+            key: 'cloneZombieDeath',
+            frameRate: 12,
+            frames:this.anims.generateFrameNames('zombieClone',{start: 23,end: 26})
+        });
+        
         
         
         //Upgrade options spritesheet
