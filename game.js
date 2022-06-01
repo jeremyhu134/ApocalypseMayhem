@@ -400,9 +400,9 @@ let gameState = {
         name: 'sarmsZombie'
     },
     quadZombie :{
-        health : 2000,
+        health : 2500,
         damage : 50,
-        damageRange : 125,
+        damageRange : 130,
         name: 'quadZombie'
     },
     
