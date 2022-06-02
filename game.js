@@ -401,7 +401,7 @@ let gameState = {
     quadZombie :{
         health : 2500,
         damage : 50,
-        damageRange : 130,
+        damageRange : 170,
         name: 'quadZombie'
     },
     cloneZombie :{
