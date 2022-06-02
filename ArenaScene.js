@@ -85,7 +85,7 @@ class UpgradeScene extends Phaser.Scene {
         }
         speed.anims.play('speed');
         speed.on('pointerup', () => {
-            if(gameState.coins >= 100 && gameState.characterStats.damage < 50){
+            if(gameState.coins >= 100 && gameState.characterStats.speed < 175){
                 gameState.coins -= 100;
                 coinsText.setText(`${gameState.coins}`);
                 gameState.characterStats.speed += 5;
