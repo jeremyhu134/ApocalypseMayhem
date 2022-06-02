@@ -671,7 +671,7 @@ let gameState = {
                     gameState.four = scene.time.addEvent({
                         delay: 3000,
                         callback: ()=>{
-                            var targeter = scene.add.sprite(gameState.character.x, gameState.character.y,'quadZombieAbility').setDepth(0);
+                            var targeter = scene.add.sprite(Math.random()*window.innerWidth, Math.random()*window.innerHeight,'quadZombieAbility').setDepth(0).setScale(2);
                             targeter.anims.play('quadZombieTarget');
                             var spoty;
                             var spotx;
@@ -694,7 +694,7 @@ let gameState = {
                                                     gameState.health -= gameState.quadZombie.damage;
                                                 }
                                             }
-                                            var quake = scene.add.sprite(zom.x, zom.y,'quadZombieAbility').setDepth(0);
+                                            var quake = scene.add.sprite(zom.x, zom.y,'quadZombieAbility').setDepth(0).setScale(2);
                                             quake.anims.play('quadZombieQuake');
                                             scene.time.addEvent({
                                                 delay: 1000,
