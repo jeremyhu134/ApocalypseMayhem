@@ -43,7 +43,7 @@ let gameState = {
     damage: 25,
     bulletSpeed: 1000,
     kills: 0,
-    bossSummonKills: 30,
+    bossSummonKills: 1,
     disableReload: false,
     updateStats: function(){
         //resets players stats
@@ -58,7 +58,7 @@ let gameState = {
         
         //reset zombie stats
         gameState.zombie.speed =  75;
-        gameState.bossSummonKills = 30;
+        gameState.bossSummonKills = 1;
     },
     
     
@@ -208,9 +208,13 @@ let gameState = {
             gameState.spawnZombies.destroy();
             gameState.character.destroy();
             scene.physics.pause();
+            if(gameState.Sbutton){
+                gameState.Sbutton.destroy();
+            }
             scene.time.addEvent({
                 delay: 3000,
                 callback: ()=>{
+                    gameState.Sbutton.destroy();
                     gameState.globalScene.scene.pause("ArenaScene");
                     gameState.globalScene.scene.launch('DeathScene');
                 },  
@@ -401,7 +405,7 @@ let gameState = {
     quadZombie :{
         health : 2500,
         damage : 50,
-        damageRange : 170,
+        damageRange : 180,
         name: 'quadZombie'
     },
     cloneZombie :{
@@ -639,7 +643,7 @@ let gameState = {
         zombie.health = gameState.quadZombie.health;
         function zombieB(zom){
             var attack = scene.time.addEvent({  
-                delay: 5000,
+                delay: 6000,
                 callback: ()=>{
                     zom.anims.play('quadZombieBend');
                     gameState.one = scene.time.addEvent({
@@ -659,6 +663,8 @@ let gameState = {
                                 callback: ()=>{
                                     zom.x = 10000;
                                     zom.y = 10000;
+                                    zom.setVelocityX(0);
+                                    zom.setVelocityY(0);
                                     zom.anims.play('quadZombieBend');
                                 },  
                                 startAt: 0,
@@ -671,30 +677,26 @@ let gameState = {
                     gameState.four = scene.time.addEvent({
                         delay: 3000,
                         callback: ()=>{
-                            var targeter = scene.add.sprite(Math.random()*window.innerWidth, Math.random()*window.innerHeight,'quadZombieAbility').setDepth(0).setScale(2);
+                            var targeter = scene.add.sprite(Math.random()*50+gameState.character.x, Math.random()*50+gameState.character.y,'quadZombieAbility').setDepth(0).setScale(2);
                             targeter.anims.play('quadZombieTarget');
-                            var spoty;
-                            var spotx;
-                            spoty = targeter.y;
-                            spotx = targeter.x;
                             gameState.five = scene.time.addEvent({
-                                delay: 1000,
+                                delay: 1200,
                                 callback: ()=>{
-                                    zom.x = spotx;
+                                    zom.x = targeter.x;
                                     zom.y = -160;
-                                    scene.physics.moveToObject(zom,targeter,0,150);
-                                    targeter.destroy();
+                                    scene.physics.moveToObject(zom,targeter,0,200);
                                     gameState.six = scene.time.addEvent({
-                                        delay: 150,
+                                        delay: 200,
                                         callback: ()=>{
                                             zom.setVelocityX(0);
                                             zom.setVelocityY(0);
+                                            targeter.destroy();
                                             for (var i = 0; i < gameState.zombies.getChildren().length; i++){
                                                 if(Phaser.Math.Distance.BetweenPoints(zom, gameState.character)<gameState.quadZombie.damageRange){
                                                     gameState.health -= gameState.quadZombie.damage;
                                                 }
                                             }
-                                            var quake = scene.add.sprite(zom.x, zom.y,'quadZombieAbility').setDepth(0).setScale(2);
+                                            var quake = scene.add.sprite(zom.x, zom.y,'quadZombieAbility').setDepth(0).setScale(1.7);
                                             quake.anims.play('quadZombieQuake');
                                             scene.time.addEvent({
                                                 delay: 1000,

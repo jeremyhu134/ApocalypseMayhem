@@ -151,8 +151,8 @@ class ArenaScene extends Phaser.Scene {
         var bg = this.physics.add.sprite(0,0,'background').setOrigin(0,0).setScale(window.innerHeight/675).setDepth(-100);
         bg.anims.play('bganimate','true');
         //A pause button for exiting
-        var Sbutton = this.add.image(window.innerWidth-30,window.innerHeight-30,'settingsButton').setInteractive().setScale(.7);
-        Sbutton.on('pointerdown', function(pointer){
+        gameState.Sbutton = this.add.image(window.innerWidth-30,window.innerHeight-30,'settingsButton').setInteractive().setScale(.7);
+        gameState.Sbutton.on('pointerdown', function(pointer){
             //ADD SAVE
             gameState.globalScene.scene.pause("ArenaScene");
             gameState.globalScene.scene.launch('PauseScene');
@@ -205,6 +205,7 @@ class ArenaScene extends Phaser.Scene {
                             callback: ()=>{
                                 gameState.kills = 0;
                                 var rand = Math.ceil(Math.random()*3);
+                                rand = 3
                                 if (rand == 1){
                                     gameState.createSarmsZombie(this,window.innerWidth/2,window.innerHeight/2);
                                 } else if (rand == 2){
