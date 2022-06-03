@@ -158,7 +158,7 @@ class ArenaScene extends Phaser.Scene {
             gameState.globalScene.scene.launch('PauseScene');
         });
         //Create the player
-        gameState.character = this.physics.add.sprite(window.innerWidth/2-16,window.innerHeight/2+16,'character');
+        gameState.character = this.physics.add.sprite(window.innerWidth/2-16,window.innerHeight/2+16,`${gameState.skin}`);
         gameState.character.body.width = 50;
         
         //Kill Tracker
@@ -205,7 +205,6 @@ class ArenaScene extends Phaser.Scene {
                             callback: ()=>{
                                 gameState.kills = 0;
                                 var rand = Math.ceil(Math.random()*3);
-                                rand = 3
                                 if (rand == 1){
                                     gameState.createSarmsZombie(this,window.innerWidth/2,window.innerHeight/2);
                                 } else if (rand == 2){

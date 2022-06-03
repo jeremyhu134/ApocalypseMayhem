@@ -6,6 +6,7 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('loading','images/loadingSprite.png',{frameWidth: 30,frameHeight:3});
         //people
         this.load.spritesheet('character','images/character.png',{frameWidth: 50,frameHeight:50});
+        this.load.spritesheet('characterSkeletonGun','images/characterSkeletonGun.png',{frameWidth: 50,frameHeight:50});
         this.load.spritesheet('merchant','images/merchantSprite.png',{frameWidth: 100,frameHeight:90});
         //zombies
         this.load.spritesheet('zombie','images/zombie.png',{frameWidth: 44,frameHeight:65});
@@ -19,7 +20,10 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('gunFlash','images/gunFlash.png',{frameWidth: 20,frameHeight:20});
         this.load.spritesheet('explosion','images/explosion.png',{frameWidth: 75,frameHeight:75});
         this.load.spritesheet('bulletBlood','images/bulletBlood.png',{frameWidth: 20,frameHeight:20});
+        //bullets
         this.load.image('bullet1','images/bullet1.png');
+        this.load.image('bulletSG','images/bulletSG.png');
+        
         this.load.spritesheet('coin','images/coin.png',{frameWidth: 30,frameHeight:32});
         this.load.image('gunMagazine','images/gunMagazine.png');
         this.load.spritesheet('background','images/background.png',{frameWidth: 1397,frameHeight:675});
@@ -51,6 +55,8 @@ class MenuScene extends Phaser.Scene {
         this.load.audio('menuBgMusic', 'audio/menuBgMusic.mp3');
     }
     create() {
+        gameState.skin = 'characterSkeletonGun'
+        gameState.bulletSkin = 'bulletSG';
         gameState.currentScene = "MenuScene";
         //audio
         gameState.loopSound = {
@@ -79,6 +85,19 @@ class MenuScene extends Phaser.Scene {
             frameRate: 25,
             repeat: -1,
             frames:this.anims.generateFrameNames('character',{start: 0,end: 11})
+        });
+        
+        this.anims.create({
+            key: 'characterSkeletonGunIdle',
+            frameRate: 1,
+            repeat: -1,
+            frames:this.anims.generateFrameNames('characterSkeletonGun',{start: 0,end: 0})
+        });
+        this.anims.create({
+            key: 'characterSkeletonGunWalk',
+            frameRate: 25,
+            repeat: -1,
+            frames:this.anims.generateFrameNames('characterSkeletonGun',{start: 0,end: 11})
         });
         //merchant animation
         this.anims.create({

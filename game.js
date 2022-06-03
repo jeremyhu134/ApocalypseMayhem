@@ -43,7 +43,7 @@ let gameState = {
     damage: 25,
     bulletSpeed: 1000,
     kills: 0,
-    bossSummonKills: 1,
+    bossSummonKills: 30,
     disableReload: false,
     updateStats: function(){
         //resets players stats
@@ -58,7 +58,7 @@ let gameState = {
         
         //reset zombie stats
         gameState.zombie.speed =  75;
-        gameState.bossSummonKills = 1;
+        gameState.bossSummonKills = 30;
     },
     
     
@@ -95,25 +95,25 @@ let gameState = {
             gameState.character.depth = gameState.character.y-50;
             gameState.character.body.checkWorldBounds();
             if(gameState.character.body.velocity.x == 0 && gameState.character.body.velocity.y == 0){
-                gameState.character.anims.play('characterIdle',true);
+                gameState.character.anims.play(`${gameState.skin}`+'Idle',true);
             }
             if(gameState.keys.W.isDown){
-                gameState.character.anims.play('characterWalk',true);
+                gameState.character.anims.play(`${gameState.skin}`+'Walk',true);
                 gameState.character.setVelocityY(-gameState.characterStats.speed);
             }
             else if(gameState.keys.S.isDown){
-                gameState.character.anims.play('characterWalk',true);
+                gameState.character.anims.play(`${gameState.skin}`+'Walk',true);
                 gameState.character.setVelocityY(gameState.characterStats.speed);
             }
             else {
                 gameState.character.setVelocityY(0);
             }
             if(gameState.keys.A.isDown){
-                gameState.character.anims.play('characterWalk',true);
+                gameState.character.anims.play(`${gameState.skin}`+'Walk',true);
                 gameState.character.setVelocityX(-gameState.characterStats.speed);
             }
             else if(gameState.keys.D.isDown){
-                gameState.character.anims.play('characterWalk',true);
+                gameState.character.anims.play(`${gameState.skin}`+'Walk',true);
                 gameState.character.setVelocityX(gameState.characterStats.speed);
             }
             else {
@@ -133,11 +133,11 @@ let gameState = {
                     var bullet;
                     if (gameState.character.flipX == false){
                         flash = scene.physics.add.sprite(gameState.character.x + 43, gameState.character.y+10,'gunFlash').setDepth(1);
-                        bullet = gameState.bullets.create(gameState.character.x + 37,gameState.character.y+5,'bullet1');
+                        bullet = gameState.bullets.create(gameState.character.x + 37,gameState.character.y+5,`${gameState.bulletSkin}`);
                     }else {
                         flash = scene.physics.add.sprite(gameState.character.x - 25, gameState.character.y+10,'gunFlash').setDepth(1);
                         flash.flipX = true;
-                        bullet = gameState.bullets.create(gameState.character.x-25,gameState.character.y+5,'bullet1');
+                        bullet = gameState.bullets.create(gameState.character.x-25,gameState.character.y+5,`${gameState.bulletSkin}`);
                     }
                     var rand = Math.ceil(Math.random()*3);
                     if (rand == 1){
