@@ -26,7 +26,7 @@ const game = new Phaser.Game(config);
 
 
 let gameState = {
-    coins: 150,
+    coins: 50,
     characterStats: {
         speed : 150,
         health: 100,
@@ -403,9 +403,9 @@ let gameState = {
         name: 'sarmsZombie'
     },
     quadZombie :{
-        health : 2500,
-        damage : 50,
-        damageRange : 180,
+        health : 2750,
+        damage : 75,
+        damageRange : 190,
         name: 'quadZombie'
     },
     cloneZombie :{
@@ -686,7 +686,7 @@ let gameState = {
                                     zom.y = -160;
                                     scene.physics.moveToObject(zom,targeter,0,200);
                                     gameState.six = scene.time.addEvent({
-                                        delay: 200,
+                                        delay: 100,
                                         callback: ()=>{
                                             zom.setVelocityX(0);
                                             zom.setVelocityY(0);
