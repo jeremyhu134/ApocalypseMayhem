@@ -14,7 +14,7 @@ const config = {
             //debug: true
         }
     },
-    scene:[MenuScene,PauseScene,ArenaScene,UpgradeScene,DeathScene],
+    scene:[MenuScene,PauseScene,ArenaScene,UpgradeScene,DeathScene,ShopScene],
     scale: {
         zoom: 1,
         mode: Phaser.Scale.FIT,
@@ -26,7 +26,7 @@ const game = new Phaser.Game(config);
 
 
 let gameState = {
-    coins: 50,
+    coins: 10000,
     characterStats: {
         speed : 150,
         health: 100,
@@ -45,6 +45,19 @@ let gameState = {
     kills: 0,
     bossSummonKills: 30,
     disableReload: false,
+    
+    skin: 'character',
+    bulletSkin: 'bullet1',
+    
+    weaponSkins: {
+        goldenGun : {
+            owned: 0,
+            name: 'characterGoldenGun',
+            nameB: 'bulletGolden'
+        }
+    },
+    
+    
     updateStats: function(){
         //resets players stats
         gameState.speed = gameState.characterStats.speed;
@@ -69,6 +82,7 @@ let gameState = {
         localStorage.setItem(3, gameState.characterStats.damage);
         localStorage.setItem(4, gameState.characterStats.ammo);
         localStorage.setItem(5, gameState.characterStats.speed);
+        localStorage.setItem(6, gameState.weaponSkins.goldenGun.owned);
     },
     //loads variable values from localstorage
     loadSave: function(){
@@ -86,6 +100,9 @@ let gameState = {
         }
         if(localStorage.getItem(5)){//If variable exists in localStorage
             gameState.characterStats.speed = parseInt(localStorage.getItem(5));
+        }
+        if(localStorage.getItem(6)){//If variable exists in localStorage
+            gameState.weaponSkins.goldenGun.owned = parseInt(localStorage.getItem(6));
         }
     },
     
@@ -403,9 +420,9 @@ let gameState = {
         name: 'sarmsZombie'
     },
     quadZombie :{
-        health : 2750,
+        health : 2500,
         damage : 75,
-        damageRange : 190,
+        damageRange : 180,
         name: 'quadZombie'
     },
     cloneZombie :{
@@ -463,7 +480,11 @@ let gameState = {
                         attack.destroy();
                         zom.setVelocityX(0);
                         zom.setVelocityY(0);
-                        zom.anims.play('zombieDeath','true');
+                        if(gameState.skin == "characterGoldenGun"){
+                            zom.anims.play('zombieGoldDeath','true');
+                        }else {
+                            zom.anims.play('zombieDeath','true');
+                        }
                         scene.time.addEvent({
                             delay: 400,
                             callback: ()=>{
@@ -686,7 +707,7 @@ let gameState = {
                                     zom.y = -160;
                                     scene.physics.moveToObject(zom,targeter,0,200);
                                     gameState.six = scene.time.addEvent({
-                                        delay: 100,
+                                        delay: 200,
                                         callback: ()=>{
                                             zom.setVelocityX(0);
                                             zom.setVelocityY(0);

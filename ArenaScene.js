@@ -17,9 +17,18 @@ class UpgradeScene extends Phaser.Scene {
         
         var back = this.add.image(window.innerWidth-75,10,'backButton').setOrigin(0,0).setInteractive();
         back.on('pointerup', () => {
+            gameState.save();
             scene.scene.stop("UpgradeScene");
             scene.scene.start(`${gameState.currentScene}`);
 		});
+        
+        var back2 = this.add.image(window.innerWidth-70,window.innerHeight-70,'backButton2').setOrigin(0,0).setInteractive();
+        back2.flipX = true;
+        back2.on('pointerup', () => {
+            scene.scene.stop("UpgradeScene");
+            scene.scene.start(`ShopScene`);
+		});
+        
         //add gold icon and amound
         this.add.image(20,20,"coin").setOrigin(0,0).setDepth(-100).setScale(2);
         var coinsText = this.add.text(125, 40, `${gameState.coins}`, {
@@ -122,6 +131,98 @@ class UpgradeScene extends Phaser.Scene {
         
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class ShopScene extends Phaser.Scene {
+    constructor() {
+		super({ key: 'ShopScene' })
+	}
+    preload(){
+        
+    }
+    create(){
+        //create and animate background
+        var bg = this.physics.add.sprite(0,0,'background').setOrigin(0,0).setScale(window.innerHeight/675).setDepth(-100);
+        bg.anims.play('bganimate','true');
+        
+        
+        //Reference scene in local variable and create a back button
+        var scene = this;
+        
+        var back = this.add.image(window.innerWidth-75,10,'backButton').setOrigin(0,0).setInteractive();
+        back.on('pointerup', () => {
+            gameState.save();
+            scene.scene.stop("UpgradeScene");
+            scene.scene.start(`${gameState.currentScene}`);
+		});
+        
+        var back2 = this.add.image(20,window.innerHeight-70,'backButton2').setOrigin(0,0).setInteractive();
+        back2.on('pointerup', () => {
+            scene.scene.stop("ShopScene");
+            scene.scene.start(`UpgradeScene`);
+		});
+        //add gold icon and amound
+        this.add.image(20,20,"coin").setOrigin(0,0).setDepth(-100).setScale(2);
+        var coinsText = this.add.text(125, 40, `${gameState.coins}`, {
+            fill: '#ADD8E6', 
+            fontSize: `30px`,
+            fontFamily: 'Qahiri',
+            strokeThickness: 4,
+        }).setDepth(window.innerHeight+3);
+        this.time.addEvent({
+            delay: 10,
+            callback: ()=>{
+                coinsText.setText(gameState.coins);
+            },  
+            startAt: 0,
+            timeScale: 1,
+            repeat: -1
+        });
+        
+        //merchant and interact
+        var merch = this.add.sprite(window.innerWidth/2,100,'merchant').setInteractive().setScale(2.5);
+        merch.anims.play('move');
+        merch.on('pointerup', () => {
+            alert("Merchant: Weapon Skins for Sale!");
+		});
+        
+        
+        //skins
+        var goldenGunIcon = this.add.image(window.innerWidth/2,250,'goldenGunShop').setInteractive();
+        goldenGunIcon.on('pointerup', () => {
+            if(gameState.weaponSkins.goldenGun.owned == 1){
+                gameState.skin = gameState.weaponSkins.goldenGun.name;
+                gameState.bulletSkin = gameState.weaponSkins.goldenGun.nameB;
+                alert("Equipped"); 
+            }
+            else if(gameState.coins< 10000){
+                alert("Merchant: Can't buy that lad!");
+            }else {
+                alert("Merchant: The Golden Gun is yours!");
+                gameState.coins -= 10000;
+                gameState.weaponSkins.goldenGun.owned = 1;
+                gameState.skin = gameState.weaponSkins.goldenGun.name;
+                gameState.bulletSkin = gameState.weaponSkins.goldenGun.nameB;
+            }
+		});
+    }
+    update(){
+        
+    }
+}
+
 
 
 
