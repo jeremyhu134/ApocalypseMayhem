@@ -57,6 +57,12 @@ let gameState = {
         }
     },
     
+    upgradeCosts: function(current, max, factor){
+        var cost;
+        cost = (((current-max)+factor)/factor)*100;
+        return cost;
+    },
+    
     
     updateStats: function(){
         //resets players stats
@@ -71,6 +77,7 @@ let gameState = {
         
         //reset zombie stats
         gameState.zombie.speed =  75;
+        gameState.zombie.health =  100;
         gameState.bossSummonKills = 30;
     },
     
@@ -513,6 +520,7 @@ let gameState = {
     buffZombies: function(){
         if(gameState.zombie.speed <= 150){
             gameState.zombie.speed += 15;
+            gameState.zombie.health += 10;
         }
     },
     

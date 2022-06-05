@@ -54,8 +54,9 @@ class UpgradeScene extends Phaser.Scene {
         }
         health.anims.play('health');
         health.on('pointerup', () => {
-            if(gameState.coins >= 100 && gameState.characterStats.health < 200){
-                gameState.coins -= 100;
+            var cost = gameState.upgradeCosts(gameState.characterStats.health,100,20);
+            if(gameState.coins >= gameState.upgradeCosts(gameState.characterStats.health,100,20) && gameState.characterStats.health < 200){
+                gameState.coins -= gameState.upgradeCosts(gameState.characterStats.health,100,20);
                 coinsText.setText(`${gameState.coins}`);
                 gameState.characterStats.health += 20;
                 gameState.save();
@@ -64,7 +65,11 @@ class UpgradeScene extends Phaser.Scene {
                 }
                 alert("Merchant: Additional Health PURCHASED");
             } else{
-                alert("Merchant: Can't do that");
+                if(cost > 500){
+                    alert(`Merchant: SOLD OUT!`);
+                }else {
+                    alert(`Merchant: Need ${gameState.upgradeCosts(gameState.characterStats.health,100,20)} coins!`);
+                }
             }
 		});
         
@@ -75,8 +80,9 @@ class UpgradeScene extends Phaser.Scene {
         }
         damage.anims.play('damage');
         damage.on('pointerup', () => {
-            if(gameState.coins >= 100 && gameState.characterStats.damage < 50){
-                gameState.coins -= 100;
+            var cost = gameState.upgradeCosts(gameState.characterStats.damage,25,5);
+            if(gameState.coins >= cost && gameState.characterStats.damage < 50){
+                gameState.coins -= cost;
                 coinsText.setText(`${gameState.coins}`);
                 gameState.characterStats.damage += 5;
                 gameState.save();
@@ -85,7 +91,11 @@ class UpgradeScene extends Phaser.Scene {
                 }
                 alert("Merchant: Additional Damage PURCHASED");
             } else{
-                alert("Merchant: Can't do that");
+                if(cost > 500){
+                    alert(`Merchant: SOLD OUT!`);
+                }else {
+                    alert(`Merchant: Need ${gameState.upgradeCosts(gameState.characterStats.damage,25,5)} coins!`);
+                }
             }
 		});
         var speed = this.add.sprite(window.innerWidth/4,window.innerHeight/2+window.innerHeight/4,'upgradeOptions').setInteractive();
@@ -94,8 +104,9 @@ class UpgradeScene extends Phaser.Scene {
         }
         speed.anims.play('speed');
         speed.on('pointerup', () => {
-            if(gameState.coins >= 100 && gameState.characterStats.speed < 175){
-                gameState.coins -= 100;
+            var cost = gameState.upgradeCosts(gameState.characterStats.speed,150,5);
+            if(gameState.coins >= cost && gameState.characterStats.speed < 175){
+                gameState.coins -= cost;
                 coinsText.setText(`${gameState.coins}`);
                 gameState.characterStats.speed += 5;
                 gameState.save();
@@ -104,7 +115,11 @@ class UpgradeScene extends Phaser.Scene {
                 }
                 alert("Merchant: Increased Speed PURCHASED");
             } else{
-                alert("Merchant: Can't do that");
+                if(cost > 500){
+                    alert(`Merchant: SOLD OUT!`);
+                }else {
+                    alert(`Merchant: Need ${gameState.upgradeCosts(gameState.characterStats.speed,150,5)} coins!`);
+                }
             }
 		});
         var ammoCap = this.add.sprite(window.innerWidth/2+window.innerWidth/4,window.innerHeight/2+window.innerHeight/4,'upgradeOptions').setInteractive();
@@ -113,8 +128,9 @@ class UpgradeScene extends Phaser.Scene {
         }
         ammoCap.anims.play('ammocap');
         ammoCap.on('pointerup', () => {
-            if(gameState.coins >= 100 && gameState.characterStats.ammo < 50){
-                gameState.coins -= 100;
+            var cost = gameState.upgradeCosts(gameState.characterStats.ammo,25,5);
+            if(gameState.coins >= cost && gameState.characterStats.ammo < 50){
+                gameState.coins -= cost;
                 coinsText.setText(`${gameState.coins}`);
                 gameState.characterStats.ammo += 5;
                 gameState.save();
@@ -123,7 +139,11 @@ class UpgradeScene extends Phaser.Scene {
                 }
                 alert("Merchant: Increased Ammo Capacity PURCHASED");
             } else{
-                alert("Merchant: Can't do that");
+                if(cost > 500){
+                    alert(`Merchant: SOLD OUT!`);
+                }else {
+                    alert(`Merchant: Need ${gameState.upgradeCosts(gameState.characterStats.ammo,25,5)} coins!`);
+                }
             }
 		});
     }
