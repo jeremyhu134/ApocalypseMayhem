@@ -220,12 +220,18 @@ class ShopScene extends Phaser.Scene {
         
         
         //skins
+        var equipped;
+        
         var goldenGunIcon = this.add.image(window.innerWidth/2,250,'goldenGunShop').setInteractive();
+        if(gameState.skin == gameState.weaponSkins.goldenGun.name){
+            equipped = this.add.image(window.innerWidth/2,250,'equippedImage');
+        }
         goldenGunIcon.on('pointerup', () => {
             if(gameState.weaponSkins.goldenGun.owned == 1){
                 gameState.skin = gameState.weaponSkins.goldenGun.name;
                 gameState.bulletSkin = gameState.weaponSkins.goldenGun.nameB;
                 alert("Equipped"); 
+                equipped = this.add.image(window.innerWidth/2,250,'equippedImage');
             }
             else if(gameState.coins< 10000){
                 alert("Merchant: Can't buy that lad!");

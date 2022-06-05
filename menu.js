@@ -56,6 +56,7 @@ class MenuScene extends Phaser.Scene {
         this.load.image('grenadeObj','images/grenadeObj.png');
         
         //Shop icons
+        this.load.image('equippedImage','images/equippedImage.png');
         this.load.image('goldenGunShop','images/goldenGunShop.png');
         
         //audio
