@@ -336,6 +336,7 @@ class ArenaScene extends Phaser.Scene {
                             callback: ()=>{
                                 gameState.arenaM.setMute(true);
                                 gameState.bossM.play(gameState.loopSound);
+				gameState.bossM.setMute(false);
                                 gameState.kills = 0;
                                 var rand = Math.ceil(Math.random()*3);
                                 if (rand == 1){
