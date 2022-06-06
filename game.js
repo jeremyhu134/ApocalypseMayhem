@@ -27,6 +27,7 @@ const game = new Phaser.Game(config);
 
 let gameState = {
     coins: 10000,
+    coinsAdd: 3,
     characterStats: {
         speed : 150,
         health: 100,
@@ -66,6 +67,7 @@ let gameState = {
     
     updateStats: function(){
         //resets players stats
+        gameState.coinsAdd = 3;
         gameState.speed = gameState.characterStats.speed;
         gameState.health = gameState.characterStats.health;
         gameState.ammo = gameState.characterStats.ammo;
@@ -302,7 +304,7 @@ let gameState = {
                 timeScale: 1
             });
             scene.physics.add.overlap(gameState.character, coin,(character, coin)=>{
-                var rand = Math.ceil(Math.random()*2)+3;
+                var rand = Math.ceil(Math.random()*2)+gameState.coinsAdd;
                 gameState.coins += rand;
                 coin.destroy();
                 gone.destroy();
@@ -524,6 +526,7 @@ let gameState = {
     buffZombies: function(){
         gameState.bossM.setMute(true);
         gameState.arenaM.setMute(false);
+        gameState.coinsAdd++;
         if(gameState.zombie.speed <= 150){
             gameState.zombie.speed += 15;
             gameState.zombie.health += 10;
@@ -681,6 +684,7 @@ let gameState = {
             var attack = scene.time.addEvent({  
                 delay: 6000,
                 callback: ()=>{
+                    attack.timeScale = 1;
                     zom.anims.play('quadZombieBend');
                     gameState.one = scene.time.addEvent({
                         delay: 500,
@@ -759,6 +763,7 @@ let gameState = {
                 timeScale: 1,
                 repeat: -1
             });
+            attack.timeScale = 3;
             var bars = scene.add.group();
             var barBg = scene.add.image(window.innerWidth/2-505, 65, 'healthBarBg').setDepth(window.innerHeight+1).setOrigin(0,0);
             for (var i = 0; i < 100;i++){
