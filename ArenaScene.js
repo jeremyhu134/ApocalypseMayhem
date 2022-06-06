@@ -281,6 +281,7 @@ class ArenaScene extends Phaser.Scene {
         gameState.bgM.setMute(true);
         gameState.arenaM = this.sound.add('arenaMusic');
         gameState.arenaM.play(gameState.loopSound);
+	gameState.bossM = this.sound.add('bossMusic');
         //A pause button for exiting
         gameState.Sbutton = this.add.image(window.innerWidth-30,window.innerHeight-30,'settingsButton').setInteractive().setScale(.7);
         gameState.Sbutton.on('pointerdown', function(pointer){
@@ -334,7 +335,6 @@ class ArenaScene extends Phaser.Scene {
                             delay: 1000,
                             callback: ()=>{
                                 gameState.arenaM.setMute(true);
-                                gameState.bossM = this.sound.add('bossMusic');
                                 gameState.bossM.play(gameState.loopSound);
                                 gameState.kills = 0;
                                 var rand = Math.ceil(Math.random()*3);
