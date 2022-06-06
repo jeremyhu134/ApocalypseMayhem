@@ -36,6 +36,7 @@ class MenuScene extends Phaser.Scene {
         this.load.image('healthBar','images/healthBar.png');
         this.load.image('zombieHealthBar','images/zombieHealthBar.png');
         this.load.image('healthBarBg','images/healthBarBg.png');
+        this.load.image('healthImage','images/healthImage.png');
         this.load.image('barrier','images/barrier.png');    
         this.load.image('skull','images/skull.png');  
         this.load.image('redSkull','images/redSkull.png');
@@ -61,16 +62,29 @@ class MenuScene extends Phaser.Scene {
         
         //audio
         this.load.audio('menuBgMusic', 'audio/menuBgMusic.mp3');
+        this.load.audio('bossMusic', 'audio/bossMusic.mp3');
+        this.load.audio('arenaMusic', 'audio/arenaMusic.mp3');
     }
     create() {
+        //set current scene to variable
         gameState.currentScene = "MenuScene";
-        //audio
+        
+    //audio
+        //config for keeping sound loop
         gameState.loopSound = {
             loop: true,
             volume: 100
         }
-        var bgM = this.sound.add('menuBgMusic');
-        bgM.play(gameState.loopSound);
+        gameState.bgM = this.sound.add('menuBgMusic');
+        gameState.bgM.play(gameState.loopSound);
+        //mute music other than background music for menu
+        if(gameState.bossM){
+            gameState.bossM.setMute(true);
+        } if (gameState.arenaM){
+            gameState.arenaM.setMute(true);
+        }
+        
+        
         
         //Loading Animations
         this.anims.create({

@@ -277,6 +277,10 @@ class ArenaScene extends Phaser.Scene {
         //Background image and animation start
         var bg = this.physics.add.sprite(0,0,'background').setOrigin(0,0).setScale(window.innerHeight/675).setDepth(-100);
         bg.anims.play('bganimate','true');
+        //background music
+        gameState.bgM.setMute(true);
+        gameState.arenaM = this.sound.add('arenaMusic');
+        gameState.arenaM.play(gameState.loopSound);
         //A pause button for exiting
         gameState.Sbutton = this.add.image(window.innerWidth-30,window.innerHeight-30,'settingsButton').setInteractive().setScale(.7);
         gameState.Sbutton.on('pointerdown', function(pointer){
@@ -289,25 +293,25 @@ class ArenaScene extends Phaser.Scene {
         gameState.character.body.width = 50;
         
         //Kill Tracker
-        this.add.image(1025,5,"skull").setOrigin(0,0).setDepth(-100);
-        this.add.image(1025,60,"redSkull").setOrigin(0,0).setDepth(-100);
-        
-        var killsText = this.add.text(1075, 10, `${gameState.kills}`, {
+        var killsImage = this.add.image(950,15,"skull").setOrigin(0,0).setDepth(-100);
+        var killsText = this.add.text(killsImage.x+55, killsImage.y+10, `${gameState.kills}`, {
             fill: 'WHITE', 
             fontSize: `30px`,
             fontFamily: 'Qahiri',
             strokeThickness: 4,
         }).setDepth(window.innerHeight+3);
         
-        var bossKillsText = this.add.text(1075, 65, `${gameState.bossSummonKills}`, {
+        /*var bossKillsImage = this.add.image(670,5,"redSkull").setOrigin(0,0).setDepth(-100);
+        var bossKillsText = this.add.text(bossKillsImage.x+55, bossKillsImage.y+10, `${gameState.bossSummonKills}`, {
             fill: '#A30000', 
             fontSize: `30px`,
             fontFamily: 'Qahiri',
             strokeThickness: 4,
-        }).setDepth(window.innerHeight+3);
+        }).setDepth(window.innerHeight+3);*/
+        
         //Coins
-        this.add.image(1130,30,"coin").setOrigin(0,0).setDepth(-100).setScale(1.5);
-        var coinsText = this.add.text(1180, 40, `${gameState.coins}`, {
+        var coinImage = this.add.image(1130,10,"coin").setOrigin(0,0).setDepth(-100).setScale(1.5);
+        var coinsText = this.add.text(coinImage.x+50, coinImage.y+10, `${gameState.coins}`, {
             fill: '#ADD8E6', 
             fontSize: `30px`,
             fontFamily: 'Qahiri',
@@ -319,7 +323,6 @@ class ArenaScene extends Phaser.Scene {
             callback: ()=>{
                 killsText.setText(gameState.kills);
                 coinsText.setText(gameState.coins);
-                bossKillsText.setText(gameState.bossSummonKills);
                 if (gameState.kills >= gameState.bossSummonKills){
                     gameState.spawnZombies.paused = true;
                     if(gameState.zombies.getChildren().length > 0){
@@ -330,6 +333,9 @@ class ArenaScene extends Phaser.Scene {
                         this.time.addEvent({
                             delay: 1000,
                             callback: ()=>{
+                                gameState.arenaM.setMute(true);
+                                gameState.bossM = this.sound.add('bossMusic');
+                                gameState.bossM.play(gameState.loopSound);
                                 gameState.kills = 0;
                                 var rand = Math.ceil(Math.random()*3);
                                 if (rand == 1){
@@ -365,7 +371,8 @@ class ArenaScene extends Phaser.Scene {
         gameState.zombies = this.physics.add.group();
         gameState.barriers = this.physics.add.group();
         
-        gameState.createHealthBar(this,10,10);
+        var healthImage = this.add.image(20,20,'healthImage').setOrigin(0,0);
+        gameState.createHealthBar(this,healthImage.x+35,healthImage.y+2);
        
         this.physics.add.collider(gameState.zombies, gameState.barriers);
         gameState.spawnZombies = this.time.addEvent({

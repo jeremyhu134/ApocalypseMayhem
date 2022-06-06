@@ -231,6 +231,10 @@ let gameState = {
         else {
             gameState.spawnZombies.destroy();
             gameState.character.destroy();
+            if(gameState.bossM){
+                gameState.bossM.setMute(true);
+            }
+            gameState.arenaM.setMute(true);
             scene.physics.pause();
             if(gameState.Sbutton){
                 gameState.Sbutton.destroy();
@@ -420,16 +424,16 @@ let gameState = {
         image: 'zombie'
     },
     sarmsZombie :{
-        speed: 60,
+        speed: 70,
         runSpeed: 170,
         health : 4000,
         damage : 27,
         name: 'sarmsZombie'
     },
     quadZombie :{
-        health : 2500,
-        damage : 75,
-        damageRange : 180,
+        health : 3000,
+        damage : 50,
+        damageRange : 190,
         name: 'quadZombie'
     },
     cloneZombie :{
@@ -518,6 +522,8 @@ let gameState = {
         });
     },
     buffZombies: function(){
+        gameState.bossM.setMute(true);
+        gameState.arenaM.setMute(false);
         if(gameState.zombie.speed <= 150){
             gameState.zombie.speed += 15;
             gameState.zombie.health += 10;
@@ -533,7 +539,7 @@ let gameState = {
         function zombieB(zom){
             zom.setCollideWorldBounds(true);
             var attack = scene.time.addEvent({
-                delay: 300,
+                delay: 350,
                 callback: ()=>{
                     gameState.health -= gameState.sarmsZombie.damage;
                 },  
@@ -543,7 +549,7 @@ let gameState = {
             });
             var breatheLoop;
             var rageTimer = scene.time.addEvent({
-                delay: 4000,
+                delay: 3000,
                 callback: ()=>{
                     zom.rage = true;
                     rageTimer.paused = true;
@@ -552,6 +558,7 @@ let gameState = {
                         callback: ()=>{
                             zom.rage = false;
                             breatheTimer.paused = false;
+                            attack.paused = true;
                             zom.breathe = true;
                             zom.anims.play('sarmsZombieBreathe','true');
                             zom.setVelocityX(0);
@@ -566,7 +573,7 @@ let gameState = {
                 repeat: -1
             });
             var breatheTimer = scene.time.addEvent({
-                delay: 3000,
+                delay: 2500,
                 callback: ()=>{
                     rageTimer.paused = false;
                     breatheTimer.paused = true;
@@ -578,9 +585,9 @@ let gameState = {
             });
             breatheTimer.paused = true;
             var bars = scene.add.group();
-            var barBg = scene.add.image(10, 55, 'healthBarBg').setDepth(window.innerHeight+1).setOrigin(0,0);
+            var barBg = scene.add.image(window.innerWidth/2-505, 65, 'healthBarBg').setDepth(window.innerHeight+1).setOrigin(0,0);
             for (var i = 0; i < 100;i++){
-                var bar = bars.create(10+(10*(i+1)), barBg.y+17, 'zombieHealthBar').setDepth(window.innerHeight+1);
+                var bar = bars.create(barBg.x+(10*(i+1)), barBg.y+17, 'zombieHealthBar').setDepth(window.innerHeight+1);
             }
             var checkHealthBar = scene.time.addEvent({
                 delay: 1,
@@ -709,7 +716,7 @@ let gameState = {
                             var targeter = scene.add.sprite(Math.random()*50+gameState.character.x, Math.random()*50+gameState.character.y,'quadZombieAbility').setDepth(0).setScale(2);
                             targeter.anims.play('quadZombieTarget');
                             gameState.five = scene.time.addEvent({
-                                delay: 1200,
+                                delay: 1000,
                                 callback: ()=>{
                                     zom.x = targeter.x;
                                     zom.y = -160;
@@ -753,9 +760,9 @@ let gameState = {
                 repeat: -1
             });
             var bars = scene.add.group();
-            var barBg = scene.add.image(10, 55, 'healthBarBg').setDepth(window.innerHeight+1).setOrigin(0,0);
+            var barBg = scene.add.image(window.innerWidth/2-505, 65, 'healthBarBg').setDepth(window.innerHeight+1).setOrigin(0,0);
             for (var i = 0; i < 100;i++){
-                var bar = bars.create(10+(10*(i+1)), barBg.y+17, 'zombieHealthBar').setDepth(window.innerHeight+1);
+                var bar = bars.create(barBg.x+(10*(i+1)), barBg.y+17, 'zombieHealthBar').setDepth(window.innerHeight+1);
             }
             var checkHealthBar = scene.time.addEvent({
                 delay: 1,
@@ -949,9 +956,9 @@ let gameState = {
                 repeat: -1
             });
             var bars = scene.add.group();
-            var barBg = scene.add.image(10, 55, 'healthBarBg').setDepth(window.innerHeight+1).setOrigin(0,0);
+            var barBg = scene.add.image(window.innerWidth/2-505, 65, 'healthBarBg').setDepth(window.innerHeight+1).setOrigin(0,0);
             for (var i = 0; i < 100;i++){
-                var bar = bars.create(10+(10*(i+1)), barBg.y+17, 'zombieHealthBar').setDepth(window.innerHeight+1);
+                var bar = bars.create(barBg.x+(10*(i+1)), barBg.y+17, 'zombieHealthBar').setDepth(window.innerHeight+1);
             }
             var checkHealthBar = scene.time.addEvent({
                 delay: 1,
@@ -1024,9 +1031,9 @@ let gameState = {
     createHealthBar: function(scene,x,y){
         var bars = [];
         var xTimes = 1;
-        var barBg = scene.add.image(x, y, 'healthBarBg').setDepth(window.innerHeight+1).setOrigin(0,0);
+        var barBg = scene.add.image(x, y, 'healthBarBg').setDepth(window.innerHeight+1).setOrigin(0,0).setScale(0.5);
         for (var i = 0; i < 100;i++){
-            var bar = scene.add.image(x+(10*xTimes), y+17, 'healthBar').setDepth(window.innerHeight+1);
+            var bar = scene.add.image(x+(5*xTimes), y+8.5, 'healthBar').setDepth(window.innerHeight+1).setScale(0.5);
             bars.push(bar);
             xTimes ++;
         }
@@ -1039,7 +1046,7 @@ let gameState = {
                     xTimes--;
                 }
                 else if ((gameState.health/(gameState.characterStats.health/100)) > bars.length && bars.length < 100){
-                    var bar = scene.add.image(x+(10*xTimes), y+17, 'healthBar').setDepth(window.innerHeight+1);
+                    var bar = scene.add.image(x+(5*xTimes), y+8.5, 'healthBar').setDepth(window.innerHeight+1).setScale(0.5);
                     bars.push(bar);
                     xTimes ++;
                 }
