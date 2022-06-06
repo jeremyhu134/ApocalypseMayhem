@@ -80,10 +80,7 @@ class MenuScene extends Phaser.Scene {
         //mute music other than background music for menu
         if(gameState.bossM){
             gameState.bossM.setMute(true);
-        } else{
-	    gameState.bossM = this.sound.add('bossMusic');
-	}
-	if (gameState.arenaM){
+        } if (gameState.arenaM){
             gameState.arenaM.setMute(true);
         }
         
