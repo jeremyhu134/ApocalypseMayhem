@@ -281,7 +281,7 @@ class ArenaScene extends Phaser.Scene {
         gameState.bgM.setMute(true);
         gameState.arenaM = this.sound.add('arenaMusic');
         gameState.arenaM.play(gameState.loopSound);
-	gameState.bossM = this.sound.add('bossMusic');
+	    gameState.bossM = this.sound.add('bossMusic');
         //A pause button for exiting
         gameState.Sbutton = this.add.image(window.innerWidth-30,window.innerHeight-30,'settingsButton').setInteractive().setScale(.7);
         gameState.Sbutton.on('pointerdown', function(pointer){
@@ -319,12 +319,14 @@ class ArenaScene extends Phaser.Scene {
             strokeThickness: 4,
         }).setDepth(window.innerHeight+3);
         //Phaser loop to constantly check for kills and summon random boss
+        gameState.bossBattle = false;
         gameState.checkBoss = this.time.addEvent({
             delay: 10,
             callback: ()=>{
                 killsText.setText(gameState.kills);
                 coinsText.setText(gameState.coins);
                 if (gameState.kills >= gameState.bossSummonKills){
+                    gameState.bossBattle = true;
                     gameState.spawnZombies.paused = true;
                     if(gameState.zombies.getChildren().length > 0){
                         for (var i = 0; i < gameState.zombies.getChildren().length; i++){
@@ -336,8 +338,7 @@ class ArenaScene extends Phaser.Scene {
                             callback: ()=>{
                                 gameState.arenaM.setMute(true);
                                 gameState.bossM.play(gameState.loopSound);
-				gameState.bossM.setMute(false);
-                                gameState.kills = 0;
+				                gameState.bossM.setMute(false);
                                 var rand = Math.ceil(Math.random()*3);
                                 if (rand == 1){
                                     gameState.createSarmsZombie(this,window.innerWidth/2,window.innerHeight/2);
@@ -370,12 +371,10 @@ class ArenaScene extends Phaser.Scene {
         gameState.keys = this.input.keyboard.addKeys('W,S,A,D,R,SPACE,SHIFT,ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,ESC');
         gameState.bullets = this.physics.add.group();
         gameState.zombies = this.physics.add.group();
-        gameState.barriers = this.physics.add.group();
         
         var healthImage = this.add.image(20,20,'healthImage').setOrigin(0,0);
         gameState.createHealthBar(this,healthImage.x+35,healthImage.y+2);
        
-        this.physics.add.collider(gameState.zombies, gameState.barriers);
         gameState.spawnZombies = this.time.addEvent({
             delay: 3000,
             callback: ()=>{

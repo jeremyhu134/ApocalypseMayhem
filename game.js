@@ -44,6 +44,7 @@ let gameState = {
     damage: 25,
     bulletSpeed: 1000,
     kills: 0,
+    highestKills:0,
     bossSummonKills: 30,
     disableReload: false,
     
@@ -92,6 +93,7 @@ let gameState = {
         localStorage.setItem(4, gameState.characterStats.ammo);
         localStorage.setItem(5, gameState.characterStats.speed);
         localStorage.setItem(6, gameState.weaponSkins.goldenGun.owned);
+        localStorage.setItem(7, gameState.highestKills);
     },
     //loads variable values from localstorage
     loadSave: function(){
@@ -112,6 +114,9 @@ let gameState = {
         }
         if(localStorage.getItem(6)){//If variable exists in localStorage
             gameState.weaponSkins.goldenGun.owned = parseInt(localStorage.getItem(6));
+        }
+        if(localStorage.getItem(7)){//If variable exists in localStorage
+            gameState.highestKills = parseInt(localStorage.getItem(7));
         }
     },
     
@@ -327,7 +332,7 @@ let gameState = {
                 gone.destroy();
                 gameState.fireRate = gameState.characterStats.fireRate - 35;
                 gameState.ammo = 9999;
-                gameState.createTempText(scene,window.innerWidth/2-100,window.innerHeight/2,"! INFINITE BULLETS !",10000,25);
+                gameState.createTempText(scene,window.innerWidth/2-100,window.innerHeight/2,"INFINITE BULLETS",10000,25);
                 scene.time.addEvent({
                     delay: 10000,
                     callback: ()=>{
@@ -352,7 +357,7 @@ let gameState = {
                 timeScale: 1
             });
             scene.physics.add.overlap(gameState.character, grenade,(character, grenade)=>{
-                gameState.createTempText(scene,window.innerWidth/2-100,window.innerHeight/2,"! GRENADE !",1500,25);
+                gameState.createTempText(scene,window.innerWidth/2-100,window.innerHeight/2,"GRENADE",1500,25);
                 gone.destroy();
                 grenade.destroy();
                 var gren = scene.physics.add.sprite(gameState.character.x,gameState.character.y,'grenadeObj');
@@ -410,6 +415,7 @@ let gameState = {
                 timeScale: 1
             });
             scene.physics.add.overlap(gameState.character, medic,(character, medic)=>{
+                gameState.createTempText(scene,window.innerWidth/2-100,window.innerHeight/2,"HEALED",1500,25);
                 medic.destroy();
                 gameState.health += 50;
                 if(gameState.health > gameState.characterStats.health){
@@ -487,8 +493,10 @@ let gameState = {
                         }
                     }
                     else {
-                        gameState.kills++;
-                        gameState.createItem(scene,zom.x,zom.y);
+                        if(gameState.bossBattle == false){
+                            gameState.kills++;
+                            gameState.createItem(scene,zom.x,zom.y);
+                        }
                         loop.destroy();
                         attack.destroy();
                         zom.setVelocityX(0);
@@ -526,6 +534,7 @@ let gameState = {
     buffZombies: function(){
         gameState.bossM.setMute(true);
         gameState.arenaM.setMute(false);
+        gameState.bossBattle = false;
         gameState.coinsAdd++;
         if(gameState.zombie.speed <= 150){
             gameState.zombie.speed += 15;
@@ -1063,7 +1072,7 @@ let gameState = {
     },
     createTempText:function(scene,x,y,text,time,size){
         var text = scene.add.text(x, y, `${text}`, {
-            fill: '#000000', 
+            fill: '#FF0000', 
             fontSize: `${size}px`,
             fontFamily: 'Qahiri',
             strokeThickness: 5,
