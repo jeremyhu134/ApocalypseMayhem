@@ -26,7 +26,7 @@ const game = new Phaser.Game(config);
 
 
 let gameState = {
-    coins: 10000,
+    coins: 11500,
     coinsAdd: 3,
     characterStats: {
         speed : 150,
@@ -45,7 +45,7 @@ let gameState = {
     bulletSpeed: 1000,
     kills: 0,
     highestKills:0,
-    bossSummonKills: 30,
+    bossSummonKills: 0,
     disableReload: false,
     
     skin: 'character',
@@ -56,6 +56,10 @@ let gameState = {
             owned: 0,
             name: 'characterGoldenGun',
             nameB: 'bulletGolden'
+        },
+        sus : {
+            owned: 0,
+            name: 'characterSus'
         }
     },
     
@@ -75,13 +79,14 @@ let gameState = {
         gameState.fireRate = gameState.characterStats.fireRate;
         gameState.damage = gameState.characterStats.damage;
         gameState.kills = 0;
-        gameState.fireReady = true;
+        gameState.characterStats.fireReady = true;
+        gameState.disableReload = false;
         
         
         //reset zombie stats
         gameState.zombie.speed =  75;
         gameState.zombie.health =  100;
-        gameState.bossSummonKills = 30;
+        gameState.bossSummonKills = 0;
     },
     
     
@@ -94,6 +99,7 @@ let gameState = {
         localStorage.setItem(5, gameState.characterStats.speed);
         localStorage.setItem(6, gameState.weaponSkins.goldenGun.owned);
         localStorage.setItem(7, gameState.highestKills);
+        localStorage.setItem(8, gameState.weaponSkins.sus.owned);
     },
     //loads variable values from localstorage
     loadSave: function(){
@@ -117,6 +123,9 @@ let gameState = {
         }
         if(localStorage.getItem(7)){//If variable exists in localStorage
             gameState.highestKills = parseInt(localStorage.getItem(7));
+        }
+        if(localStorage.getItem(8)){//If variable exists in localStorage
+            gameState.weaponSkins.sus.owned = parseInt(localStorage.getItem(8));
         }
     },
     
@@ -501,6 +510,7 @@ let gameState = {
                         attack.destroy();
                         zom.setVelocityX(0);
                         zom.setVelocityY(0);
+                        gameState.bossSummonKills++;
                         if(gameState.skin == "characterGoldenGun"){
                             zom.anims.play('zombieGoldDeath','true');
                         }else {

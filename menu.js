@@ -7,6 +7,7 @@ class MenuScene extends Phaser.Scene {
         //people
         this.load.spritesheet('character','images/character.png',{frameWidth: 50,frameHeight:50});
         this.load.spritesheet('characterSkeletonGun','images/characterSkeletonGun.png',{frameWidth: 50,frameHeight:50});
+        this.load.spritesheet('characterSus','images/characterSus.png',{frameWidth: 50,frameHeight:50});
         this.load.spritesheet('characterGoldenGun','images/characterGoldenGun.png',{frameWidth: 50,frameHeight:50});
         
         this.load.spritesheet('merchant','images/merchantSprite.png',{frameWidth: 100,frameHeight:90});
@@ -58,6 +59,7 @@ class MenuScene extends Phaser.Scene {
         
         //Shop icons
         this.load.image('equippedImage','images/equippedImage.png');
+        this.load.image('susShop','images/susShop.png');
         this.load.image('goldenGunShop','images/goldenGunShop.png');
         
         //audio
@@ -106,7 +108,19 @@ class MenuScene extends Phaser.Scene {
             repeat: -1,
             frames:this.anims.generateFrameNames('character',{start: 0,end: 11})
         });
-        
+        //skins
+        this.anims.create({
+            key: 'characterSusIdle',
+            frameRate: 1,
+            repeat: -1,
+            frames:this.anims.generateFrameNames('characterSus',{start: 0,end: 0})
+        });
+        this.anims.create({
+            key: 'characterSusWalk',
+            frameRate: 25,
+            repeat: -1,
+            frames:this.anims.generateFrameNames('characterSus',{start: 0,end: 11})
+        });
         this.anims.create({
             key: 'characterSkeletonGunIdle',
             frameRate: 1,
@@ -356,11 +370,9 @@ class MenuScene extends Phaser.Scene {
         
         //Changes cursor icon image
         this.input.setDefaultCursor('url(images/cursor.cur), pointer');
-        
+    
         gameState.loadSave();
-        gameState.updateStats();
 	
-        
         
         var button = this.add.image(window.innerWidth/2,window.innerHeight/2,'startButton').setInteractive();
         button.on('pointerdown', function(pointer){
