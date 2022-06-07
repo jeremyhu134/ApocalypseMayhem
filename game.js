@@ -26,7 +26,7 @@ const game = new Phaser.Game(config);
 
 
 let gameState = {
-    coins: 11500,
+    coins: 1500,
     coinsAdd: 3,
     characterStats: {
         speed : 150,
