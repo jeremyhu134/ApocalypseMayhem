@@ -1008,6 +1008,9 @@ let gameState = {
                         }
                     }
                     else {
+                        if (bars.getChildren().length > 0){
+                            bars.getChildren()[bars.getChildren().length-1].destroy();
+                        }
                         gameState.coins += 50;
                         loop.destroy();
                         move.destroy();
