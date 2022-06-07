@@ -26,7 +26,7 @@ const game = new Phaser.Game(config);
 
 
 let gameState = {
-    coins: 1500,
+    coins: 11500,
     coinsAdd: 3,
     characterStats: {
         speed : 150,
@@ -60,6 +60,11 @@ let gameState = {
         sus : {
             owned: 0,
             name: 'characterSus'
+        },
+        laserTrooper : {
+            owned: 0,
+            name: 'characterLaserTrooper',
+            nameB: 'bulletLaser'
         }
     },
     
@@ -100,6 +105,7 @@ let gameState = {
         localStorage.setItem(6, gameState.weaponSkins.goldenGun.owned);
         localStorage.setItem(7, gameState.highestKills);
         localStorage.setItem(8, gameState.weaponSkins.sus.owned);
+        localStorage.setItem(9, gameState.weaponSkins.laserTrooper.owned);
     },
     //loads variable values from localstorage
     loadSave: function(){
@@ -126,6 +132,9 @@ let gameState = {
         }
         if(localStorage.getItem(8)){//If variable exists in localStorage
             gameState.weaponSkins.sus.owned = parseInt(localStorage.getItem(8));
+        }
+        if(localStorage.getItem(9)){//If variable exists in localStorage
+            gameState.weaponSkins.laserTrooper.owned = parseInt(localStorage.getItem(9));
         }
     },
     
@@ -699,6 +708,7 @@ let gameState = {
     createQuadZombie: function (scene,inX,inY){
         var zombie = gameState.zombies.create(inX,inY,`quadZombie`).setDepth(1);
         zombie.health = gameState.quadZombie.health;
+        var targeter;
         function zombieB(zom){
             var attack = scene.time.addEvent({  
                 delay: 6000,
@@ -736,7 +746,7 @@ let gameState = {
                     gameState.four = scene.time.addEvent({
                         delay: 3000,
                         callback: ()=>{
-                            var targeter = scene.add.sprite(Math.random()*50+gameState.character.x, Math.random()*50+gameState.character.y,'quadZombieAbility').setDepth(0).setScale(2);
+                            targeter = scene.add.sprite(Math.random()*50+gameState.character.x, Math.random()*50+gameState.character.y,'quadZombieAbility').setDepth(0).setScale(2);
                             targeter.anims.play('quadZombieTarget');
                             gameState.five = scene.time.addEvent({
                                 delay: 1000,
@@ -825,6 +835,9 @@ let gameState = {
                         zom.setVelocityX(0);
                         zom.setVelocityY(0);
                         zom.anims.play('quadZombieDeath','true');
+                        if(targeter){
+                            targeter.destroy();
+                        }
                         gameState.one.destroy();
                         gameState.two.destroy();
                         gameState.three.destroy();
@@ -1008,9 +1021,6 @@ let gameState = {
                         }
                     }
                     else {
-                        if (bars.getChildren().length > 0){
-                            bars.getChildren()[bars.getChildren().length-1].destroy();
-                        }
                         gameState.coins += 50;
                         loop.destroy();
                         move.destroy();

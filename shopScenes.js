@@ -41,7 +41,7 @@ class UpgradeScene extends Phaser.Scene {
         var merch = this.add.sprite(window.innerWidth/2,100,'merchant').setInteractive().setScale(2.5);
         merch.anims.play('move');
         merch.on('pointerup', () => {
-            alert("Merchant: Each upgrade be 100 coins lad.");
+            alert("Merchant: The more upgrades you purchase, the more expensive!");
 		});
         
         //Upgrade Buttons
@@ -223,16 +223,16 @@ class ShopScene extends Phaser.Scene {
         
         var goldenGunIcon = this.add.image(window.innerWidth/2,250,'goldenGunShop').setInteractive();
         if(gameState.skin == gameState.weaponSkins.goldenGun.name){
-            equipped.x = window.innerWidth/2;
-            equipped.y = 250;
+            equipped.x = goldenGunIcon.x;
+            equipped.y = goldenGunIcon.y;
         }
         goldenGunIcon.on('pointerup', () => {
             if(gameState.weaponSkins.goldenGun.owned == 1){
                 gameState.skin = gameState.weaponSkins.goldenGun.name;
                 gameState.bulletSkin = gameState.weaponSkins.goldenGun.nameB;
                 alert("Equipped"); 
-                equipped.x = window.innerWidth/2;
-                equipped.y = 250;
+                equipped.x = goldenGunIcon.x;
+                equipped.y = goldenGunIcon.y;
             }
             else if(gameState.coins< 10000){
                 alert("Merchant: Can't buy that lad!");
@@ -245,18 +245,18 @@ class ShopScene extends Phaser.Scene {
             }
 		});
         
-        var susIcon = this.add.image(window.innerWidth/2,330,'susShop').setInteractive();
+        var susIcon = this.add.image(110,330,'susShop').setInteractive();
         if(gameState.skin == gameState.weaponSkins.sus.name){
-            equipped.x = window.innerWidth/2;
-            equipped.y = 330;
+            equipped.x = susIcon.x;
+            equipped.y = susIcon.y;
         }
         susIcon.on('pointerup', () => {
             if(gameState.weaponSkins.sus.owned == 1){
                 gameState.skin = gameState.weaponSkins.sus.name;
                 gameState.bulletSkin = 'bullet1';
                 alert("Equipped"); 
-                equipped.x = window.innerWidth/2;
-                equipped.y = 330;
+                equipped.x = susIcon.x;
+                equipped.y = susIcon.y;
             }
             else if(gameState.coins < 1500){
                 alert("Merchant: Can't buy that lad!");
@@ -266,6 +266,30 @@ class ShopScene extends Phaser.Scene {
                 gameState.weaponSkins.sus.owned = 1;
                 gameState.skin = gameState.weaponSkins.sus.name;
                 gameState.bulletSkin = 'bullet1';
+            }
+		});
+        
+        var laserTrooperIcon = this.add.image(susIcon.x+200,330,'laserTrooperShop').setInteractive();
+        if(gameState.skin == gameState.weaponSkins.laserTrooper.name){
+            equipped.x = laserTrooperIcon.x;
+            equipped.y = laserTrooperIcon.y;
+        }
+        laserTrooperIcon.on('pointerup', () => {
+            if(gameState.weaponSkins.laserTrooper.owned == 1){
+                gameState.skin = gameState.weaponSkins.laserTrooper.name;
+                gameState.bulletSkin = 'bulletLaser';
+                alert("Equipped"); 
+                equipped.x = laserTrooperIcon.x;
+                equipped.y = laserTrooperIcon.y;
+            }
+            else if(gameState.coins < 2000){
+                alert("Merchant: Can't buy that lad!");
+            }else {
+                alert("Merchant: Welcome to the Empire!");
+                gameState.coins -= 2000;
+                gameState.weaponSkins.laserTrooper.owned = 1;
+                gameState.skin = gameState.weaponSkins.laserTrooper.name;
+                gameState.bulletSkin = 'bulletLaser';
             }
 		});
     }

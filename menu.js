@@ -8,6 +8,7 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('character','images/character.png',{frameWidth: 50,frameHeight:50});
         this.load.spritesheet('characterSkeletonGun','images/characterSkeletonGun.png',{frameWidth: 50,frameHeight:50});
         this.load.spritesheet('characterSus','images/characterSus.png',{frameWidth: 50,frameHeight:50});
+        this.load.spritesheet('characterLaserTrooper','images/characterLaserTrooper.png',{frameWidth: 50,frameHeight:50});
         this.load.spritesheet('characterGoldenGun','images/characterGoldenGun.png',{frameWidth: 50,frameHeight:50});
         
         this.load.spritesheet('merchant','images/merchantSprite.png',{frameWidth: 100,frameHeight:90});
@@ -25,6 +26,7 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('bulletBlood','images/bulletBlood.png',{frameWidth: 20,frameHeight:20});
         //bullets
         this.load.image('bullet1','images/bullet1.png');
+        this.load.image('bulletLaser','images/bulletLaser.png');
         this.load.image('bulletSG','images/bulletSG.png');
         this.load.image('bulletGolden','images/bulletGolden.png');
         
@@ -60,6 +62,7 @@ class MenuScene extends Phaser.Scene {
         //Shop icons
         this.load.image('equippedImage','images/equippedImage.png');
         this.load.image('susShop','images/susShop.png');
+        this.load.image('laserTrooperShop','images/laserTrooperShop.png');
         this.load.image('goldenGunShop','images/goldenGunShop.png');
         
         //audio
@@ -132,6 +135,18 @@ class MenuScene extends Phaser.Scene {
             frameRate: 25,
             repeat: -1,
             frames:this.anims.generateFrameNames('characterSkeletonGun',{start: 0,end: 11})
+        });
+        this.anims.create({
+            key: 'characterLaserTrooperIdle',
+            frameRate: 1,
+            repeat: -1,
+            frames:this.anims.generateFrameNames('characterLaserTrooper',{start: 0,end: 0})
+        });
+        this.anims.create({
+            key: 'characterLaserTrooperWalk',
+            frameRate: 25,
+            repeat: -1,
+            frames:this.anims.generateFrameNames('characterLaserTrooper',{start: 0,end: 11})
         });
         this.anims.create({
             key: 'characterGoldenGunIdle',
