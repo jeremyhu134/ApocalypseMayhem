@@ -344,7 +344,7 @@ let gameState = {
                 gone.destroy();
             });
         }
-        else if(random<=100 && random >=96){
+        else if(random<=100 && random >=9){
             var iBI = scene.physics.add.sprite(x,y,'infiniteBulletsImage');
             iBI.anims.play('shine','true');
             var gone = scene.time.addEvent({
@@ -361,7 +361,7 @@ let gameState = {
                 gone.destroy();
                 gameState.fireRate = gameState.characterStats.fireRate - 35;
                 gameState.ammo = 9999;
-                gameState.createTempText(scene,window.innerWidth/2-100,window.innerHeight/2,"INFINITE BULLETS",10000,25);
+                gameState.createTimer(scene,10,60,'infiniteBulletsImage');
                 scene.time.addEvent({
                     delay: 10000,
                     callback: ()=>{
@@ -1115,6 +1115,20 @@ let gameState = {
             delay: time,
             callback: ()=>{
                 text.destroy();
+            },  
+            startAt: 0,
+            timeScale: 1
+        });
+    },
+    createTimer:function(scene,x,y,image){
+        var icon = scene.add.image(x,y,`${image}`).setOrigin(0,0).setScale(50/35);
+        var timer = scene.add.sprite(icon.x+60,icon.y,'timerSprite').setOrigin(0,0);
+        timer.anims.play('moveTime');
+        scene.time.addEvent({
+            delay: 10000,
+            callback: ()=>{
+                icon.destroy();
+                timer.destroy();
             },  
             startAt: 0,
             timeScale: 1

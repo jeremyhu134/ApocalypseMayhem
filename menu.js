@@ -46,6 +46,7 @@ class MenuScene extends Phaser.Scene {
         this.load.image('ammoIcon','images/ammoIcon.png');  
         this.load.image('skull','images/skull.png');  
         this.load.image('redSkull','images/redSkull.png');
+        this.load.spritesheet('timerSprite','images/timerSprite.png',{frameWidth: 50,frameHeight:50});
         this.load.image('startButton','images/startButton.png');
         this.load.image('titleImage','images/titleImage.png');
         this.load.image('upgradeButton','images/upgradeButton.png');
@@ -95,11 +96,17 @@ class MenuScene extends Phaser.Scene {
         
         
         
-        //Loading Animations
+        //Loading Animation
         this.anims.create({
             key: 'load',
             frameRate: 18,
             frames:this.anims.generateFrameNames('loading',{start: 0,end: 16})
+        });
+        //Timer sprite
+        this.anims.create({
+            key: 'moveTime',
+            frameRate: .4,
+            frames:this.anims.generateFrameNames('timerSprite',{start: 0,end: 16})
         });
         
         //character Animations
