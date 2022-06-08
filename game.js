@@ -344,7 +344,7 @@ let gameState = {
                 gone.destroy();
             });
         }
-        else if(random<=100 && random >=9){
+        else if(random<=100 && random >=96){
             var iBI = scene.physics.add.sprite(x,y,'infiniteBulletsImage');
             iBI.anims.play('shine','true');
             var gone = scene.time.addEvent({
