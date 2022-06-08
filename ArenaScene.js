@@ -105,10 +105,6 @@ class ArenaScene extends Phaser.Scene {
         });
         
         
-        
-        /*this.physics.add.collider(gameState.player, gameState.barriers,(hero,barrier)=>{
-            
-        });*/
         gameState.input = this.input;
         gameState.mouse = this.input.mousePointer;
         //this.input.mouse.disableContextMenu();
@@ -116,6 +112,7 @@ class ArenaScene extends Phaser.Scene {
         gameState.keys = this.input.keyboard.addKeys('W,S,A,D,R,SPACE,SHIFT,ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,ESC');
         gameState.bullets = this.physics.add.group();
         gameState.zombies = this.physics.add.group();
+        this.physics.add.collider(gameState.zombies, gameState.zombies);
         
         var healthImage = this.add.image(20,20,'healthImage').setOrigin(0,0);
         gameState.createHealthBar(this,healthImage.x+35,healthImage.y+2);

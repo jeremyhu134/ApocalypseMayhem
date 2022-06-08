@@ -240,7 +240,9 @@ let gameState = {
                             timeScale: 1
                         });
                         bulletLoop.destroy();
-                        bulletT.destroy();
+                        if(target.health>0){
+                            bulletT.destroy();
+                        }
                         target.health -= gameState.damage;
                     });
                     scene.time.addEvent({
@@ -386,7 +388,6 @@ let gameState = {
                 timeScale: 1
             });
             scene.physics.add.overlap(gameState.character, grenade,(character, grenade)=>{
-                gameState.createTempText(scene,window.innerWidth/2-100,window.innerHeight/2,"GRENADE",1500,25);
                 gone.destroy();
                 grenade.destroy();
                 var gren = scene.physics.add.sprite(gameState.character.x,gameState.character.y,'grenadeObj');
@@ -444,7 +445,6 @@ let gameState = {
                 timeScale: 1
             });
             scene.physics.add.overlap(gameState.character, medic,(character, medic)=>{
-                gameState.createTempText(scene,window.innerWidth/2-100,window.innerHeight/2,"HEALED",1500,25);
                 medic.destroy();
                 gameState.health += 50;
                 if(gameState.health > gameState.characterStats.health){
@@ -468,9 +468,9 @@ let gameState = {
         name: 'sarmsZombie'
     },
     quadZombie :{
-        health : 3000,
+        health : 2750,
         damage : 50,
-        damageRange : 190,
+        damageRange : 195,
         name: 'quadZombie'
     },
     cloneZombie :{
@@ -487,6 +487,8 @@ let gameState = {
         var zombie = gameState.zombies.create(inX,inY,`${zomStats.image}`).setDepth(1);
         zombie.health = zomStats.health;
         function zombieB(zom){
+            zom.body.offset.y = 45;
+            zom.body.height = 20;
             zom.setCollideWorldBounds(true);
             var attack = scene.time.addEvent({
                 delay: 500,
@@ -522,15 +524,16 @@ let gameState = {
                         }
                     }
                     else {
+                        zom.setImmovable();
                         if(gameState.bossBattle == false){
                             gameState.kills++;
                             gameState.createItem(scene,zom.x,zom.y);
+                            gameState.bossSummonKills++;
                         }
                         loop.destroy();
                         attack.destroy();
                         zom.setVelocityX(0);
                         zom.setVelocityY(0);
-                        gameState.bossSummonKills++;
                         if(gameState.skin == "characterGoldenGun"){
                             zom.anims.play('zombieGoldDeath','true');
                         }else {
@@ -676,6 +679,9 @@ let gameState = {
                         }
                     }
                     else {
+                        for (var i = bars.getChildren().length-1; i >= 0;i--){
+                            bars.getChildren()[i].destroy();
+                        }
                         gameState.coins += 50;
                         loop.destroy();
                         attack.destroy();
@@ -729,8 +735,8 @@ let gameState = {
                     gameState.one = scene.time.addEvent({
                         delay: 500,
                         callback: ()=>{
-                            gameState.two = zom.anims.play('quadZombieLaunch');
-                            scene.time.addEvent({
+                            zom.anims.play('quadZombieLaunch');
+                            gameState.two = scene.time.addEvent({
                                 delay: 200,
                                 callback: ()=>{
                                     scene.physics.moveTo(zom,zom.x,zom.y-1,1200);
@@ -838,13 +844,16 @@ let gameState = {
                         }
                     }
                     else {
+                        for (var i = bars.getChildren().length-1; i >= 0;i--){
+                            bars.getChildren()[i].destroy();
+                        }
                         gameState.coins += 50;
                         loop.destroy();
                         attack.destroy();
-                        checkHealthBar.destroy();
                         barBg.destroy();
                         zom.setVelocityX(0);
                         zom.setVelocityY(0);
+                        checkHealthBar.destroy();
                         zom.anims.play('quadZombieDeath','true');
                         if(targeter){
                             targeter.destroy();
@@ -1032,6 +1041,9 @@ let gameState = {
                         }
                     }
                     else {
+                        for (var i = bars.getChildren().length-1; i >= 0;i--){
+                            bars.getChildren()[i].destroy();
+                        }
                         gameState.coins += 50;
                         loop.destroy();
                         move.destroy();
