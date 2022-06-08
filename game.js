@@ -65,6 +65,11 @@ let gameState = {
             owned: 0,
             name: 'characterLaserTrooper',
             nameB: 'bulletLaser'
+        },
+        satvik : {
+            owned: 0,
+            name: 'characterSatvik',
+            nameB: 'bulletTennis'
         }
     },
     
@@ -106,6 +111,7 @@ let gameState = {
         localStorage.setItem(7, gameState.highestKills);
         localStorage.setItem(8, gameState.weaponSkins.sus.owned);
         localStorage.setItem(9, gameState.weaponSkins.laserTrooper.owned);
+        localStorage.setItem(10, gameState.weaponSkins.satvik.owned);
     },
     //loads variable values from localstorage
     loadSave: function(){
@@ -135,6 +141,9 @@ let gameState = {
         }
         if(localStorage.getItem(9)){//If variable exists in localStorage
             gameState.weaponSkins.laserTrooper.owned = parseInt(localStorage.getItem(9));
+        }
+        if(localStorage.getItem(10)){//If variable exists in localStorage
+            gameState.weaponSkins.satvik.owned = parseInt(localStorage.getItem(10));
         }
     },
     
@@ -177,6 +186,7 @@ let gameState = {
             if (gameState.keys.SPACE.isDown && gameState.ammo > 0){
                 if (gameState.characterStats.fireReady == true){
                     gameState.ammo --;
+                    gameState.ammoText.setText(gameState.ammo);
                     gameState.characterStats.fireReady = false;
                     var flash;
                     var bullet;
@@ -288,6 +298,7 @@ let gameState = {
             scene.time.addEvent({
                 delay: 2500,
                 callback: ()=>{
+                    gameState.ammoText.setText(gameState.ammo);
                     gameState.characterStats.fireReady = true;
                 },  
                 startAt: 0,

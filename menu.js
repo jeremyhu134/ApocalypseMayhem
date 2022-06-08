@@ -8,6 +8,7 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('character','images/character.png',{frameWidth: 50,frameHeight:50});
         this.load.spritesheet('characterSkeletonGun','images/characterSkeletonGun.png',{frameWidth: 50,frameHeight:50});
         this.load.spritesheet('characterSus','images/characterSus.png',{frameWidth: 50,frameHeight:50});
+        this.load.spritesheet('characterSatvik','images/characterSatvik.png',{frameWidth: 50,frameHeight:50});
         this.load.spritesheet('characterLaserTrooper','images/characterLaserTrooper.png',{frameWidth: 50,frameHeight:50});
         this.load.spritesheet('characterGoldenGun','images/characterGoldenGun.png',{frameWidth: 50,frameHeight:50});
         
@@ -27,6 +28,7 @@ class MenuScene extends Phaser.Scene {
         //bullets
         this.load.image('bullet1','images/bullet1.png');
         this.load.image('bulletLaser','images/bulletLaser.png');
+        this.load.image('bulletTennis','images/bulletTennis.png');
         this.load.image('bulletSG','images/bulletSG.png');
         this.load.image('bulletGolden','images/bulletGolden.png');
         
@@ -41,6 +43,7 @@ class MenuScene extends Phaser.Scene {
         this.load.image('healthBarBg','images/healthBarBg.png');
         this.load.image('healthImage','images/healthImage.png');
         this.load.image('barrier','images/barrier.png');    
+        this.load.image('ammoIcon','images/ammoIcon.png');  
         this.load.image('skull','images/skull.png');  
         this.load.image('redSkull','images/redSkull.png');
         this.load.image('startButton','images/startButton.png');
@@ -62,6 +65,7 @@ class MenuScene extends Phaser.Scene {
         //Shop icons
         this.load.image('equippedImage','images/equippedImage.png');
         this.load.image('susShop','images/susShop.png');
+        this.load.image('satvikShop','images/satvikShop.png');
         this.load.image('laserTrooperShop','images/laserTrooperShop.png');
         this.load.image('goldenGunShop','images/goldenGunShop.png');
         
@@ -123,6 +127,18 @@ class MenuScene extends Phaser.Scene {
             frameRate: 25,
             repeat: -1,
             frames:this.anims.generateFrameNames('characterSus',{start: 0,end: 11})
+        });
+        this.anims.create({
+            key: 'characterSatvikIdle',
+            frameRate: 1,
+            repeat: -1,
+            frames:this.anims.generateFrameNames('characterSatvik',{start: 0,end: 0})
+        });
+        this.anims.create({
+            key: 'characterSatvikWalk',
+            frameRate: 25,
+            repeat: -1,
+            frames:this.anims.generateFrameNames('characterSatvik',{start: 0,end: 11})
         });
         this.anims.create({
             key: 'characterSkeletonGunIdle',

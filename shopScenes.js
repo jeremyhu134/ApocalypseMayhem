@@ -214,7 +214,7 @@ class ShopScene extends Phaser.Scene {
         var merch = this.add.sprite(window.innerWidth/2,100,'merchant').setInteractive().setScale(2.5);
         merch.anims.play('move');
         merch.on('pointerup', () => {
-            alert("Merchant: Weapon Skins for Sale!");
+            alert("Merchant: Character and Weapon Skins for Sale!");
 		});
         
         
@@ -269,7 +269,7 @@ class ShopScene extends Phaser.Scene {
             }
 		});
         
-        var laserTrooperIcon = this.add.image(susIcon.x+200,330,'laserTrooperShop').setInteractive();
+        var laserTrooperIcon = this.add.image(susIcon.x+220,330,'laserTrooperShop').setInteractive();
         if(gameState.skin == gameState.weaponSkins.laserTrooper.name){
             equipped.x = laserTrooperIcon.x;
             equipped.y = laserTrooperIcon.y;
@@ -290,6 +290,30 @@ class ShopScene extends Phaser.Scene {
                 gameState.weaponSkins.laserTrooper.owned = 1;
                 gameState.skin = gameState.weaponSkins.laserTrooper.name;
                 gameState.bulletSkin = 'bulletLaser';
+            }
+		});
+        
+        var satvikIcon = this.add.image(laserTrooperIcon.x+220,330,'satvikShop').setInteractive();
+        if(gameState.skin == gameState.weaponSkins.satvik.name){
+            equipped.x = satvikIcon.x;
+            equipped.y = satvikIcon.y;
+        }
+        satvikIcon.on('pointerup', () => {
+            if(gameState.weaponSkins.satvik.owned == 1){
+                gameState.skin = gameState.weaponSkins.satvik.name;
+                gameState.bulletSkin = 'bulletTennis';
+                alert("Equipped"); 
+                equipped.x = satvikIcon.x;
+                equipped.y = satvikIcon.y;
+            }
+            else if(gameState.coins < 1000){
+                alert("Merchant: Can't buy that lad!");
+            }else {
+                alert("Merchant: The god himself...");
+                gameState.coins -= 1000;
+                gameState.weaponSkins.satvik.owned = 1;
+                gameState.skin = gameState.weaponSkins.satvik.name;
+                gameState.bulletSkin = 'bulletTennis';
             }
 		});
     }

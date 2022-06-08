@@ -54,6 +54,14 @@ class ArenaScene extends Phaser.Scene {
             fontFamily: 'Qahiri',
             strokeThickness: 4,
         }).setDepth(window.innerHeight+3);
+        //Ammo display
+        var ammoImage = this.add.image(780,15,"ammoIcon").setOrigin(0,0).setDepth(-100).setScale(1);
+        gameState.ammoText = this.add.text(ammoImage.x+50, ammoImage.y+10, `${gameState.ammo}`, {
+            fill: '#ADD8E6', 
+            fontSize: `30px`,
+            fontFamily: 'Qahiri',
+            strokeThickness: 4,
+        }).setDepth(window.innerHeight+3);
         //Phaser loop to constantly check for kills and summon random boss
         gameState.bossBattle = false;
         gameState.checkBoss = this.time.addEvent({
