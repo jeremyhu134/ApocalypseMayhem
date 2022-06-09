@@ -316,6 +316,23 @@ class ShopScene extends Phaser.Scene {
                 gameState.bulletSkin = 'bulletTennis';
             }
 		});
+        
+        var skeletonGunIcon = this.add.image(satvikIcon.x+220,330,'skeletonGunShop').setInteractive();
+        if(gameState.skin == gameState.weaponSkins.SkeletonGun.name){
+            equipped.x = skeletonGunIcon.x;
+            equipped.y = skeletonGunIcon.y;
+        }
+        skeletonGunIcon.on('pointerup', () => {
+            if(gameState.weaponSkins.SkeletonGun.owned == 1){
+                gameState.skin = gameState.weaponSkins.SkeletonGun.name;
+                gameState.bulletSkin = `${gameState.weaponSkins.SkeletonGun.nameB}`;
+                alert("Equipped"); 
+                equipped.x = skeletonGunIcon.x;
+                equipped.y = skeletonGunIcon.y;
+            }else {
+                alert("Merchant: Unlocks through Achievement!");
+            }
+		});
     }
     update(){
         

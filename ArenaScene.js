@@ -26,7 +26,7 @@ class ArenaScene extends Phaser.Scene {
             gameState.globalScene.scene.launch('PauseScene');
         });
         //Create the player
-        gameState.character = this.physics.add.sprite(window.innerWidth/2-16,window.innerHeight/2+16,`${gameState.skin}`);
+        gameState.character = this.physics.add.sprite(window.innerWidth/2-16,window.innerHeight/2+16,`${gameState.skin}`).setDepth(0);
         gameState.character.body.width = 50;
         
         //Kill Tracker
@@ -139,5 +139,6 @@ class ArenaScene extends Phaser.Scene {
     }
     update(){
         gameState.chracterControls(this,gameState.character,gameState.characterStats);
+        gameState.achievmentTracker(this);
     }
 }

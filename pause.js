@@ -12,6 +12,12 @@ class PauseScene extends Phaser.Scene {
         
         var back = this.add.image(window.innerWidth-75,10,'backButton').setOrigin(0,0).setInteractive();
         back.on('pointerup', () => {
+            gameState.save();
+            gameState.keys.W.isDown = false;
+            gameState.keys.S.isDown = false;
+            gameState.keys.A.isDown = false;
+            gameState.keys.D.isDown = false;
+            gameState.keys.SPACE.isDown = false;
             scene.scene.stop("PauseScene");
             scene.scene.resume(`${gameState.currentScene}`);
 		});
@@ -32,6 +38,28 @@ class PauseScene extends Phaser.Scene {
             strokeThickness: 4,
         }).setDepth(window.innerHeight+3);
         gameState.save();
+	}
+    update(){
+        
+    }
+}
+
+
+
+
+class UnlockScene extends Phaser.Scene {
+    constructor() {
+		super({ key: 'UnlockScene' })
+	}
+    preload(){
+        
+    }
+    create() {
+        this.scene.bringToTop();
+        if(gameState.kills >= 500 && gameState.weaponSkins.SkeletonGun.owned == 0){
+            gameState.weaponSkins.SkeletonGun.owned = 1;
+            gameState.createUnlocked(this,'characterSkeletonGun');
+        }
 	}
     update(){
         

@@ -56,6 +56,7 @@ class MenuScene extends Phaser.Scene {
         //pause menu
         this.load.image('pauseMainMenuButton','images/pauseMainMenuButton.png');
         this.load.image('pauseMenu','images/pauseMenu.png');
+        this.load.image('unlockedMenu','images/unlockedMenu.png');
         //upgrade sprites
         this.load.spritesheet('upgradeOptions','images/upgradeOptions.png',{frameWidth: 400,frameHeight:200});
         //death menu
@@ -68,6 +69,7 @@ class MenuScene extends Phaser.Scene {
         this.load.image('susShop','images/susShop.png');
         this.load.image('satvikShop','images/satvikShop.png');
         this.load.image('laserTrooperShop','images/laserTrooperShop.png');
+        this.load.image('skeletonGunShop','images/skeletonGunShop.png');
         this.load.image('goldenGunShop','images/goldenGunShop.png');
         
         //audio

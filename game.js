@@ -14,7 +14,7 @@ const config = {
             //debug: true
         }
     },
-    scene:[MenuScene,PauseScene,ArenaScene,UpgradeScene,DeathScene,ShopScene],
+    scene:[MenuScene,PauseScene,ArenaScene,UpgradeScene,DeathScene,ShopScene,UnlockScene],
     scale: {
         zoom: 1,
         mode: Phaser.Scale.FIT,
@@ -70,6 +70,11 @@ let gameState = {
             owned: 0,
             name: 'characterSatvik',
             nameB: 'bulletTennis'
+        },
+        SkeletonGun : {
+            owned: 0,
+            name: 'characterSkeletonGun',
+            nameB: 'bulletSG'
         }
     },
     
@@ -112,6 +117,7 @@ let gameState = {
         localStorage.setItem(8, gameState.weaponSkins.sus.owned);
         localStorage.setItem(9, gameState.weaponSkins.laserTrooper.owned);
         localStorage.setItem(10, gameState.weaponSkins.satvik.owned);
+        localStorage.setItem(11, gameState.weaponSkins.SkeletonGun.owned);
     },
     //loads variable values from localstorage
     loadSave: function(){
@@ -144,6 +150,9 @@ let gameState = {
         }
         if(localStorage.getItem(10)){//If variable exists in localStorage
             gameState.weaponSkins.satvik.owned = parseInt(localStorage.getItem(10));
+        }
+        if(localStorage.getItem(11)){//If variable exists in localStorage
+            gameState.weaponSkins.SkeletonGun.owned = parseInt(localStorage.getItem(11));
         }
     },
     
@@ -454,6 +463,30 @@ let gameState = {
         }
     },
     
+    createUnlocked: function(scene,image){
+        var unlockBG = scene.add.image(window.innerWidth/2,window.innerHeight/2,'unlockedMenu').setInteractive().setDepth(100);
+        var unlocked = scene.add.image(window.innerWidth/2,window.innerHeight/2+50,`${image}`).setDepth(100).setScale(3);
+        unlockBG.on('pointerdown', function(pointer){
+            gameState.save();
+            gameState.keys.W.isDown = false;
+            gameState.keys.S.isDown = false;
+            gameState.keys.A.isDown = false;
+            gameState.keys.D.isDown = false;
+            gameState.keys.SPACE.isDown = false;
+            unlockBG.destroy();
+            unlocked.destroy();
+            gameState.globalScene.scene.stop('UnlockedScene');
+            gameState.globalScene.scene.resume(`${gameState.currentScene}`);
+        });
+    },
+    
+    achievmentTracker: function(scene){
+        if(gameState.kills >= 500 && gameState.weaponSkins.SkeletonGun.owned == 0){
+            gameState.globalScene.scene.pause(`${gameState.currentScene}`);
+            gameState.globalScene.scene.launch('UnlockScene');
+        }
+    },
+    
     zombie :{
         speed: 75,
         health : 100,
@@ -487,8 +520,6 @@ let gameState = {
         var zombie = gameState.zombies.create(inX,inY,`${zomStats.image}`).setDepth(1);
         zombie.health = zomStats.health;
         function zombieB(zom){
-            zom.body.offset.y = 45;
-            zom.body.height = 20;
             zom.setCollideWorldBounds(true);
             var attack = scene.time.addEvent({
                 delay: 500,
@@ -524,6 +555,7 @@ let gameState = {
                         }
                     }
                     else {
+                        zom.body.height = 1;
                         zom.setImmovable();
                         if(gameState.bossBattle == false){
                             gameState.kills++;
@@ -569,8 +601,8 @@ let gameState = {
         gameState.arenaM.setMute(false);
         gameState.bossBattle = false;
         gameState.coinsAdd++;
-        if(gameState.zombie.speed <= 150){
-            gameState.zombie.speed += 15;
+        if(gameState.zombie.speed <= 170){
+            gameState.zombie.speed += 10;
             gameState.zombie.health += 10;
         }
     },
