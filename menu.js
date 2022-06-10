@@ -76,6 +76,10 @@ class MenuScene extends Phaser.Scene {
         this.load.audio('menuBgMusic', 'audio/menuBgMusic.mp3');
         this.load.audio('bossMusic', 'audio/bossMusic.mp3');
         this.load.audio('arenaMusic', 'audio/arenaMusic.mp3');
+        //sound affects
+        this.load.audio('characterHurt', 'audio/characterHurt.mp3');
+        this.load.audio('earthquake', 'audio/earthquake.mp3');
+
     }
     create() {
         //set current scene to variable
@@ -85,10 +89,13 @@ class MenuScene extends Phaser.Scene {
         //config for keeping sound loop
         gameState.loopSound = {
             loop: true,
-            volume: 100
+            volume: .5
         }
+        //Create variables for necessary sounds
         gameState.bgM = this.sound.add('menuBgMusic');
         gameState.bgM.play(gameState.loopSound);
+        gameState.quake = this.sound.add('earthquake');
+        gameState.cHurt = this.sound.add('characterHurt');
         //mute music other than background music for menu
         if(gameState.bossM){
             gameState.bossM.setMute(true);

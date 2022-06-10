@@ -69,7 +69,7 @@ class ArenaScene extends Phaser.Scene {
             callback: ()=>{
                 killsText.setText(gameState.kills);
                 coinsText.setText(gameState.coins);
-                if (gameState.bossSummonKills >= 30){
+                if (gameState.bossSummonKills >= 2){
                     gameState.bossSummonKills = 0;
                     gameState.bossBattle = true;
                     gameState.spawnZombies.paused = true;
@@ -112,7 +112,6 @@ class ArenaScene extends Phaser.Scene {
         gameState.keys = this.input.keyboard.addKeys('W,S,A,D,R,SPACE,SHIFT,ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,ESC');
         gameState.bullets = this.physics.add.group();
         gameState.zombies = this.physics.add.group();
-        this.physics.add.collider(gameState.zombies, gameState.zombies);
         
         var healthImage = this.add.image(20,20,'healthImage').setOrigin(0,0);
         gameState.createHealthBar(this,healthImage.x+35,healthImage.y+2);

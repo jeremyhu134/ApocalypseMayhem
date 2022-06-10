@@ -515,6 +515,13 @@ let gameState = {
         name: 'Clone Zombie'
     },
     
+    pDamage: function(damage){
+        if(gameState.cHurt.isPlaying == false){
+            gameState.cHurt.play();
+        }
+        gameState.health -= damage;
+    },
+    
     
     createZombie: function (scene,inX,inY,zomStats){
         var zombie = gameState.zombies.create(inX,inY,`${zomStats.image}`).setDepth(1);
@@ -524,7 +531,7 @@ let gameState = {
             var attack = scene.time.addEvent({
                 delay: 500,
                 callback: ()=>{
-                    gameState.health -= zomStats.damage;
+                    gameState.pDamage(gameState.zombie.damage);
                 },  
                 startAt: 0,
                 timeScale: 1,
@@ -618,7 +625,7 @@ let gameState = {
             var attack = scene.time.addEvent({
                 delay: 350,
                 callback: ()=>{
-                    gameState.health -= gameState.sarmsZombie.damage;
+                    gameState.pDamage(gameState.sarmsZombie.damage);
                 },  
                 startAt: 0,
                 timeScale: 1,
@@ -811,9 +818,11 @@ let gameState = {
                                             targeter.destroy();
                                             for (var i = 0; i < gameState.zombies.getChildren().length; i++){
                                                 if(Phaser.Math.Distance.BetweenPoints(zom, gameState.character)<gameState.quadZombie.damageRange){
-                                                    gameState.health -= gameState.quadZombie.damage;
+                                                    gameState.pDamage(gameState.quadZombie.damage);
                                                 }
                                             }
+                                            gameState.quake.play();
+                                            scene.cameras.main.shake(800);
                                             var quake = scene.add.sprite(zom.x, zom.y,'quadZombieAbility').setDepth(0).setScale(1.7);
                                             quake.anims.play('quadZombieQuake');
                                             scene.time.addEvent({
@@ -992,7 +1001,7 @@ let gameState = {
                                 });
                                 bulletLoop.destroy();
                                 bulletT.destroy();
-                                gameState.health -= gameState.cloneZombie.damage;
+                                gameState.pDamage(gameState.cloneZombie.damage);
                             });
                         },  
                         startAt: 0,
@@ -1033,7 +1042,7 @@ let gameState = {
                             });
                             gren.destroy();
                             if(Phaser.Math.Distance.BetweenPoints(gameState.character, gren)<75){
-                                gameState.health -= gameState.cloneZombie.grenDamage;
+                                gameState.pDamage(gameState.cloneZombie.grenDamage);
                             }
                         },  
                         startAt: 0,
