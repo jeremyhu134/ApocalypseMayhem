@@ -6,6 +6,8 @@ class UpgradeScene extends Phaser.Scene {
         
     }
     create(){
+        //mutes menu music
+        gameState.bgM.setMute(true);
         //create and animate background
         var bg = this.physics.add.sprite(0,0,'background').setOrigin(0,0).setScale(window.innerHeight/675).setDepth(-100);
         bg.anims.play('bganimate','true');
@@ -63,6 +65,7 @@ class UpgradeScene extends Phaser.Scene {
                     this.add.rectangle(window.innerWidth/4+33+(i/20*18), window.innerHeight/4+153, 15, 15, 0x39FF14);
                 }
                 alert("Merchant: Additional Health PURCHASED");
+                gameState.globalScene.sound.play('purchased');
             } else{
                 if(cost > 500){
                     alert(`Merchant: SOLD OUT!`);
@@ -89,6 +92,7 @@ class UpgradeScene extends Phaser.Scene {
                     this.add.rectangle(window.innerWidth/2+window.innerWidth/4+33+(i/5*18), window.innerHeight/4+153, 15, 15, 0x39FF14);
                 }
                 alert("Merchant: Additional Damage PURCHASED");
+                gameState.globalScene.sound.play('purchased');
             } else{
                 if(cost > 500){
                     alert(`Merchant: SOLD OUT!`);
@@ -113,6 +117,7 @@ class UpgradeScene extends Phaser.Scene {
                     this.add.rectangle(window.innerWidth/4+33+(i/5*18), window.innerHeight/2+window.innerHeight/4+54, 15, 15, 0x39FF14);
                 }
                 alert("Merchant: Increased Speed PURCHASED");
+                gameState.globalScene.sound.play('purchased');
             } else{
                 if(cost > 500){
                     alert(`Merchant: SOLD OUT!`);
@@ -137,6 +142,7 @@ class UpgradeScene extends Phaser.Scene {
                     this.add.rectangle(window.innerWidth/2+window.innerWidth/4+33+(i/5*18), window.innerHeight/2+window.innerHeight/4+54, 15, 15, 0x39FF14);
                 }
                 alert("Merchant: Increased Ammo Capacity PURCHASED");
+                gameState.globalScene.sound.play('purchased');
             } else{
                 if(cost > 500){
                     alert(`Merchant: SOLD OUT!`);
@@ -238,6 +244,7 @@ class ShopScene extends Phaser.Scene {
                 alert("Merchant: Can't buy that lad!");
             }else {
                 alert("Merchant: The Golden Gun is yours!");
+                gameState.globalScene.sound.play('purchased');
                 gameState.coins -= 10000;
                 gameState.weaponSkins.goldenGun.owned = 1;
                 gameState.skin = gameState.weaponSkins.goldenGun.name;
@@ -262,6 +269,7 @@ class ShopScene extends Phaser.Scene {
                 alert("Merchant: Can't buy that lad!");
             }else {
                 alert("Merchant: Your Sus now!");
+                gameState.globalScene.sound.play('purchased');
                 gameState.coins -= 1500;
                 gameState.weaponSkins.sus.owned = 1;
                 gameState.skin = gameState.weaponSkins.sus.name;
@@ -286,6 +294,7 @@ class ShopScene extends Phaser.Scene {
                 alert("Merchant: Can't buy that lad!");
             }else {
                 alert("Merchant: Welcome to the Empire!");
+                gameState.globalScene.sound.play('purchased');
                 gameState.coins -= 2000;
                 gameState.weaponSkins.laserTrooper.owned = 1;
                 gameState.skin = gameState.weaponSkins.laserTrooper.name;
@@ -310,6 +319,7 @@ class ShopScene extends Phaser.Scene {
                 alert("Merchant: Can't buy that lad!");
             }else {
                 alert("Merchant: The god himself...");
+                gameState.globalScene.sound.play('purchased');
                 gameState.coins -= 1000;
                 gameState.weaponSkins.satvik.owned = 1;
                 gameState.skin = gameState.weaponSkins.satvik.name;

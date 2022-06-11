@@ -1,10 +1,11 @@
+
 const config = {
     type: Phaser.AUTO,
     width : window.innerWidth-10,
     height: window.innerHeight-10,
     backgroundColor: "#999999",
     audio: {
-        disableWebAudio: true
+        disableWebAudio: false 
       },
     physics: {
         default: 'arcade',
@@ -21,6 +22,7 @@ const config = {
         autoCenter: Phaser.Scale.CENTER_BOTH
     }
 };
+
 
 const game = new Phaser.Game(config);
 
@@ -194,6 +196,7 @@ let gameState = {
             }
             if (gameState.keys.SPACE.isDown && gameState.ammo > 0){
                 if (gameState.characterStats.fireReady == true){
+                    scene.sound.play('shoot');
                     gameState.ammo --;
                     gameState.ammoText.setText(gameState.ammo);
                     gameState.characterStats.fireReady = false;
@@ -367,6 +370,7 @@ let gameState = {
                 timeScale: 1
             });
             scene.physics.add.overlap(gameState.character, iBI,(character, iBI)=>{
+                scene.sound.play('powerUp');
                 gameState.disableReload = true;
                 iBI.destroy();
                 gone.destroy();
@@ -415,6 +419,7 @@ let gameState = {
                     scene.time.addEvent({
                         delay: 500,
                         callback: ()=>{
+                            scene.sound.play('explode',{ volume: 0.5 });
                             var explosion = scene.physics.add.sprite(gren.x,gren.y,'');
                             explosion.anims.play('explode','true');
                             scene.time.addEvent({
@@ -455,6 +460,9 @@ let gameState = {
             });
             scene.physics.add.overlap(gameState.character, medic,(character, medic)=>{
                 medic.destroy();
+                if(gameState.health < gameState.characterStats.health){
+                    scene.sound.play('healed');
+                }
                 gameState.health += 50;
                 if(gameState.health > gameState.characterStats.health){
                     gameState.health = gameState.characterStats.health;
@@ -516,7 +524,7 @@ let gameState = {
     },
     
     pDamage: function(damage){
-        if(gameState.cHurt.isPlaying == false){
+        if(gameState.health > 0){
             gameState.cHurt.play();
         }
         gameState.health -= damage;
@@ -564,6 +572,7 @@ let gameState = {
                     else {
                         zom.body.height = 1;
                         zom.setImmovable();
+                        scene.sound.play('zombieDeath',{volume:0.4});
                         if(gameState.bossBattle == false){
                             gameState.kills++;
                             gameState.createItem(scene,zom.x,zom.y);
@@ -959,6 +968,7 @@ let gameState = {
                                 zom.flipX = true;
                                 bullet = gameState.bullets.create(zom.x-25,zom.y+5,'bullet1');
                             }
+                            scene.sound.play('shoot');
                             var rand = Math.ceil(Math.random()*3);
                             if (rand == 1){
                                 flash.anims.play('flash1','true');
@@ -1032,6 +1042,7 @@ let gameState = {
                         callback: ()=>{
                             var explosion = scene.physics.add.sprite(gren.x,gren.y,'');
                             explosion.anims.play('explode','true');
+                            scene.sound.play('explode',{ volume: 0.5 });
                             scene.time.addEvent({
                                 delay: 1000,
                                 callback: ()=>{

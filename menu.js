@@ -79,7 +79,12 @@ class MenuScene extends Phaser.Scene {
         //sound affects
         this.load.audio('characterHurt', 'audio/characterHurt.mp3');
         this.load.audio('earthquake', 'audio/earthquake.mp3');
-
+        this.load.audio('shoot', 'audio/gunShootSound.mp3');
+        this.load.audio('explode', 'audio/explode.mp3');
+        this.load.audio('healed', 'audio/healed.mp3');
+        this.load.audio('powerUp', 'audio/powerUp.mp3');
+        this.load.audio('purchased', 'audio/purchased.mp3');
+        this.load.audio('zombieDeath', 'audio/zombieDeath.mp3');
     }
     create() {
         //set current scene to variable
@@ -93,10 +98,18 @@ class MenuScene extends Phaser.Scene {
         }
         //Create variables for necessary sounds
         gameState.bgM = this.sound.add('menuBgMusic');
+        gameState.bgM.setMute(false);
         gameState.bgM.play(gameState.loopSound);
         gameState.quake = this.sound.add('earthquake');
         gameState.cHurt = this.sound.add('characterHurt');
-        //mute music other than background music for menu
+        //sounds added directly to the sound object
+        this.sound.add('shoot');
+        this.sound.add('explode');
+        this.sound.add('healed');
+        this.sound.add('powerUp');
+        this.sound.add('purchased');
+        this.sound.add('zombieDeath');
+        //mute music other than background music for menu (only if they are playing)
         if(gameState.bossM){
             gameState.bossM.setMute(true);
         } if (gameState.arenaM){
