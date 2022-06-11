@@ -80,6 +80,7 @@ class DeathScene extends Phaser.Scene {
     }
     create() {
         this.scene.bringToTop();
+        gameState.deathMusic.play(gameState.loopSound);
         this.add.image(window.innerWidth/2,window.innerHeight/2,'deathMenu');
         var scene = this;
         if(gameState.kills> gameState.highestKills){
@@ -87,6 +88,7 @@ class DeathScene extends Phaser.Scene {
         }
         var mainMenu = this.add.image(window.innerWidth/2,window.innerHeight/2+200,'pauseMainMenuButton').setInteractive();
         mainMenu.on('pointerup', () => {
+            gameState.deathMusic.setMute(true);
             scene.scene.stop(`${gameState.currentScene}`);
             scene.scene.stop("DeathScene");
             scene.scene.start("MenuScene");

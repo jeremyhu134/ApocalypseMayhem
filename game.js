@@ -1,4 +1,4 @@
-
+//The configuration of your game that is a parameter of the Phaser.Game function
 const config = {
     type: Phaser.AUTO,
     width : window.innerWidth-10,
@@ -23,10 +23,10 @@ const config = {
     }
 };
 
-
+//creats a game game object with the configuration
 const game = new Phaser.Game(config);
 
-
+//create a block-scoped object that stores variables that can be accessed in any scene
 let gameState = {
     coins: 11500,
     coinsAdd: 3,
@@ -158,7 +158,7 @@ let gameState = {
         }
     },
     
-    
+    once: false,
     chracterControls : function(scene){
         if(gameState.health > 0){
             gameState.character.depth = gameState.character.y-50;
@@ -278,26 +278,29 @@ let gameState = {
             }
         }
         else {
-            gameState.spawnZombies.destroy();
-            gameState.character.destroy();
-            if(gameState.bossM){
-                gameState.bossM.setMute(true);
-            }
-            gameState.arenaM.setMute(true);
-            scene.physics.pause();
-            if(gameState.Sbutton){
-                gameState.Sbutton.destroy();
-            }
-            scene.time.addEvent({
-                delay: 3000,
-                callback: ()=>{
+            if(gameState.once == false){
+                gameState.once = true;
+                gameState.character.anims.play('characterDeath',true);
+                gameState.spawnZombies.destroy();
+                if(gameState.bossM){
+                    gameState.bossM.setMute(true);
+                }
+                gameState.arenaM.setMute(true);
+                scene.physics.pause();
+                if(gameState.Sbutton){
                     gameState.Sbutton.destroy();
-                    gameState.globalScene.scene.pause("ArenaScene");
-                    gameState.globalScene.scene.launch('DeathScene');
-                },  
-                startAt: 0,
-                timeScale: 1
-            });
+                }
+                scene.time.addEvent({
+                    delay: 3000,
+                    callback: ()=>{
+                        gameState.Sbutton.destroy();
+                        gameState.globalScene.scene.pause("ArenaScene");
+                        gameState.globalScene.scene.launch('DeathScene');
+                    },  
+                    startAt: 0,
+                    timeScale: 1
+                });
+            }
         }
     },
     reload: function (scene){
@@ -352,6 +355,7 @@ let gameState = {
                 timeScale: 1
             });
             scene.physics.add.overlap(gameState.character, coin,(character, coin)=>{
+                scene.sound.play('coinSound',{volume:0.05});
                 var rand = Math.ceil(Math.random()*2)+gameState.coinsAdd;
                 gameState.coins += rand;
                 coin.destroy();

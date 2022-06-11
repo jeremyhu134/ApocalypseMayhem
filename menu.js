@@ -6,6 +6,7 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('loading','images/loadingSprite.png',{frameWidth: 30,frameHeight:3});
         //people
         this.load.spritesheet('character','images/character.png',{frameWidth: 50,frameHeight:50});
+        this.load.spritesheet('characterDeath','images/characterDeath.png',{frameWidth: 50,frameHeight:50});
         this.load.spritesheet('characterSkeletonGun','images/characterSkeletonGun.png',{frameWidth: 50,frameHeight:50});
         this.load.spritesheet('characterSus','images/characterSus.png',{frameWidth: 50,frameHeight:50});
         this.load.spritesheet('characterSatvik','images/characterSatvik.png',{frameWidth: 50,frameHeight:50});
@@ -85,6 +86,8 @@ class MenuScene extends Phaser.Scene {
         this.load.audio('powerUp', 'audio/powerUp.mp3');
         this.load.audio('purchased', 'audio/purchased.mp3');
         this.load.audio('zombieDeath', 'audio/zombieDeath.mp3');
+        this.load.audio('death', 'audio/death.mp3');
+        this.load.audio('coinSound', 'audio/coinSound.mp3');
     }
     create() {
         //set current scene to variable
@@ -100,6 +103,7 @@ class MenuScene extends Phaser.Scene {
         gameState.bgM = this.sound.add('menuBgMusic');
         gameState.bgM.setMute(false);
         gameState.bgM.play(gameState.loopSound);
+        gameState.deathMusic = this.sound.add('death');
         gameState.quake = this.sound.add('earthquake');
         gameState.cHurt = this.sound.add('characterHurt');
         //sounds added directly to the sound object
@@ -109,6 +113,7 @@ class MenuScene extends Phaser.Scene {
         this.sound.add('powerUp');
         this.sound.add('purchased');
         this.sound.add('zombieDeath');
+        this.sound.add('coinSound');
         //mute music other than background music for menu (only if they are playing)
         if(gameState.bossM){
             gameState.bossM.setMute(true);
@@ -143,6 +148,11 @@ class MenuScene extends Phaser.Scene {
             frameRate: 25,
             repeat: -1,
             frames:this.anims.generateFrameNames('character',{start: 0,end: 11})
+        });
+        this.anims.create({
+            key: 'characterDeath',
+            frameRate: 10,
+            frames:this.anims.generateFrameNames('characterDeath',{start: 0,end: 4})
         });
         //skins
         this.anims.create({
