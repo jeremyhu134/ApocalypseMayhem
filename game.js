@@ -281,6 +281,8 @@ let gameState = {
             if(gameState.once == false){
                 gameState.once = true;
                 gameState.character.anims.play('characterDeath',true);
+                gameState.character.setVelocityX(0);
+                gameState.character.setVelocityY(0);
                 gameState.spawnZombies.destroy();
                 if(gameState.bossM){
                     gameState.bossM.setMute(true);
