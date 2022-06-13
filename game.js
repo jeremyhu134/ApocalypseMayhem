@@ -98,7 +98,7 @@ let gameState = {
         gameState.kills = 0;
         gameState.characterStats.fireReady = true;
         gameState.disableReload = false;
-        
+        gameState.once = false;
         
         //reset zombie stats
         gameState.zombie.speed =  75;
