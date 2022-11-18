@@ -1,9 +1,11 @@
+//upgrade subclass 
 class UpgradeScene extends Phaser.Scene {
     constructor() {
+        //parameter for phaser class to allow phaser to reference subclass
 		super({ key: 'UpgradeScene' })
 	}
     preload(){
-        
+        //no preloads for this subclass
     }
     create(){
         //mutes menu music
@@ -16,18 +18,36 @@ class UpgradeScene extends Phaser.Scene {
         //Reference scene in local variable and create a back button
         var scene = this;
         
-        var back = this.add.image(window.innerWidth-75,10,'backButton').setOrigin(0,0).setInteractive();
+        var back = this.add.sprite(window.innerWidth/2-50,0,'homeIcon').setOrigin(0,0).setInteractive();
         back.on('pointerup', () => {
             gameState.save();
             scene.scene.stop("UpgradeScene");
             scene.scene.start(`${gameState.currentScene}`);
 		});
+        back.on('pointerover', () => {
+            back.setFrame(1);
+		});
+        back.on('pointerout', () => {
+            back.setFrame(0);
+		});
         
-        var back2 = this.add.image(window.innerWidth-70,window.innerHeight-70,'backButton2').setOrigin(0,0).setInteractive();
-        back2.flipX = true;
+        var back2 = this.add.sprite(window.innerWidth/2+70,50,'cosmeticsButton').setOrigin(0,0).setInteractive().setScale(60/44);
         back2.on('pointerup', () => {
             scene.scene.stop("UpgradeScene");
             scene.scene.start(`ShopScene`);
+		});
+        back2.on('pointerover', () => {
+            back2.setFrame(1);
+		});
+        back2.on('pointerout', () => {
+            back2.setFrame(0);
+		});
+        var image = this.add.sprite(window.innerWidth/2-320,45,'upgradesButton').setOrigin(0,0).setInteractive().setScale(1.2);
+        image.on('pointerover', () => {
+            image.setFrame(1);
+		});
+        image.on('pointerout', () => {
+            image.setFrame(0);
 		});
         
         //add gold icon and amound
@@ -40,11 +60,7 @@ class UpgradeScene extends Phaser.Scene {
         }).setDepth(window.innerHeight+3);
         
         //merchant and interact
-        var merch = this.add.sprite(window.innerWidth/2,100,'merchant').setInteractive().setScale(2.5);
-        merch.anims.play('move');
-        merch.on('pointerup', () => {
-            alert("Merchant: The more upgrades you purchase, the more expensive!");
-		});
+        
         
         //Upgrade Buttons
         
@@ -153,7 +169,7 @@ class UpgradeScene extends Phaser.Scene {
 		});
     }
     update(){
-        
+        //game loop that constantly runs (not needed for upgrades)
     }
 }
 
@@ -169,13 +185,14 @@ class UpgradeScene extends Phaser.Scene {
 
 
 
-
+//shop subclass 
 class ShopScene extends Phaser.Scene {
     constructor() {
+        //parameter for phaser class to allow phaser to reference subclass
 		super({ key: 'ShopScene' })
 	}
     preload(){
-        
+        //no preloads for this subclass
     }
     create(){
         //create and animate background
@@ -186,17 +203,36 @@ class ShopScene extends Phaser.Scene {
         //Reference scene in local variable and create a back button
         var scene = this;
         
-        var back = this.add.image(window.innerWidth-75,10,'backButton').setOrigin(0,0).setInteractive();
+        var back = this.add.sprite(window.innerWidth/2-50,0,'homeIcon').setOrigin(0,0).setInteractive();
         back.on('pointerup', () => {
             gameState.save();
             scene.scene.stop("UpgradeScene");
             scene.scene.start(`${gameState.currentScene}`);
 		});
+        back.on('pointerover', () => {
+            back.setFrame(1);
+		});
+        back.on('pointerout', () => {
+            back.setFrame(0);
+		});
         
-        var back2 = this.add.image(20,window.innerHeight-70,'backButton2').setOrigin(0,0).setInteractive();
+        var back2 = this.add.sprite(window.innerWidth/2-320,45,'upgradesButton').setOrigin(0,0).setInteractive().setScale(1.2);
         back2.on('pointerup', () => {
             scene.scene.stop("ShopScene");
             scene.scene.start(`UpgradeScene`);
+		});
+        back2.on('pointerover', () => {
+            back2.setFrame(1);
+		});
+        back2.on('pointerout', () => {
+            back2.setFrame(0);
+		});
+        var image = this.add.sprite(window.innerWidth/2+70,50,'cosmeticsButton').setOrigin(0,0).setInteractive().setScale(60/44);
+        image.on('pointerover', () => {
+            image.setFrame(1);
+		});
+        image.on('pointerout', () => {
+            image.setFrame(0);
 		});
         //add gold icon and amound
         this.add.image(20,20,"coin").setOrigin(0,0).setDepth(-100).setScale(2);
@@ -215,18 +251,13 @@ class ShopScene extends Phaser.Scene {
             timeScale: 1,
             repeat: -1
         });
-        
-        //merchant and interact
-        var merch = this.add.sprite(window.innerWidth/2,100,'merchant').setInteractive().setScale(2.5);
-        merch.anims.play('move');
-        merch.on('pointerup', () => {
-            alert("Merchant: Character and Weapon Skins for Sale!");
-		});
+       
         
         
         //skins
         var equipped = this.add.image(-1000,-1000,'equippedImage').setDepth(1);
         
+        /*
         var goldenGunIcon = this.add.image(window.innerWidth/2,250,'goldenGunShop').setInteractive();
         if(gameState.skin == gameState.weaponSkins.goldenGun.name){
             equipped.x = goldenGunIcon.x;
@@ -343,8 +374,9 @@ class ShopScene extends Phaser.Scene {
                 alert("Merchant: Unlocks through Achievement!");
             }
 		});
+        */
     }
     update(){
-        
+        //game loop that constantly runs (not needed for buying charcater and weapon skins)
     }
 }

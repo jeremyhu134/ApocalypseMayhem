@@ -1,11 +1,15 @@
+//menu subclass
 class MenuScene extends Phaser.Scene {
     constructor() {
+        //parameter for phaser class to allow phaser to reference subclass
 		super({ key: 'MenuScene' })
 	}
+    //functions preloads sprites, images, and audio
     preload(){
         this.load.spritesheet('loading','images/loadingSprite.png',{frameWidth: 30,frameHeight:3});
+        this.load.image('two','images/two.png');
         //people
-        this.load.spritesheet('character','images/character.png',{frameWidth: 50,frameHeight:50});
+        this.load.spritesheet('character','images/character.png',{frameWidth: 120,frameHeight:120});
         this.load.spritesheet('characterDeath','images/characterDeath.png',{frameWidth: 50,frameHeight:50});
         this.load.spritesheet('characterSkeletonGun','images/characterSkeletonGun.png',{frameWidth: 50,frameHeight:50});
         this.load.spritesheet('characterSus','images/characterSus.png',{frameWidth: 50,frameHeight:50});
@@ -15,7 +19,7 @@ class MenuScene extends Phaser.Scene {
         
         this.load.spritesheet('merchant','images/merchantSprite.png',{frameWidth: 100,frameHeight:90});
         //zombies
-        this.load.spritesheet('zombie','images/zombie.png',{frameWidth: 44,frameHeight:65});
+        this.load.spritesheet('zombie','images/zombie.png',{frameWidth: 122,frameHeight:124});
         this.load.spritesheet('sarmsZombie','images/sarmsZombie.png',{frameWidth: 70,frameHeight:70});
         
         this.load.spritesheet('quadZombie','images/quadZombie.png',{frameWidth: 44,frameHeight:80});
@@ -28,13 +32,21 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('bulletBlood','images/bulletBlood.png',{frameWidth: 20,frameHeight:20});
         //bullets
         this.load.image('bullet1','images/bullet1.png');
+        this.load.image('bulletTrail','images/bulletTrail.png');
         this.load.image('bulletLaser','images/bulletLaser.png');
         this.load.image('bulletTennis','images/bulletTennis.png');
         this.load.image('bulletSG','images/bulletSG.png');
         this.load.image('bulletGolden','images/bulletGolden.png');
         
+        //objects
         this.load.spritesheet('coin','images/coin.png',{frameWidth: 30,frameHeight:32});
+        this.load.image('grenadeObj','images/grenadeObj.png');
         this.load.image('gunMagazine','images/gunMagazine.png');
+        //assault rifle
+        this.load.spritesheet('assaultRifle','images/assaultRifle.png',{frameWidth: 150,frameHeight:80});
+        this.load.spritesheet('goldenAssaultRifle','images/goldenAssaultRifle.png',{frameWidth: 100,frameHeight:50});
+        
+        
         this.load.spritesheet('background','images/background.png',{frameWidth: 1397,frameHeight:675});
         this.load.spritesheet('infiniteBulletsImage','images/infiniteBulletsImage.png',{frameWidth: 35,frameHeight:35});
         this.load.spritesheet('grenadeImage','images/grenadeImage.png',{frameWidth: 35,frameHeight:35});
@@ -44,16 +56,21 @@ class MenuScene extends Phaser.Scene {
         this.load.image('healthBarBg','images/healthBarBg.png');
         this.load.image('healthImage','images/healthImage.png');
         this.load.image('barrier','images/barrier.png');    
-        this.load.image('ammoIcon','images/ammoIcon.png');  
+        this.load.image('ammoIcon','images/ammoIcon.png'); 
+        this.load.image('sprintIcon','images/sprintIcon.png'); 
         this.load.image('skull','images/skull.png');  
         this.load.image('redSkull','images/redSkull.png');
         this.load.spritesheet('timerSprite','images/timerSprite.png',{frameWidth: 50,frameHeight:50});
-        this.load.image('startButton','images/startButton.png');
-        this.load.image('titleImage','images/titleImage.png');
-        this.load.image('upgradeButton','images/upgradeButton.png');
+        this.load.spritesheet('startButton','images/startButton.png',{frameWidth: 250,frameHeight:70});
+        this.load.spritesheet('titleImage','images/titleImage.png',{frameWidth: 1200,frameHeight:200});
+        this.load.spritesheet('upgradeButton','images/upgradeButton.png',{frameWidth: 70,frameHeight:65});
+        //cosmet
+        this.load.spritesheet('homeIcon','images/homeIcon.png',{frameWidth: 100,frameHeight:80});
+        this.load.spritesheet('upgradesButton','images/upgradesButton.png',{frameWidth: 210,frameHeight:60});
+        this.load.spritesheet('cosmeticsButton','images/cosmeticsButton.png',{frameWidth: 220,frameHeight:44});
         this.load.image('backButton','images/backButton.png');
         this.load.image('backButton2','images/backButton2.png');
-        this.load.image('settingsButton','images/settingsButton.png');
+        this.load.spritesheet('settingsButton','images/settingsButton.png',{frameWidth: 70,frameHeight:65});
         //pause menu
         this.load.image('pauseMainMenuButton','images/pauseMainMenuButton.png');
         this.load.image('pauseMenu','images/pauseMenu.png');
@@ -62,8 +79,6 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('upgradeOptions','images/upgradeOptions.png',{frameWidth: 400,frameHeight:200});
         //death menu
         this.load.image('deathMenu','images/deathMenu.png');
-        
-        this.load.image('grenadeObj','images/grenadeObj.png');
         
         //Shop icons
         this.load.image('equippedImage','images/equippedImage.png');
@@ -77,6 +92,7 @@ class MenuScene extends Phaser.Scene {
         this.load.audio('menuBgMusic', 'audio/menuBgMusic.mp3');
         this.load.audio('bossMusic', 'audio/bossMusic.mp3');
         this.load.audio('arenaMusic', 'audio/arenaMusic.mp3');
+        this.load.audio('death', 'audio/death.mp3');
         //sound affects
         this.load.audio('characterHurt', 'audio/characterHurt.mp3');
         this.load.audio('earthquake', 'audio/earthquake.mp3');
@@ -86,10 +102,13 @@ class MenuScene extends Phaser.Scene {
         this.load.audio('powerUp', 'audio/powerUp.mp3');
         this.load.audio('purchased', 'audio/purchased.mp3');
         this.load.audio('zombieDeath', 'audio/zombieDeath.mp3');
-        this.load.audio('death', 'audio/death.mp3');
         this.load.audio('coinSound', 'audio/coinSound.mp3');
+        this.load.audio('hitSound', 'audio/hitsound.mp3');
+        this.load.audio('killSound', 'audio/killSound.mp3');
+        this.load.audio('click', 'audio/click.mp3');
     }
     create() {
+        var scene = this;
         //set current scene to variable
         gameState.currentScene = "MenuScene";
         
@@ -102,7 +121,7 @@ class MenuScene extends Phaser.Scene {
         //Create variables for necessary sounds
         gameState.bgM = this.sound.add('menuBgMusic');
         gameState.bgM.setMute(false);
-        gameState.bgM.play(gameState.loopSound);
+        gameState.bgM.play(gameState.loopSound,true);
         gameState.deathMusic = this.sound.add('death');
         gameState.quake = this.sound.add('earthquake');
         gameState.cHurt = this.sound.add('characterHurt');
@@ -114,6 +133,9 @@ class MenuScene extends Phaser.Scene {
         this.sound.add('purchased');
         this.sound.add('zombieDeath');
         this.sound.add('coinSound');
+        this.sound.add('hitSound');
+        this.sound.add('killSound');
+        this.sound.add('click');
         //mute music other than background music for menu (only if they are playing)
         if(gameState.bossM){
             gameState.bossM.setMute(true);
@@ -139,20 +161,26 @@ class MenuScene extends Phaser.Scene {
         //character Animations
         this.anims.create({
             key: 'characterIdle',
-            frameRate: 1,
+            frameRate: 4,
             repeat: -1,
-            frames:this.anims.generateFrameNames('character',{start: 0,end: 0})
+            frames:this.anims.generateFrameNames('character',{start: 0,end: 3})
         });
         this.anims.create({
             key: 'characterWalk',
-            frameRate: 25,
+            frameRate: 10,
             repeat: -1,
-            frames:this.anims.generateFrameNames('character',{start: 0,end: 11})
+            frames:this.anims.generateFrameNames('character',{start: 4,end: 10})
+        });
+        this.anims.create({
+            key: 'characterRun',
+            frameRate: 16,
+            repeat: -1,
+            frames:this.anims.generateFrameNames('character',{start: 4,end: 10})
         });
         this.anims.create({
             key: 'characterDeath',
             frameRate: 10,
-            frames:this.anims.generateFrameNames('characterDeath',{start: 0,end: 4})
+            frames:this.anims.generateFrameNames('character',{start: 10,end: 13})
         });
         //skins
         this.anims.create({
@@ -219,7 +247,12 @@ class MenuScene extends Phaser.Scene {
         
         
         
-        
+        //title animation
+        this.anims.create({
+            key: 'moveTitle',
+            frameRate: 30,
+            frames:this.anims.generateFrameNames('titleImage',{start: 0,end: 11})
+        });
         
         
         
@@ -228,36 +261,41 @@ class MenuScene extends Phaser.Scene {
             key: 'move',
             frameRate: 1,
             repeat: -1,
-            frames:this.anims.generateFrameNames('merchant',{start: 0,end: 11})
+            frames:this.anims.generateFrameNames('merchant',{start: 0,end: 1})
         });
         
         //zombie
         this.anims.create({
             key: 'zombieWalk',
-            frameRate: 5,
+            frameRate: 10,
             repeat: -1,
-            frames:this.anims.generateFrameNames('zombie',{start: 0,end: 5})
+            frames:this.anims.generateFrameNames('zombie',{start: 18,end: 23})
         });
         this.anims.create({
             key: 'zombieStrike',
             frameRate: 15,
             repeat: -1,
-            frames:this.anims.generateFrameNames('zombie',{start: 6,end: 14})
+            frames:this.anims.generateFrameNames('zombie',{start: 24,end: 28})
         });
         this.anims.create({
             key: 'zombieSpawn',
-            frameRate: 13,
-            frames:this.anims.generateFrameNames('zombie',{start: 15,end: 25})
+            frameRate: 16,
+            frames:this.anims.generateFrameNames('zombie',{start: 0,end: 16})
         });
         this.anims.create({
             key: 'zombieDeath',
             frameRate: 12,
-            frames:this.anims.generateFrameNames('zombie',{start: 26,end: 29})
+            frames:this.anims.generateFrameNames('zombie',{start: 29,end: 40})
         });
         this.anims.create({
             key: 'zombieGoldDeath',
             frameRate: 12,
-            frames:this.anims.generateFrameNames('zombie',{start: 30,end: 33})
+            frames:this.anims.generateFrameNames('zombie',{start: 29,end: 40})
+        });
+        this.anims.create({
+            key: 'zombieFade',
+            frameRate: 12,
+            frames:this.anims.generateFrameNames('zombie',{start: 41,end: 45})
         });
         
         //sarmszombie
@@ -377,21 +415,24 @@ class MenuScene extends Phaser.Scene {
             frames:this.anims.generateFrameNames('explosion',{start: 0,end: 6})
         });
         
+        
+        
+        
+        //assault rifle
         this.anims.create({
-            key: 'flash1',
-            frameRate: 1,
-            frames:this.anims.generateFrameNames('gunFlash',{start: 0,end: 0})
+            key: 'flash',
+            frameRate: 50,
+            frames:this.anims.generateFrameNames('assaultRifle',{start: 0,end: 2})
         });
         this.anims.create({
-            key: 'flash2',
-            frameRate: 1,
-            frames:this.anims.generateFrameNames('gunFlash',{start: 1,end: 1})
+            key: 'flash',
+            frameRate: 50,
+            frames:this.anims.generateFrameNames('goldAssaultRifle',{start: 0,end: 2})
         });
-        this.anims.create({
-            key: 'flash3',
-            frameRate: 1,
-            frames:this.anims.generateFrameNames('gunFlash',{start: 2,end: 2})
-        });
+        
+        
+        
+        
         this.anims.create({
             key: 'animate',
             frameRate: 24,
@@ -410,7 +451,7 @@ class MenuScene extends Phaser.Scene {
             repeat: -1,
             frames:this.anims.generateFrameNames('background',{start: 0,end: 2})
         });
-        //shine animation for specials
+        //shine animation for powerups
         this.anims.create({
             key: 'shine',
             frameRate: 11,
@@ -429,21 +470,31 @@ class MenuScene extends Phaser.Scene {
             repeat: -1,
             frames:this.anims.generateFrameNames('medicImage',{start: 0,end: 6})
         });
-        
+        //sets global scene to variable for inside local functions
         gameState.globalScene = this;
         //create and animate background
         var bg = this.physics.add.sprite(0,0,'background').setOrigin(0,0).setScale(window.innerHeight/675).setDepth(-100);
         bg.anims.play('bganimate','true');
         
         //add title
-        this.add.sprite(window.innerWidth/2,100,'titleImage').setScale(1.5);
-        
+        var title = this.add.sprite(window.innerWidth/2,120,'titleImage').setScale(1);
+        this.time.addEvent({
+            delay: 3000,
+            callback: ()=>{
+                title.anims.play('moveTitle');
+            },  
+            startAt: 0,
+            repeat: -1,
+            timeScale: 1
+        });
+        var two = this.add.image(window.innerWidth/2+80,220,'two').setScale(.4);
+        two.setRotation(0.2);
         //Changes cursor icon image
         this.input.setDefaultCursor('url(images/cursor.cur), pointer');
     
         gameState.loadSave();
 	
-        
+        //creats button image and interaction to start the game
         var button = this.add.image(window.innerWidth/2,window.innerHeight/2,'startButton').setInteractive();
         button.on('pointerdown', function(pointer){
             button.destroy();
@@ -458,21 +509,42 @@ class MenuScene extends Phaser.Scene {
                 timeScale: 1
             });
         });
+        button.on('pointerover', function(pointer){
+            scene.sound.play('click');
+            button.setFrame(1);
+        });
+        button.on('pointerout', function(pointer){
+            button.setFrame(0);
+        });
         //Update Characters Stats so upgrades and such apply
         gameState.updateStats();
         //Upgrades Button
-        var Ubutton = this.add.image(window.innerWidth/2+60,window.innerHeight/2+60,'upgradeButton').setInteractive();
+        var Ubutton = this.add.image(window.innerWidth/2+60,window.innerHeight/2+80,'upgradeButton').setInteractive();
         Ubutton.on('pointerdown', function(pointer){
             gameState.globalScene.scene.start('UpgradeScene');
         });
+        Ubutton.on('pointerover', function(pointer){
+            scene.sound.play('click',{volume: 5});
+            Ubutton.setFrame(1);
+        });
+        Ubutton.on('pointerout', function(pointer){
+            Ubutton.setFrame(0);
+        });
         //SettingsButton
-        var Sbutton = this.add.image(window.innerWidth/2-60,window.innerHeight/2+60,'settingsButton').setInteractive();
+        var Sbutton = this.add.image(window.innerWidth/2-60,window.innerHeight/2+80,'settingsButton').setInteractive();
         Sbutton.on('pointerdown', function(pointer){
             gameState.globalScene.scene.pause("MenuScene");
             gameState.globalScene.scene.launch('PauseScene');
         });
+        Sbutton.on('pointerover', function(pointer){
+            scene.sound.play('click');
+            Sbutton.setFrame(1);
+        });
+        Sbutton.on('pointerout', function(pointer){
+            Sbutton.setFrame(0);
+        });
 	}
     update(){
-        
+        //game loop that constantly runs (not needed for menu)
     }
 }
