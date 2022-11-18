@@ -35,7 +35,7 @@ let gameState = {
     coinsAdd: 3,
     //character stats constants
     characterStats: {
-        speed : 75,
+        speed : 100,
         health: 100,
         ammo: 25,
         fireRate: 175,
@@ -45,7 +45,7 @@ let gameState = {
         sprint: 100
     },
     //character stats that changes
-    speed : 75,
+    speed : 100,
     health: 100,
     ammo: 25,
     fireRate: 175,
