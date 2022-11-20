@@ -18,7 +18,7 @@ class PauseScene extends Phaser.Scene {
         //back button that unpaused game and resets keys current input
         var back = this.add.image(window.innerWidth-75,10,'backButton').setOrigin(0,0).setInteractive();
         back.on('pointerup', () => {
-            gameState.save();
+            //gameState.save();
             if(gameState.currentScene == "ArenaScene"){
                 gameState.keys.W.isDown = false;
                 gameState.keys.S.isDown = false;
@@ -49,7 +49,7 @@ class PauseScene extends Phaser.Scene {
             strokeThickness: 4,
         }).setDepth(window.innerHeight+3);
         //save stats whenever paused
-        gameState.save();
+        //gameState.save();
 	}
     update(){
         //game loop that constantly runs (not needed for pause)
@@ -105,7 +105,7 @@ class DeathScene extends Phaser.Scene {
             scene.scene.stop("DeathScene");
             scene.scene.start("MenuScene");
 		});
-        gameState.save();
+        //gameState.save();
 	}
     update(){
         //game loop that constantly runs (not needed for death screen)

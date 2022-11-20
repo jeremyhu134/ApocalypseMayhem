@@ -36,7 +36,30 @@ class ArenaScene extends Phaser.Scene {
         //Create the player
         gameState.character = this.physics.add.sprite(window.innerWidth/2-16,window.innerHeight/2+16,`${gameState.skin}`).setDepth(0).setScale(0.7);
         gameState.character.setSize(60,100);
-        gameState.gunSkin = 'assaultRifle';
+        if(gameState.selected !== ' '){
+            gameState.cosmetic = this.add.image(gameState.character.x,gameState.character.y,`${gameState.selected}`).setScale(0.7);
+        }
+        
+        if(gameState.gunType == 'assaultRifle'){
+            gameState.fireRate = 150;
+            gameState.damage = gameState.characterStats.damage;
+            gameState.ammo = gameState.characterStats.ammo;
+            gameState.speed = gameState.characterStats.speed;
+        }
+        else if(gameState.gunType == 'minigun'){
+            gameState.fireRate = 75;
+            gameState.damage = gameState.characterStats.damage*0.6;
+            gameState.ammo = gameState.characterStats.ammo *8;
+            gameState.speed = gameState.characterStats.speed*0.8;
+        }
+        else if(gameState.gunType == 'rocketLauncher'){
+            gameState.fireRate = 700;
+            gameState.damage = gameState.characterStats.damage*3;
+            gameState.ammo = Math.ceil(gameState.characterStats.ammo/4.17);
+            gameState.speed = gameState.characterStats.speed*0.85;
+        }
+        gameState.current = gameState.speed;
+        gameState.currentRate = gameState.fireRate;
         
         gameState.gun = this.add.sprite(gameState.character.x,gameState.character.y,`${gameState.gunSkin}`).setDepth(gameState.character.y+1).setScale(0.8);
         
@@ -78,7 +101,7 @@ class ArenaScene extends Phaser.Scene {
             callback: ()=>{
                 killsText.setText(gameState.kills);
                 coinsText.setText(gameState.coins);
-                if (gameState.bossSummonKills >= 30){
+                if (gameState.bossSummonKills >= 50){
                     //resets kills for boss and stops zombies from summoning
                     gameState.bossSummonKills = 0;
                     gameState.bossBattle = true;
@@ -138,7 +161,7 @@ class ArenaScene extends Phaser.Scene {
         gameState.spawnZombies = this.time.addEvent({
             delay: 3000,
             callback: ()=>{
-                var rand = Math.ceil(Math.random()*4);
+                var rand = Math.ceil(Math.random()*6);
                 this.time.addEvent({
                     delay: 100,
                     callback: ()=>{

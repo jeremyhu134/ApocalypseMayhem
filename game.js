@@ -17,7 +17,7 @@ const config = {
         }
     },
     //subclass scenes 
-    scene:[MenuScene,PauseScene,ArenaScene,UpgradeScene,DeathScene,ShopScene,UnlockScene],
+    scene:[MenuScene,PauseScene,ArenaScene,UpgradeScene,DeathScene,ShopScene,UnlockScene,LoadoutScene,LootboxesScene],
     //phasers scale system to fit into the brower
     scale: {
         zoom: 1,
@@ -31,7 +31,7 @@ const game = new Phaser.Game(config);
 
 //create a block-scoped object that stores variables that can be accessed in any scene
 let gameState = {
-    coins: 11500,
+    coins: 100,
     coinsAdd: 3,
     //character stats constants
     characterStats: {
@@ -58,37 +58,43 @@ let gameState = {
     sprint: 100,
     sprintlock: 0,
     
+    selected: ' ',
+    pick: 'd',
     //current sprite for bullet and player
     skin: 'character',
     bulletSkin: 'bullet1',
     
+    gunType: 'assaultRifle',
+    gunSkin: 'assaultRifle',
     //unlocked skins and their names and bullet sprites
-    weaponSkins: {
-        goldenGun : {
+    skins: [
+        {
             owned: 0,
-            name: 'characterGoldenGun',
-            nameB: 'bulletGolden'
+            name: 'satvikHat',
+            displayName: 'Satvik'
         },
-        sus : {
+        {
             owned: 0,
-            name: 'characterSus'
+            name: 'susHat',
+            displayName: 'Sus'
         },
-        laserTrooper : {
+        {
             owned: 0,
-            name: 'characterLaserTrooper',
-            nameB: 'bulletLaser'
+            name: 'helmetHat',
+            displayName: 'Helmet'
         },
-        satvik : {
+        {
             owned: 0,
-            name: 'characterSatvik',
-            nameB: 'bulletTennis'
+            name: 'diegoHat',
+            displayName: 'Happy Diego'
         },
-        SkeletonGun : {
+        {
             owned: 0,
-            name: 'characterSkeletonGun',
-            nameB: 'bulletSG'
+            name: 'diego2Hat',
+            displayName: 'Rambo Diego'
         }
-    },
+    ],
+    numLootboxes: 10,
     
     //calculates upgrade cost for upgrades
     upgradeCosts: function(current, max, factor){
@@ -168,6 +174,35 @@ let gameState = {
             gameState.weaponSkins.SkeletonGun.owned = parseInt(localStorage.getItem(11));
         }
     },
+    
+    createSlot: function(scene,hat,num){
+        scene.add.image(hat.x,hat.y,`frame2`).setDepth(-1);
+        hat.on('pointerup', () => {
+            console.log(hat.name);
+            gameState.display.x = 95;
+            gameState.display.y = 135;
+            gameState.display.setTexture(`${gameState.skins[num].name}`);
+            gameState.pick = gameState.skins[num].name;
+        });
+        hat.on('pointerover', () => {
+            //hat.setFrame(1);
+        });
+        hat.on('pointerout', () => {
+            //hat.setFrame(0);
+        });
+    },
+    loadCosmetics: function(scene,x,y){
+        var count = 0;
+        for (var i = 1; i <= 1; i++){
+            for (var j = 1; j <= 5; j++){
+                if(gameState.skins[j-1].owned == 1){
+                    var hat = scene.add.sprite(x+125*j,y+100*i,`${gameState.skins[j-1].name}`).setScale(60/60).setInteractive();
+                    gameState.createSlot(scene,hat,j-1);
+                }
+                count++;
+            }
+        }
+    },
     //variable to make sure the death commands happen only once
     once: false,
     //controls that constantly are looped in the Arena Screen
@@ -181,23 +216,23 @@ let gameState = {
             
             if(gameState.keys.D.isDown && gameState.keys.S.isDown){
                 gameState.character.anims.play(`${gameState.skin}`+`${gameState.speedState}`,true);
-                gameState.character.setVelocityX(gameState.speed*.65);
-                gameState.character.setVelocityY(gameState.speed*.65);
+                gameState.character.setVelocityX(gameState.speed*.7);
+                gameState.character.setVelocityY(gameState.speed*.7);
             }
             else if(gameState.keys.D.isDown && gameState.keys.W.isDown){
                 gameState.character.anims.play(`${gameState.skin}`+`${gameState.speedState}`,true);
-                gameState.character.setVelocityX(gameState.speed*.65);
-                gameState.character.setVelocityY(-gameState.speed*.65);
+                gameState.character.setVelocityX(gameState.speed*.7);
+                gameState.character.setVelocityY(-gameState.speed*.7);
             }
             else if(gameState.keys.A.isDown && gameState.keys.W.isDown){
                 gameState.character.anims.play(`${gameState.skin}`+`${gameState.speedState}`,true);
-                gameState.character.setVelocityX(-gameState.speed*.65);
-                gameState.character.setVelocityY(-gameState.speed*.65);
+                gameState.character.setVelocityX(-gameState.speed*.7);
+                gameState.character.setVelocityY(-gameState.speed*.7);
             }
             else if(gameState.keys.A.isDown && gameState.keys.S.isDown){
                 gameState.character.anims.play(`${gameState.skin}`+`${gameState.speedState}`,true);
-                gameState.character.setVelocityX(-gameState.speed*.65);
-                gameState.character.setVelocityY(gameState.speed*.65);
+                gameState.character.setVelocityX(-gameState.speed*.7);
+                gameState.character.setVelocityY(gameState.speed*.7);
             }
             else if(gameState.keys.W.isDown){
                 gameState.character.setVelocityX(0);
@@ -224,14 +259,17 @@ let gameState = {
                 gameState.character.setVelocityX(0);
             }
             gameState.sprintlock += 1;
-            if(gameState.keys.SHIFT.isDown && gameState.sprint > 1){
-                gameState.sprint -= 1;
-                gameState.speed = gameState.characterStats.speed*2;
+            if(gameState.keys.SHIFT.isDown && gameState.sprint > 0.8){
+                gameState.sprint -= 0.8;
+                gameState.speed = gameState.current*2;
                 gameState.sprintlock = 0;
                 gameState.speedState = 'Run';
             }else {
                 gameState.speedState = 'Walk';
-                gameState.speed = gameState.characterStats.speed;
+                if(!gameState.keys.SPACE.isDown){
+                    gameState.speed = gameState.current;
+                }
+                gameState.speed = gameState.current;
                 if(gameState.sprint < gameState.characterStats.sprint && gameState.sprintlock > 30){
                     gameState.sprint += 0.5;
                 }
@@ -241,73 +279,37 @@ let gameState = {
                 gameState.gun.flipY = false;
                 gameState.gun.x = gameState.character.x-6;
                 gameState.gun.y = gameState.character.y-3;
+                if(gameState.cosmetic){
+                    gameState.cosmetic.flipX = false;
+                }
             }
             else {
                 gameState.character.flipX = true;
                 gameState.gun.flipY = true;
                 gameState.gun.x = gameState.character.x+6;
                 gameState.gun.y = gameState.character.y-3;
+                if(gameState.cosmetic){
+                    gameState.cosmetic.flipX = true;
+                }
             }
             gameState.gun.depth = gameState.character.y+5;
             gameState.gun.setRotation(Phaser.Math.Angle.Between(gameState.gun.x,gameState.gun.y,scene.input.x,scene.input.y)); 
-            if (gameState.keys.SPACE.isDown && gameState.ammo > 0){
-                if (gameState.characterStats.fireReady == true){
-                    scene.sound.play('shoot');
-                    gameState.ammo --;
-                    gameState.ammoText.setText(gameState.ammo);
-                    gameState.characterStats.fireReady = false;
-                    
-                    var flash;
-                    var bullet;
-                    if (gameState.character.flipX == false){
-                        bullet = gameState.bullets.create(gameState.character.x,gameState.character.y+3,`${gameState.bulletSkin}`);
-                    }else {
-                        bullet = gameState.bullets.create(gameState.character.x,gameState.character.y+3,`${gameState.bulletSkin}`);
-                    }
-                    gameState.gun.anims.play('flash',true);
-                    gameState.angle=Phaser.Math.Angle.Between(bullet.x,bullet.y,scene.input.x,scene.input.y);
-                    bullet.setRotation(gameState.angle); 
-                    scene.physics.moveToObject(bullet,scene.input,gameState.characterStats.bulletSpeed);
-                    //scene.physics.moveTo(bullet,scene.input.x,scene.input.y,300);
-                    var bulletLoop = scene.time.addEvent({
-                        delay: 5000,
-                        callback: ()=>{
-                            bullet.destroy();
-                        },  
-                        startAt: 0,
-                        timeScale: 1
-                    });
-                    scene.physics.add.overlap(bullet, gameState.zombies,(bulletT, target)=>{
-                        scene.sound.play('hitSound',{volume:0.2});
-                        var angle = Phaser.Math.Angle.Between(bulletT.x,bulletT.y,target.x,target.y);
-                        var blood = scene.physics.add.sprite(target.x+10,target.y, 'bulletBlood');
-                        blood.setRotation(angle);
-                        blood.anims.play('animate','true');
-                        scene.time.addEvent({
-                            delay: 200,
-                            callback: ()=>{
-                                blood.destroy();
-                            },  
-                            startAt: 0,
-                            timeScale: 1
-                        });
-                        bulletLoop.destroy();
-                        if(target.health>0){
-                            bulletT.destroy();
-                        }
-                        target.health -= gameState.damage;
-                    });
-                    scene.time.addEvent({
-                        delay: gameState.fireRate,
-                        callback: ()=>{
-                            gameState.characterStats.fireReady = true;
-                        },  
-                        startAt: 0,
-                        timeScale: 1
-                    });
+            if (gameState.keys.SPACE.isDown && gameState.ammo > 0 && gameState.characterStats.fireReady == true){
+                if(gameState.gunType == 'assaultRifle'){
+                    gameState.assaultRifleShoot(scene);
+                }else if (gameState.gunType == "minigun"){
+                    gameState.minigunShoot(scene);
+                    gameState.speed = gameState.characterStats.speed*0.2;
+                }else if (gameState.gunType == "rocketLauncher"){
+                    gameState.rocketLauncherShoot(scene);
+                }
+            }else {
+                if(gameState.gunType == 'minigun' && !gameState.keys.SHIFT.isDown){
+                    gameState.speed = gameState.characterStats.speed*0.8;
+                    gameState.gun.setFrame(0);
                 }
             }
-            else if (gameState.keys.R.isDown){
+            if (gameState.keys.R.isDown){
                 gameState.reload(scene);
                 
             }
@@ -316,11 +318,20 @@ let gameState = {
                     gameState.reload(scene);
                 }
             }
+            if(gameState.cosmetic){
+                gameState.cosmetic.x = gameState.character.x;
+                gameState.cosmetic.y = gameState.character.y-20;
+                gameState.cosmetic.depth = gameState.character.y+1;
+            }
         }
         else {
             if(gameState.once == false){
                 gameState.once = true;
                 gameState.character.anims.play('characterDeath',true);
+                gameState.gun.destroy();
+                if(gameState.cosmetic){
+                    gameState.cosmetic.destroy();
+                }
                 gameState.character.setVelocityX(0);
                 gameState.character.setVelocityY(0);
                 gameState.spawnZombies.destroy();
@@ -354,9 +365,21 @@ let gameState = {
                 clip.flipX = true;
             }
             clip.depth = clip.y +1;
-            gameState.ammo = gameState.characterStats.ammo;
+            var time = 0;
+            if(gameState.gunType == 'assaultRifle'){
+                gameState.ammo = gameState.characterStats.ammo;
+                time = 1500
+            }else if(gameState.gunType == 'minigun'){
+                gameState.ammo = gameState.characterStats.ammo*8;
+                time = 4000
+            }
+            else if(gameState.gunType == 'rocketLauncher'){
+                gameState.ammo = Math.ceil(gameState.characterStats.ammo/4.17)
+                time = 2500
+            }
+            
             scene.time.addEvent({
-                delay: 2500,
+                delay: time,
                 callback: ()=>{
                     gameState.ammoText.setText(gameState.ammo);
                     gameState.characterStats.fireReady = true;
@@ -383,6 +406,188 @@ let gameState = {
             });
         }
     },
+    
+    
+    assaultRifleShoot: function(scene){
+        scene.sound.play('shoot');
+        gameState.ammo --;
+        gameState.ammoText.setText(gameState.ammo);
+        gameState.characterStats.fireReady = false;
+
+        var flash;
+        var bullet;
+        if (gameState.character.flipX == false){
+            bullet = gameState.bullets.create(gameState.character.x,gameState.character.y+3,`${gameState.bulletSkin}`);
+        }else {
+            bullet = gameState.bullets.create(gameState.character.x,gameState.character.y+3,`${gameState.bulletSkin}`);
+        }
+        gameState.gun.anims.play('flash',true);
+        gameState.angle=Phaser.Math.Angle.Between(bullet.x,bullet.y,scene.input.x,scene.input.y);
+        bullet.setRotation(gameState.angle); 
+        scene.physics.moveToObject(bullet,scene.input,gameState.characterStats.bulletSpeed);
+        //scene.physics.moveTo(bullet,scene.input.x,scene.input.y,300);
+        var bulletLoop = scene.time.addEvent({
+            delay: 5000,
+            callback: ()=>{
+                bullet.destroy();
+            },  
+            startAt: 0,
+            timeScale: 1
+        });
+        scene.physics.add.overlap(bullet, gameState.zombies,(bulletT, target)=>{
+            scene.sound.play('hitSound',{volume:0.2});
+            var angle = Phaser.Math.Angle.Between(bulletT.x,bulletT.y,target.x,target.y);
+            var blood = scene.physics.add.sprite(target.x+10,target.y, 'bulletBlood');
+            blood.setRotation(angle);
+            blood.anims.play('animate','true');
+            scene.time.addEvent({
+                delay: 200,
+                callback: ()=>{
+                    blood.destroy();
+                },  
+                startAt: 0,
+                timeScale: 1
+            });
+            bulletLoop.destroy();
+            if(target.health>0){
+                bulletT.destroy();
+            }
+            target.health -= gameState.damage;
+        });
+        scene.time.addEvent({
+            delay: gameState.fireRate,
+            callback: ()=>{
+                gameState.characterStats.fireReady = true;
+            },  
+            startAt: 0,
+            timeScale: 1
+        });
+    },
+    
+    minigunShoot: function(scene){
+        scene.sound.play('shoot');
+        gameState.ammo --;
+        gameState.ammoText.setText(gameState.ammo);
+        gameState.characterStats.fireReady = false;
+
+        var flash;
+        var bullet;
+        if (gameState.character.flipX == false){
+            bullet = gameState.bullets.create(gameState.character.x,gameState.character.y+3,`${gameState.bulletSkin}`);
+        }else {
+            bullet = gameState.bullets.create(gameState.character.x,gameState.character.y+3,`${gameState.bulletSkin}`);
+        }
+        gameState.gun.anims.play('minigunflash',true);
+        gameState.angle=Phaser.Math.Angle.Between(bullet.x,bullet.y,scene.input.x,scene.input.y);
+        bullet.setRotation(gameState.angle); 
+        //scene.physics.moveToObject(bullet,scene.input,gameState.characterStats.bulletSpeed);
+        scene.physics.moveTo(bullet,(scene.input.x-50)+Math.ceil(Math.random()*100),(scene.input.y-50)+Math.ceil(Math.random()*100),gameState.characterStats.bulletSpeed);
+        var bulletLoop = scene.time.addEvent({
+            delay: 5000,
+            callback: ()=>{
+                bullet.destroy();
+            },  
+            startAt: 0,
+            timeScale: 1
+        });
+        scene.physics.add.overlap(bullet, gameState.zombies,(bulletT, target)=>{
+            scene.sound.play('hitSound',{volume:0.2});
+            var angle = Phaser.Math.Angle.Between(bulletT.x,bulletT.y,target.x,target.y);
+            var blood = scene.physics.add.sprite(target.x+10,target.y, 'bulletBlood');
+            blood.setRotation(angle);
+            blood.anims.play('animate','true');
+            scene.time.addEvent({
+                delay: 200,
+                callback: ()=>{
+                    blood.destroy();
+                },  
+                startAt: 0,
+                timeScale: 1
+            });
+            bulletLoop.destroy();
+            if(target.health>0){
+                bulletT.destroy();
+            }
+            target.health -= gameState.damage;
+        });
+        scene.time.addEvent({
+            delay: gameState.fireRate,
+            callback: ()=>{
+                gameState.characterStats.fireReady = true;
+            },  
+            startAt: 0,
+            timeScale: 1
+        });
+    },
+    
+    rocketLauncherShoot: function(scene){
+        scene.sound.play('shoot');
+        gameState.ammo --;
+        gameState.ammoText.setText(gameState.ammo);
+        gameState.characterStats.fireReady = false;
+
+        var flash;
+        var bullet;
+        var target = {
+            x: scene.input.x,
+            y: scene.input.y
+        }
+        if (gameState.character.flipX == false){
+            bullet = gameState.bullets.create(gameState.character.x,gameState.character.y+3,`${gameState.bulletSkin}`);
+        }else {
+            bullet = gameState.bullets.create(gameState.character.x,gameState.character.y+3,`${gameState.bulletSkin}`);
+        }
+        gameState.gun.anims.play('rocketLauncherflash',true);
+        gameState.angle=Phaser.Math.Angle.Between(bullet.x,bullet.y,scene.input.x,scene.input.y);
+        bullet.setRotation(gameState.angle); 
+        scene.physics.moveToObject(bullet,scene.input,gameState.characterStats.bulletSpeed);
+        //scene.physics.moveTo(bullet,scene.input.x,scene.input.y,300);
+        var bulletLoop = scene.time.addEvent({
+            delay: 5000,
+            callback: ()=>{
+                bullet.destroy();
+            },  
+            startAt: 0,
+            timeScale: 1
+        });
+        scene.time.addEvent({
+            delay: (Phaser.Math.Distance.BetweenPoints(bullet, target)/gameState.characterStats.bulletSpeed)*1000,
+            callback: ()=>{
+                if( gameState.zombies.getChildren().length >0){
+                    scene.sound.play('explode',{ volume: 0.5 });
+                    var explosion = scene.physics.add.sprite(bullet.x,bullet.y,'');
+                    explosion.anims.play('explode','true');
+                    scene.time.addEvent({
+                        delay: 1000,
+                        callback: ()=>{
+                            explosion.destroy();
+                        },  
+                        startAt: 0,
+                        timeScale: 1
+                    });
+                    bullet.destroy();
+                    var maxKills = 10;
+                    for (var i = 0; i < gameState.zombies.getChildren().length; i++){
+                        if(Phaser.Math.Distance.BetweenPoints(gameState.zombies.getChildren()[i], bullet)<150&&maxKills>0){
+                            gameState.zombies.getChildren()[i].health -= gameState.damage;
+                            maxKills--;
+                        }
+                    }
+                } 
+            },  
+            startAt: 0,
+            timeScale: 1
+        });
+        scene.time.addEvent({
+            delay: gameState.fireRate,
+            callback: ()=>{
+                gameState.characterStats.fireReady = true;
+            },  
+            startAt: 0,
+            timeScale: 1
+        });
+    },
+    
     
     //creates a randon powerup or item after zombie death
     createItem: function(scene,x,y){
@@ -422,14 +627,20 @@ let gameState = {
                 gameState.disableReload = true;
                 iBI.destroy();
                 gone.destroy();
-                gameState.fireRate = gameState.characterStats.fireRate - 35;
+                gameState.fireRate = gameState.fireRate - 35;
                 gameState.ammo = 9999;
                 gameState.createTimer(scene,10,60,'infiniteBulletsImage');
                 scene.time.addEvent({
                     delay: 10000,
                     callback: ()=>{
-                        gameState.fireRate = gameState.characterStats.fireRate;
-                        gameState.ammo = gameState.characterStats.ammo;
+                        gameState.fireRate = gameState.currentRate;
+                        if(gameState.gunType == 'assaultRifle'){
+                             gameState.ammo = gameState.characterStats.ammo;
+                        }else if(gameState.gunType == 'minigun'){
+                             gameState.ammo = gameState.characterStats.ammo*8;
+                        }else if(gameState.gunType == 'rocketLauncher'){
+                             gameState.ammo = Math.ceil(gameState.characterStats.ammo/4.17);
+                        }
                         gameState.disableReload = false;
                     },  
                     startAt: 0,
@@ -451,47 +662,50 @@ let gameState = {
             scene.physics.add.overlap(gameState.character, grenade,(character, grenade)=>{
                 gone.destroy();
                 grenade.destroy();
-                var gren = scene.physics.add.sprite(gameState.character.x,gameState.character.y,'grenadeObj');
-                if( gameState.zombies.getChildren().length >0){
-                    var closest = 10000;
-                    var dist;
-                    var target;
-                    for (var i = 0; i < gameState.zombies.getChildren().length; i++){ 
-                        dist = Phaser.Math.Distance.BetweenPoints(gameState.zombies.getChildren()[i], gameState.character);
-                        if(dist<closest){
-                            closest = dist;
-                            target = gameState.zombies.getChildren()[i];
-                        }
-                    }
-                    scene.physics.moveToObject(gren,target,0,500);
-                    scene.time.addEvent({
-                        delay: 500,
-                        callback: ()=>{
-                            scene.sound.play('explode',{ volume: 0.5 });
-                            var explosion = scene.physics.add.sprite(gren.x,gren.y,'');
-                            explosion.anims.play('explode','true');
-                            scene.time.addEvent({
-                                delay: 1000,
-                                callback: ()=>{
-                                    explosion.destroy();
-                                },  
-                                startAt: 0,
-                                timeScale: 1
-                            });
-                            gren.destroy();
-                            var maxKills = 10;
-                            for (var i = 0; i < gameState.zombies.getChildren().length; i++){
-                                if(Phaser.Math.Distance.BetweenPoints(gameState.zombies.getChildren()[i], gren)<150&&maxKills>0){
-                                    gameState.zombies.getChildren()[i].health -= 300;
-                                    maxKills--;
-                                }
+                if(gameState.bossBattle == false){
+                    var gren = scene.physics.add.sprite(gameState.character.x,gameState.character.y,'grenadeObj');
+                    if( gameState.zombies.getChildren().length >0){
+                        var closest = 10000;
+                        var dist;
+                        var target;
+                        for (var i = 0; i < gameState.zombies.getChildren().length; i++){ 
+                            dist = Phaser.Math.Distance.BetweenPoints(gameState.zombies.getChildren()[i], gameState.character);
+                            if(dist<closest){
+                                closest = dist;
+                                target = gameState.zombies.getChildren()[i];
                             }
-                        },  
-                        startAt: 0,
-                        timeScale: 1
-                    });
-                } else{
-                    gren.destroy();
+                        }
+                        scene.physics.moveToObject(gren,target,0,500);
+                        scene.time.addEvent({
+                            delay: 500,
+                            callback: ()=>{
+                                scene.sound.play('explode',{ volume: 0.5 });
+                                var explosion = scene.physics.add.sprite(gren.x,gren.y,'');
+                                explosion.anims.play('explode','true');
+                                scene.time.addEvent({
+                                    delay: 1000,
+                                    callback: ()=>{
+                                        explosion.destroy();
+                                    },  
+                                    startAt: 0,
+                                    timeScale: 1
+                                });
+                                gren.destroy();
+                                var maxKills = 10;
+                                for (var i = 0; i < gameState.zombies.getChildren().length; i++){
+                                    if(Phaser.Math.Distance.BetweenPoints(gameState.zombies.getChildren()[i], gren)<150&&maxKills>0){
+                                        gameState.zombies.getChildren()[i].health -= 300;
+                                        maxKills--;
+                                    }
+                                }
+                            },  
+                            startAt: 0,
+                            timeScale: 1
+                        });
+                    } 
+                    else{
+                        gren.destroy();
+                    }
                 }
             });
         }
@@ -515,6 +729,22 @@ let gameState = {
                 if(gameState.health > gameState.characterStats.health){
                     gameState.health = gameState.characterStats.health;
                 }
+            });
+        }
+        else if(random == 84){
+            var crate = scene.physics.add.sprite(x,y,'lootBox');
+            crate.anims.play('lootShine','true');
+            var gone = scene.time.addEvent({
+                delay: 10000,
+                callback: ()=>{
+                    crate.destroy();
+                },  
+                startAt: 0,
+                timeScale: 1
+            });
+            scene.physics.add.overlap(gameState.character, crate,(character, crate)=>{
+                crate.destroy();
+                gameState.numLootboxes++;
             });
         }
     },
@@ -714,7 +944,7 @@ let gameState = {
                     zom.rage = true;
                     rageTimer.paused = true;
                     breatheLoop = scene.time.addEvent({
-                        delay: 6500,
+                        delay: 2500,
                         callback: ()=>{
                             zom.rage = false;
                             breatheTimer.paused = false;
@@ -1016,7 +1246,7 @@ let gameState = {
                             });
                             gameState.angle=Phaser.Math.Angle.Between(bullet.x,bullet.y,gameState.character.x,gameState.character.y);
                             bullet.setRotation(gameState.angle); 
-                            scene.physics.moveToObject(bullet,gameState.character,gameState.characterStats.bulletSpeed/1.25);
+                            scene.physics.moveToObject(bullet,gameState.character,gameState.characterStats.bulletSpeed/2.25);
                             var bulletLoop = scene.time.addEvent({
                                 delay: 5000,
                                 callback: ()=>{

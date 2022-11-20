@@ -11,11 +11,7 @@ class MenuScene extends Phaser.Scene {
         //people
         this.load.spritesheet('character','images/character.png',{frameWidth: 120,frameHeight:120});
         this.load.spritesheet('characterDeath','images/characterDeath.png',{frameWidth: 50,frameHeight:50});
-        this.load.spritesheet('characterSkeletonGun','images/characterSkeletonGun.png',{frameWidth: 50,frameHeight:50});
-        this.load.spritesheet('characterSus','images/characterSus.png',{frameWidth: 50,frameHeight:50});
-        this.load.spritesheet('characterSatvik','images/characterSatvik.png',{frameWidth: 50,frameHeight:50});
-        this.load.spritesheet('characterLaserTrooper','images/characterLaserTrooper.png',{frameWidth: 50,frameHeight:50});
-        this.load.spritesheet('characterGoldenGun','images/characterGoldenGun.png',{frameWidth: 50,frameHeight:50});
+        
         
         this.load.spritesheet('merchant','images/merchantSprite.png',{frameWidth: 100,frameHeight:90});
         //zombies
@@ -32,6 +28,7 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('bulletBlood','images/bulletBlood.png',{frameWidth: 20,frameHeight:20});
         //bullets
         this.load.image('bullet1','images/bullet1.png');
+        this.load.image('rocket1','images/rocket1.png');
         this.load.image('bulletTrail','images/bulletTrail.png');
         this.load.image('bulletLaser','images/bulletLaser.png');
         this.load.image('bulletTennis','images/bulletTennis.png');
@@ -42,10 +39,19 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('coin','images/coin.png',{frameWidth: 30,frameHeight:32});
         this.load.image('grenadeObj','images/grenadeObj.png');
         this.load.image('gunMagazine','images/gunMagazine.png');
-        //assault rifle
+        //weapons
         this.load.spritesheet('assaultRifle','images/assaultRifle.png',{frameWidth: 150,frameHeight:80});
+        this.load.spritesheet('minigun','images/minigun.png',{frameWidth: 190,frameHeight:75});
+        this.load.spritesheet('rocketLauncher','images/rocketLauncher.png',{frameWidth: 190,frameHeight:75});
         this.load.spritesheet('goldenAssaultRifle','images/goldenAssaultRifle.png',{frameWidth: 100,frameHeight:50});
         
+        
+        //cosmetics
+        this.load.image('susHat','images/susHat.png');
+        this.load.image('satvikHat','images/satvikHat.png');
+        this.load.image('diegoHat','images/diegoHat.png');
+        this.load.image('diego2Hat','images/diego2Hat.png');
+        this.load.image('helmetHat','images/helmetHat.png');
         
         this.load.spritesheet('background','images/background.png',{frameWidth: 1397,frameHeight:675});
         this.load.spritesheet('infiniteBulletsImage','images/infiniteBulletsImage.png',{frameWidth: 35,frameHeight:35});
@@ -64,13 +70,20 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('startButton','images/startButton.png',{frameWidth: 250,frameHeight:70});
         this.load.spritesheet('titleImage','images/titleImage.png',{frameWidth: 1200,frameHeight:200});
         this.load.spritesheet('upgradeButton','images/upgradeButton.png',{frameWidth: 70,frameHeight:65});
+        this.load.spritesheet('equipButton','images/equipButton.png',{frameWidth: 100,frameHeight:40});
         //cosmet
         this.load.spritesheet('homeIcon','images/homeIcon.png',{frameWidth: 100,frameHeight:80});
         this.load.spritesheet('upgradesButton','images/upgradesButton.png',{frameWidth: 210,frameHeight:60});
         this.load.spritesheet('cosmeticsButton','images/cosmeticsButton.png',{frameWidth: 220,frameHeight:44});
+        this.load.spritesheet('lootboxesButton','images/lootboxesButton.png',{frameWidth: 150,frameHeight:45});
+        this.load.spritesheet('loadoutButton','images/loadoutButton.png',{frameWidth: 120,frameHeight:45});
         this.load.image('backButton','images/backButton.png');
         this.load.image('backButton2','images/backButton2.png');
         this.load.spritesheet('settingsButton','images/settingsButton.png',{frameWidth: 70,frameHeight:65});
+        this.load.spritesheet('assaultRifleIcon','images/assaultRifleIcon.png',{frameWidth: 100,frameHeight:100});
+        this.load.spritesheet('minigunIcon','images/minigunIcon.png',{frameWidth: 100,frameHeight:100});
+        this.load.spritesheet('rocketLauncherIcon','images/rocketLauncherIcon.png',{frameWidth: 100,frameHeight:100});
+        
         //pause menu
         this.load.image('pauseMainMenuButton','images/pauseMainMenuButton.png');
         this.load.image('pauseMenu','images/pauseMenu.png');
@@ -82,11 +95,12 @@ class MenuScene extends Phaser.Scene {
         
         //Shop icons
         this.load.image('equippedImage','images/equippedImage.png');
-        this.load.image('susShop','images/susShop.png');
-        this.load.image('satvikShop','images/satvikShop.png');
-        this.load.image('laserTrooperShop','images/laserTrooperShop.png');
-        this.load.image('skeletonGunShop','images/skeletonGunShop.png');
+        this.load.spritesheet('lootBox','images/lootBox.png',{frameWidth: 400,frameHeight:400});
+        this.load.spritesheet('openButton','images/openButton.png',{frameWidth: 282,frameHeight:120});
+        
         this.load.image('goldenGunShop','images/goldenGunShop.png');
+        this.load.image('frame','images/frame.png');
+        this.load.image('frame2','images/frame2.png');
         
         //audio
         this.load.audio('menuBgMusic', 'audio/menuBgMusic.mp3');
@@ -158,6 +172,19 @@ class MenuScene extends Phaser.Scene {
             frames:this.anims.generateFrameNames('timerSprite',{start: 0,end: 16})
         });
         
+        //lootboxAnimation
+        this.anims.create({
+            key: 'lootShine',
+            frameRate: 10,
+            repeat: -1,
+            frames:this.anims.generateFrameNames('lootBox',{start: 0,end: 8})
+        });
+        this.anims.create({
+            key: 'lootOpen',
+            frameRate: 10,
+            frames:this.anims.generateFrameNames('lootBox',{start: 8,end: 20})
+        });
+        
         //character Animations
         this.anims.create({
             key: 'characterIdle',
@@ -183,67 +210,7 @@ class MenuScene extends Phaser.Scene {
             frames:this.anims.generateFrameNames('character',{start: 10,end: 13})
         });
         //skins
-        this.anims.create({
-            key: 'characterSusIdle',
-            frameRate: 1,
-            repeat: -1,
-            frames:this.anims.generateFrameNames('characterSus',{start: 0,end: 0})
-        });
-        this.anims.create({
-            key: 'characterSusWalk',
-            frameRate: 25,
-            repeat: -1,
-            frames:this.anims.generateFrameNames('characterSus',{start: 0,end: 11})
-        });
-        this.anims.create({
-            key: 'characterSatvikIdle',
-            frameRate: 1,
-            repeat: -1,
-            frames:this.anims.generateFrameNames('characterSatvik',{start: 0,end: 0})
-        });
-        this.anims.create({
-            key: 'characterSatvikWalk',
-            frameRate: 25,
-            repeat: -1,
-            frames:this.anims.generateFrameNames('characterSatvik',{start: 0,end: 11})
-        });
-        this.anims.create({
-            key: 'characterSkeletonGunIdle',
-            frameRate: 1,
-            repeat: -1,
-            frames:this.anims.generateFrameNames('characterSkeletonGun',{start: 0,end: 0})
-        });
-        this.anims.create({
-            key: 'characterSkeletonGunWalk',
-            frameRate: 25,
-            repeat: -1,
-            frames:this.anims.generateFrameNames('characterSkeletonGun',{start: 0,end: 11})
-        });
-        this.anims.create({
-            key: 'characterLaserTrooperIdle',
-            frameRate: 1,
-            repeat: -1,
-            frames:this.anims.generateFrameNames('characterLaserTrooper',{start: 0,end: 0})
-        });
-        this.anims.create({
-            key: 'characterLaserTrooperWalk',
-            frameRate: 25,
-            repeat: -1,
-            frames:this.anims.generateFrameNames('characterLaserTrooper',{start: 0,end: 11})
-        });
-        this.anims.create({
-            key: 'characterGoldenGunIdle',
-            frameRate: 1,
-            repeat: -1,
-            frames:this.anims.generateFrameNames('characterGoldenGun',{start: 0,end: 0})
-        });
-        this.anims.create({
-            key: 'characterGoldenGunWalk',
-            frameRate: 25,
-            repeat: -1,
-            frames:this.anims.generateFrameNames('characterGoldenGun',{start: 0,end: 11})
-        });
-        
+       
         
         
         
@@ -430,6 +397,19 @@ class MenuScene extends Phaser.Scene {
             frames:this.anims.generateFrameNames('goldAssaultRifle',{start: 0,end: 2})
         });
         
+        //minigun
+        this.anims.create({
+            key: 'minigunflash',
+            frameRate: 12,
+            frames:this.anims.generateFrameNames('minigun',{start: 1,end: 6})
+        });
+        //rocketLauncher
+        this.anims.create({
+            key: 'rocketLauncherflash',
+            frameRate: 12,
+            frames:this.anims.generateFrameNames('rocketLauncher',{start: 1,end: 4})
+        });
+        
         
         
         
@@ -440,9 +420,9 @@ class MenuScene extends Phaser.Scene {
         });
         this.anims.create({
             key: 'canimate',
-            frameRate: 5,
+            frameRate: 7,
             repeat: -1,
-            frames:this.anims.generateFrameNames('coin',{start: 0,end: 3})
+            frames:this.anims.generateFrameNames('coin',{start: 0,end: 9})
         });
         
         this.anims.create({
@@ -492,7 +472,7 @@ class MenuScene extends Phaser.Scene {
         //Changes cursor icon image
         this.input.setDefaultCursor('url(images/cursor.cur), pointer');
     
-        gameState.loadSave();
+        //gameState.loadSave();
 	
         //creats button image and interaction to start the game
         var button = this.add.image(window.innerWidth/2,window.innerHeight/2,'startButton').setInteractive();
