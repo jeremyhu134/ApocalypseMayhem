@@ -285,7 +285,7 @@ let gameState = {
             }
             gameState.gun.depth = gameState.character.y+5;
             gameState.gun.setRotation(Phaser.Math.Angle.Between(gameState.gun.x,gameState.gun.y,scene.input.x,scene.input.y)); 
-            if (gameState.keys.SPACE.isDown && gameState.ammo > 0 && gameState.characterStats.fireReady == true || gameState.keys.mouse.isDown && gameState.ammo > 0 && gameState.characterStats.fireReady == true){
+            if (gameState.keys.SPACE.isDown && gameState.ammo > 0 && gameState.characterStats.fireReady == true){
                 if(gameState.gunType == 'assaultRifle'){
                     gameState.assaultRifleShoot(scene);
                 }else if (gameState.gunType == "minigun"){
