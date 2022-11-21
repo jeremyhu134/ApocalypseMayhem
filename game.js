@@ -59,7 +59,7 @@ let gameState = {
     sprintlock: 0,
     
     selected: ' ',
-    pick: 'd',
+    pick: null,
     //current sprite for bullet and player
     skin: 'character',
     bulletSkin: 'bullet1',
@@ -71,27 +71,44 @@ let gameState = {
         {
             owned: 0,
             name: 'satvikHat',
-            displayName: 'Satvik'
+            displayName: 'Satvik',
+            animate: false,
+            rarity: 'rare'
         },
         {
             owned: 0,
             name: 'susHat',
-            displayName: 'Sus'
+            displayName: 'Sus',
+            animate: false,
+            rarity: 'common'
         },
         {
             owned: 0,
             name: 'helmetHat',
-            displayName: 'Helmet'
+            displayName: 'Helmet',
+            animate: false,
+            rarity: 'common'
         },
         {
             owned: 0,
             name: 'diegoHat',
-            displayName: 'Happy Diego'
+            displayName: 'Happy Diego',
+            animate: false,
+            rarity: 'common'
         },
         {
             owned: 0,
             name: 'diego2Hat',
-            displayName: 'Rambo Diego'
+            displayName: 'Rambo Diego',
+            animate: false,
+            rarity: 'rare'
+        },
+        {
+            owned: 0,
+            name: 'burningHelmetHat',
+            displayName: 'Burning Helmet',
+            animate: true,
+            rarity: 'epic'
         }
     ],
     
@@ -144,12 +161,19 @@ let gameState = {
     
     createSlot: function(scene,hat,num){
         scene.add.image(hat.x,hat.y,`frame2`).setDepth(-1);
+        if(gameState.skins[num].animate == true){
+            hat.anims.play(`${gameState.skins[num].name}Animate`,true);
+        }
         hat.on('pointerup', () => {
-            console.log(hat.name);
-            gameState.display.x = 95;
-            gameState.display.y = 135;
+            gameState.display.x = 170;
+            gameState.display.y = 215;
             gameState.display.setTexture(`${gameState.skins[num].name}`);
-            gameState.pick = gameState.skins[num].name;
+            gameState.pick = gameState.skins[num];
+            if(gameState.skins[num].animate == true){
+                gameState.display.anims.play(`${gameState.skins[num].name}Animate`);
+            }else {
+                gameState.display.anims.pause();
+            }
         });
         hat.on('pointerover', () => {
             //hat.setFrame(1);
@@ -161,7 +185,7 @@ let gameState = {
     loadCosmetics: function(scene,x,y){
         var count = 0;
         for (var i = 1; i <= 1; i++){
-            for (var j = 1; j <= 5; j++){
+            for (var j = 1; j <= 6; j++){
                 if(gameState.skins[j-1].owned == 1){
                     var hat = scene.add.sprite(x+125*j,y+100*i,`${gameState.skins[j-1].name}`).setScale(60/60).setInteractive();
                     gameState.createSlot(scene,hat,j-1);

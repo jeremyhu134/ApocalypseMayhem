@@ -37,7 +37,10 @@ class ArenaScene extends Phaser.Scene {
         gameState.character = this.physics.add.sprite(window.innerWidth/2-16,window.innerHeight/2+16,`${gameState.skin}`).setDepth(0).setScale(0.7);
         gameState.character.setSize(60,100);
         if(gameState.selected !== ' '){
-            gameState.cosmetic = this.add.image(gameState.character.x,gameState.character.y,`${gameState.selected}`).setScale(0.7);
+            gameState.cosmetic = this.add.sprite(gameState.character.x,gameState.character.y,`${gameState.selected.name}`).setScale(0.7);
+            if(gameState.selected.animate == true){
+               gameState.cosmetic.anims.play(`${gameState.selected.name}Animate`,true);
+            }
         }
         
         if(gameState.gunType == 'assaultRifle'){

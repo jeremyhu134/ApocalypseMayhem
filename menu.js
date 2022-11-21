@@ -52,6 +52,7 @@ class MenuScene extends Phaser.Scene {
         this.load.image('diegoHat','images/diegoHat.png');
         this.load.image('diego2Hat','images/diego2Hat.png');
         this.load.image('helmetHat','images/helmetHat.png');
+        this.load.spritesheet('burningHelmetHat','images/burningHelmetHat.png',{frameWidth: 55,frameHeight:120});
         
         this.load.spritesheet('background','images/background.png',{frameWidth: 1397,frameHeight:675});
         this.load.spritesheet('infiniteBulletsImage','images/infiniteBulletsImage.png',{frameWidth: 35,frameHeight:35});
@@ -210,8 +211,16 @@ class MenuScene extends Phaser.Scene {
             frameRate: 10,
             frames:this.anims.generateFrameNames('character',{start: 10,end: 13})
         });
-        //skins
-       
+        
+        
+        
+        //skins && cosmetics
+        this.anims.create({
+            key: 'burningHelmetHatAnimate',
+            frameRate: 12,
+            repeat: -1,
+            frames:this.anims.generateFrameNames('burningHelmetHat',{start: 0,end: 3})
+        });
         
         
         

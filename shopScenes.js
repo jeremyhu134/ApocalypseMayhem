@@ -288,15 +288,15 @@ class ShopScene extends Phaser.Scene {
         
         
         //skins
-        gameState.selected;
-        gameState.display = this.add.sprite(-1999,-1999,'character').setOrigin(0,0).setDepth(2).setScale(2.7);
+        gameState.selected = ' ';
+        gameState.display = this.add.sprite(-1999,-1999,'character').setOrigin(0.5).setDepth(2).setScale(2.7);
         var charac = this.add.sprite(20,140,'character').setOrigin(0,0).setDepth(1).setScale(2.5);
         charac.anims.play("characterIdle");
         
         var equip = this.add.sprite(window.innerWidth/2-535,window.innerHeight/2+150,'equipButton').setOrigin(0,0).setDepth(1).setScale(1.5).setInteractive();
         equip.on('pointerup', () => {
             gameState.selected = gameState.pick;
-            if(gameState.selected == 'd'){
+            if(gameState.selected == null){
                 gameState.selected = ' ';
             }
 		});
@@ -602,6 +602,9 @@ class LootboxesScene extends Phaser.Scene {
                 if(gameState.skins[rand].owned == 0){
                     loot = this.add.sprite(window.innerWidth/2, window.innerHeight/2,`${gameState.skins[rand].name}`).setScale(2).setDepth(1);
                     gameState.skins[rand].owned = 1;
+                    if(gameState.skins[rand].animate == true){
+                        loot.anims.play(`${gameState.skins[rand].name}Animate`);
+                    }
                     scene.time.addEvent({
                         delay: 2000,
                         callback: ()=>{
