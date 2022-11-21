@@ -722,7 +722,7 @@ let gameState = {
                 }
             });
         }
-        else if(random <= 84 && random >= 82){
+        else if(random == 84){
             var crate = scene.physics.add.sprite(x,y,'lootBox').setScale(0.15);
             crate.anims.play('lootShine','true');
             var gone = scene.time.addEvent({
