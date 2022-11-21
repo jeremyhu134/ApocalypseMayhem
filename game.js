@@ -736,6 +736,7 @@ let gameState = {
             scene.physics.add.overlap(gameState.character, crate,(character, crate)=>{
                 crate.destroy();
                 gameState.thingsToSave.numLootboxes++;
+                gameState.save();
             });
         }
     },
