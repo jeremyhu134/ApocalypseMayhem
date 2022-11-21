@@ -80,10 +80,9 @@ class UpgradeScene extends Phaser.Scene {
             back4.setFrame(0);
 		});
         
-        
         //add gold icon and amound
         this.add.image(20,20,"coin").setOrigin(0,0).setDepth(-100).setScale(2);
-        var coinsText = this.add.text(125, 40, `${gameState.coins}`, {
+        var coinsText = this.add.text(125, 40, `${gameState.thingsToSave.coins}`, {
             fill: '#ADD8E6', 
             fontSize: `30px`,
             fontFamily: 'Qahiri',
@@ -270,7 +269,7 @@ class ShopScene extends Phaser.Scene {
 		});
         //add gold icon and amound
         this.add.image(20,20,"coin").setOrigin(0,0).setDepth(-100).setScale(2);
-        var coinsText = this.add.text(125, 40, `${gameState.coins}`, {
+        var coinsText = this.add.text(125, 40, `${gameState.thingsToSave.coins}`, {
             fill: '#ADD8E6', 
             fontSize: `30px`,
             fontFamily: 'Qahiri',
@@ -279,7 +278,7 @@ class ShopScene extends Phaser.Scene {
         this.time.addEvent({
             delay: 10,
             callback: ()=>{
-                coinsText.setText(gameState.coins);
+                coinsText.setText(gameState.thingsToSave.coins);
             },  
             startAt: 0,
             timeScale: 1,
@@ -337,12 +336,12 @@ class ShopScene extends Phaser.Scene {
                 equipped.x = goldenGunIcon.x;
                 equipped.y = goldenGunIcon.y;
             }
-            else if(gameState.coins< 10000){
+            else if(gameState.thingsToSave.coins< 10000){
                 alert("Merchant: Can't buy that lad!");
             }else {
                 alert("Merchant: The Golden Gun is yours!");
                 gameState.globalScene.sound.play('purchased');
-                gameState.coins -= 10000;
+                gameState.thingsToSave.coins -= 10000;
                 gameState.weaponSkins.goldenGun.owned = 1;
                 gameState.skin = gameState.weaponSkins.goldenGun.name;
                 gameState.bulletSkin = gameState.weaponSkins.goldenGun.nameB;
@@ -362,12 +361,12 @@ class ShopScene extends Phaser.Scene {
                 equipped.x = susIcon.x;
                 equipped.y = susIcon.y;
             }
-            else if(gameState.coins < 1500){
+            else if(gameState.thingsToSave.coins < 1500){
                 alert("Merchant: Can't buy that lad!");
             }else {
                 alert("Merchant: Your Sus now!");
                 gameState.globalScene.sound.play('purchased');
-                gameState.coins -= 1500;
+                gameState.thingsToSave.coins -= 1500;
                 gameState.weaponSkins.sus.owned = 1;
                 gameState.skin = gameState.weaponSkins.sus.name;
                 gameState.bulletSkin = 'bullet1';
@@ -387,12 +386,12 @@ class ShopScene extends Phaser.Scene {
                 equipped.x = laserTrooperIcon.x;
                 equipped.y = laserTrooperIcon.y;
             }
-            else if(gameState.coins < 2000){
+            else if(gameState.thingsToSave.coins < 2000){
                 alert("Merchant: Can't buy that lad!");
             }else {
                 alert("Merchant: Welcome to the Empire!");
                 gameState.globalScene.sound.play('purchased');
-                gameState.coins -= 2000;
+                gameState.thingsToSave.coins -= 2000;
                 gameState.weaponSkins.laserTrooper.owned = 1;
                 gameState.skin = gameState.weaponSkins.laserTrooper.name;
                 gameState.bulletSkin = 'bulletLaser';
@@ -412,12 +411,12 @@ class ShopScene extends Phaser.Scene {
                 equipped.x = satvikIcon.x;
                 equipped.y = satvikIcon.y;
             }
-            else if(gameState.coins < 1000){
+            else if(gameState.thingsToSave.coins < 1000){
                 alert("Merchant: Can't buy that lad!");
             }else {
                 alert("Merchant: The god himself...");
                 gameState.globalScene.sound.play('purchased');
-                gameState.coins -= 1000;
+                gameState.thingsToSave.coins -= 1000;
                 gameState.weaponSkins.satvik.owned = 1;
                 gameState.skin = gameState.weaponSkins.satvik.name;
                 gameState.bulletSkin = 'bulletTennis';
@@ -564,7 +563,7 @@ class LootboxesScene extends Phaser.Scene {
         
         //add gold icon and amound
         this.add.image(20,20,"coin").setOrigin(0,0).setDepth(-100).setScale(2);
-        var coinsText = this.add.text(125, 40, `${gameState.coins}`, {
+        var coinsText = this.add.text(125, 40, `${gameState.thingsToSave.coins}`, {
             fill: '#ADD8E6', 
             fontSize: `30px`,
             fontFamily: 'Qahiri',
@@ -575,7 +574,7 @@ class LootboxesScene extends Phaser.Scene {
         
         var crate = this.add.sprite(window.innerWidth/2, window.innerHeight/2,'lootBox').setScale(1).setDepth(2);
         crate.anims.play('lootShine');
-        var count = this.add.text(window.innerWidth/2+150, window.innerHeight/2+140,`x ${gameState.numLootboxes}`,{
+        var count = this.add.text(window.innerWidth/2+150, window.innerHeight/2+140,`x ${gameState.thingsToSave.numLootboxes}`,{
             fill: 'WHITE', 
             fontSize: `30px`,
             fontFamily: 'Qahiri',
@@ -584,11 +583,11 @@ class LootboxesScene extends Phaser.Scene {
         
         var open = this.add.sprite(window.innerWidth-320, window.innerHeight-150,'openButton').setOrigin(0,0).setInteractive();
         open.on('pointerup', () => {
-            if(gameState.numLootboxes > 0 && opening == false){
+            if(gameState.thingsToSave.numLootboxes > 0 && opening == false){
                 opening = true;
                 crate.anims.play('lootOpen');
-                gameState.numLootboxes --;
-                count.setText(`x ${gameState.numLootboxes}`);
+                gameState.thingsToSave.numLootboxes --;
+                count.setText(`x ${gameState.thingsToSave.numLootboxes}`);
                 
                 
                 var rand = Math.ceil(Math.random()*gameState.skins.length)-1;
@@ -614,12 +613,12 @@ class LootboxesScene extends Phaser.Scene {
                 }else {
                     var rand2 = Math.ceil(Math.random()*400)+100;
                     loot = this.add.sprite(window.innerWidth/2, window.innerHeight/2,`coin`).setScale(2).setDepth(1);
-                    gameState.coins += rand2;
+                    gameState.thingsToSave.coins += rand2;
                     scene.time.addEvent({
                         delay: 2000,
                         callback: ()=>{
                             prizeText.setText(`${rand2} coins`);
-                            coinsText.setText(`${gameState.coins}`);
+                            coinsText.setText(`${gameState.thingsToSave.coins}`);
                         },  
                         startAt: 0,
                         timeScale: 1
@@ -630,6 +629,7 @@ class LootboxesScene extends Phaser.Scene {
                     delay: 5000,
                     callback: ()=>{
                         opening = false;
+                        gameState.save();
                         crate.anims.play('lootShine');
                         loot.destroy();
                         prizeText.setText(``);
@@ -640,7 +640,7 @@ class LootboxesScene extends Phaser.Scene {
             }
 		});
         open.on('pointerover', () => {
-            if(gameState.numLootboxes > 0){
+            if(gameState.thingsToSave.numLootboxes > 0){
                 open.setFrame(1);
             }
 		});
@@ -758,7 +758,7 @@ class LoadoutScene extends Phaser.Scene {
         
         //add gold icon and amound
         this.add.image(20,20,"coin").setOrigin(0,0).setDepth(-100).setScale(2);
-        var coinsText = this.add.text(125, 40, `${gameState.coins}`, {
+        var coinsText = this.add.text(125, 40, `${gameState.thingsToSave.coins}`, {
             fill: '#ADD8E6', 
             fontSize: `30px`,
             fontFamily: 'Qahiri',

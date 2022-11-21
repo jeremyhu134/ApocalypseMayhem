@@ -157,6 +157,7 @@ class MenuScene extends Phaser.Scene {
             gameState.arenaM.setMute(true);
         }
         
+        gameState.loadSave();
         
         
         //Loading Animation

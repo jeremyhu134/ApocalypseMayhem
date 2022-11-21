@@ -31,7 +31,7 @@ const game = new Phaser.Game(config);
 
 //create a block-scoped object that stores variables that can be accessed in any scene
 let gameState = {
-    coins: 100,
+    
     coinsAdd: 3,
     //character stats constants
     characterStats: {
@@ -94,7 +94,7 @@ let gameState = {
             displayName: 'Rambo Diego'
         }
     ],
-    numLootboxes: 10,
+    
     
     //calculates upgrade cost for upgrades
     upgradeCosts: function(current, max, factor){
@@ -123,55 +123,22 @@ let gameState = {
         gameState.bossSummonKills = 0;
     },
     
-    
+    thingsToSave: {
+        numLootboxes: 3,
+        coins: 100,
+    },
     //saves variable values to local storage
     save: function(){
-        localStorage.setItem(1, gameState.coins);
-        localStorage.setItem(2, gameState.characterStats.health);
-        localStorage.setItem(3, gameState.characterStats.damage);
-        localStorage.setItem(4, gameState.characterStats.ammo);
-        localStorage.setItem(5, gameState.characterStats.speed);
-        localStorage.setItem(6, gameState.weaponSkins.goldenGun.owned);
-        localStorage.setItem(7, gameState.highestKills);
-        localStorage.setItem(8, gameState.weaponSkins.sus.owned);
-        localStorage.setItem(9, gameState.weaponSkins.laserTrooper.owned);
-        localStorage.setItem(10, gameState.weaponSkins.satvik.owned);
-        localStorage.setItem(11, gameState.weaponSkins.SkeletonGun.owned);
+        window.localStorage.setItem("skins", JSON.stringify(gameState.skins));
+        window.localStorage.setItem("thingsToSave", JSON.stringify(gameState.thingsToSave));
     },
     //loads variable values from localstorage
     loadSave: function(){
-        if(localStorage.getItem(1)){//If variable exists in localStorage
-            gameState.coins = parseInt(localStorage.getItem(1));
+        if(JSON.parse(window.localStorage.getItem("skins")) !== null){
+            gameState.skins = JSON.parse(window.localStorage.getItem("skins"));
         }
-        if(localStorage.getItem(2)){//If variable exists in localStorage
-            gameState.characterStats.health = parseInt(localStorage.getItem(2));
-        }
-        if(localStorage.getItem(3)){//If variable exists in localStorage
-            gameState.characterStats.damage = parseInt(localStorage.getItem(3));
-        }
-        if(localStorage.getItem(4)){//If variable exists in localStorage
-            gameState.characterStats.ammo = parseInt(localStorage.getItem(4));
-        }
-        if(localStorage.getItem(5)){//If variable exists in localStorage
-            gameState.characterStats.speed = parseInt(localStorage.getItem(5));
-        }
-        if(localStorage.getItem(6)){//If variable exists in localStorage
-            gameState.weaponSkins.goldenGun.owned = parseInt(localStorage.getItem(6));
-        }
-        if(localStorage.getItem(7)){//If variable exists in localStorage
-            gameState.highestKills = parseInt(localStorage.getItem(7));
-        }
-        if(localStorage.getItem(8)){//If variable exists in localStorage
-            gameState.weaponSkins.sus.owned = parseInt(localStorage.getItem(8));
-        }
-        if(localStorage.getItem(9)){//If variable exists in localStorage
-            gameState.weaponSkins.laserTrooper.owned = parseInt(localStorage.getItem(9));
-        }
-        if(localStorage.getItem(10)){//If variable exists in localStorage
-            gameState.weaponSkins.satvik.owned = parseInt(localStorage.getItem(10));
-        }
-        if(localStorage.getItem(11)){//If variable exists in localStorage
-            gameState.weaponSkins.SkeletonGun.owned = parseInt(localStorage.getItem(11));
+        if(JSON.parse(window.localStorage.getItem("thingsToSave")) !== null){
+            gameState.thingsToSave = JSON.parse(window.localStorage.getItem("thingsToSave"));
         }
     },
     
@@ -606,7 +573,7 @@ let gameState = {
             scene.physics.add.overlap(gameState.character, coin,(character, coin)=>{
                 scene.sound.play('coinSound',{volume:0.05});
                 var rand = Math.ceil(Math.random()*2)+gameState.coinsAdd;
-                gameState.coins += rand;
+                gameState.thingsToSave.coins += rand;
                 coin.destroy();
                 gone.destroy();
             });
@@ -731,8 +698,8 @@ let gameState = {
                 }
             });
         }
-        else if(random == 84){
-            var crate = scene.physics.add.sprite(x,y,'lootBox');
+        else if(random <= 84 && random >= 82){
+            var crate = scene.physics.add.sprite(x,y,'lootBox').setScale(0.15);
             crate.anims.play('lootShine','true');
             var gone = scene.time.addEvent({
                 delay: 10000,
@@ -744,7 +711,7 @@ let gameState = {
             });
             scene.physics.add.overlap(gameState.character, crate,(character, crate)=>{
                 crate.destroy();
-                gameState.numLootboxes++;
+                gameState.thingsToSave.numLootboxes++;
             });
         }
     },
@@ -1009,7 +976,7 @@ let gameState = {
                         }
                     }
                     else {
-                        gameState.coins += 50;
+                        gameState.thingsToSave.coins += 50;
                         loop.destroy();
                         attack.destroy();
                         rageTimer.destroy();
@@ -1157,7 +1124,7 @@ let gameState = {
                         }
                     }
                     else {
-                        gameState.coins += 50;
+                        gameState.thingsToSave.coins += 50;
                         loop.destroy();
                         attack.destroy();
                         zom.setVelocityX(0);
@@ -1337,7 +1304,7 @@ let gameState = {
                         }
                     }
                     else {
-                        gameState.coins += 50;
+                        gameState.thingsToSave.coins += 50;
                         loop.destroy();
                         move.destroy();
                         attack.destroy();

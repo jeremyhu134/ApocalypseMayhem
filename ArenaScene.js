@@ -78,7 +78,7 @@ class ArenaScene extends Phaser.Scene {
        
         //Coins icon and text
         var coinImage = this.add.image(20,window.innerHeight-70,"coin").setOrigin(0,0).setDepth(-100).setScale(1.5);
-        var coinsText = this.add.text(coinImage.x+50, coinImage.y+10, `${gameState.coins}`, {
+        var coinsText = this.add.text(coinImage.x+50, coinImage.y+10, `${gameState.thingsToSave.coins}`, {
             fill: '#ADD8E6', 
             fontSize: `30px`,
             fontFamily: 'Qahiri',
@@ -100,7 +100,7 @@ class ArenaScene extends Phaser.Scene {
             delay: 10,
             callback: ()=>{
                 killsText.setText(gameState.kills);
-                coinsText.setText(gameState.coins);
+                coinsText.setText(gameState.thingsToSave.coins);
                 if (gameState.bossSummonKills >= 50){
                     //resets kills for boss and stops zombies from summoning
                     gameState.bossSummonKills = 0;
