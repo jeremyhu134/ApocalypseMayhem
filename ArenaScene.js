@@ -327,6 +327,7 @@ class TourScene extends Phaser.Scene {
                             gameState.currentScene.scene.stop("TourScene");
                             gameState.currentScene.scene.start('ToursMenuScene');
                             gameState.skins[6].owned = 1;
+                            gameState.save();
                         }
                     },  
                     startAt: 0,
