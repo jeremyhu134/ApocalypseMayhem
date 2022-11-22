@@ -53,8 +53,10 @@ class MenuScene extends Phaser.Scene {
         this.load.image('diego2Hat','images/diego2Hat.png');
         this.load.image('helmetHat','images/helmetHat.png');
         this.load.spritesheet('burningHelmetHat','images/burningHelmetHat.png',{frameWidth: 55,frameHeight:120});
+        this.load.spritesheet('ghastlySkullHat','images/ghastlySkullHat.png',{frameWidth: 65,frameHeight:65});
         
         this.load.spritesheet('background','images/background.png',{frameWidth: 1397,frameHeight:675});
+        this.load.image('backgroundCity','images/backgroundCity.png');
         this.load.spritesheet('infiniteBulletsImage','images/infiniteBulletsImage.png',{frameWidth: 35,frameHeight:35});
         this.load.spritesheet('grenadeImage','images/grenadeImage.png',{frameWidth: 35,frameHeight:35});
         this.load.spritesheet('medicImage','images/medicImage.png',{frameWidth: 35,frameHeight:35});
@@ -62,13 +64,13 @@ class MenuScene extends Phaser.Scene {
         this.load.image('zombieHealthBar','images/zombieHealthBar.png');
         this.load.image('healthBarBg','images/healthBarBg.png');
         this.load.image('healthImage','images/healthImage.png');
-        this.load.image('barrier','images/barrier.png');    
         this.load.image('ammoIcon','images/ammoIcon.png'); 
         this.load.image('sprintIcon','images/sprintIcon.png'); 
         this.load.image('skull','images/skull.png');  
         this.load.image('redSkull','images/redSkull.png');
         this.load.spritesheet('timerSprite','images/timerSprite.png',{frameWidth: 50,frameHeight:50});
         this.load.spritesheet('startButton','images/startButton.png',{frameWidth: 250,frameHeight:70});
+        this.load.spritesheet('toursButton','images/toursButton.png',{frameWidth: 250,frameHeight:70});
         this.load.spritesheet('titleImage','images/titleImage.png',{frameWidth: 1200,frameHeight:200});
         this.load.spritesheet('upgradeButton','images/upgradeButton.png',{frameWidth: 70,frameHeight:65});
         this.load.spritesheet('equipButton','images/equipButton.png',{frameWidth: 100,frameHeight:40});
@@ -99,7 +101,6 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('lootBox','images/lootBox.png',{frameWidth: 400,frameHeight:400});
         this.load.spritesheet('openButton','images/openButton.png',{frameWidth: 282,frameHeight:120});
         
-        this.load.image('goldenGunShop','images/goldenGunShop.png');
         this.load.image('frame','images/frame.png');
         this.load.image('frame2','images/frame2.png');
         
@@ -107,6 +108,7 @@ class MenuScene extends Phaser.Scene {
         this.load.audio('menuBgMusic', 'audio/menuBgMusic.mp3');
         this.load.audio('bossMusic', 'audio/bossMusic.mp3');
         this.load.audio('arenaMusic', 'audio/arenaMusic.mp3');
+        this.load.audio('tourMusic', 'audio/tourMusic.mp3');
         this.load.audio('death', 'audio/death.mp3');
         //sound affects
         this.load.audio('characterHurt', 'audio/characterHurt.mp3');
@@ -220,6 +222,12 @@ class MenuScene extends Phaser.Scene {
             frameRate: 12,
             repeat: -1,
             frames:this.anims.generateFrameNames('burningHelmetHat',{start: 0,end: 3})
+        });
+        this.anims.create({
+            key: 'ghastlySkullHatAnimate',
+            frameRate: 20,
+            repeat: -1,
+            frames:this.anims.generateFrameNames('ghastlySkullHat',{start: 0,end: 11})
         });
         
         
@@ -506,10 +514,32 @@ class MenuScene extends Phaser.Scene {
         button.on('pointerout', function(pointer){
             button.setFrame(0);
         });
+        
+        var button2 = this.add.image(window.innerWidth/2,window.innerHeight/2+80,'toursButton').setInteractive();
+        button2.on('pointerdown', function(pointer){
+            button2.destroy();
+            var loadingBar = gameState.globalScene.add.sprite(window.innerWidth/2,window.innerHeight/2+80,'loading').setScale(5);
+            loadingBar.anims.play('load',true);
+            gameState.globalScene.time.addEvent({
+                delay: 1000,
+                callback: ()=>{
+                    gameState.globalScene.scene.start('ToursMenuScene');
+                },  
+                startAt: 0,
+                timeScale: 1
+            });
+        });
+        button2.on('pointerover', function(pointer){
+            scene.sound.play('click');
+            button2.setFrame(1);
+        });
+        button2.on('pointerout', function(pointer){
+            button2.setFrame(0);
+        });
         //Update Characters Stats so upgrades and such apply
         gameState.updateStats();
         //Upgrades Button
-        var Ubutton = this.add.image(window.innerWidth/2+60,window.innerHeight/2+80,'upgradeButton').setInteractive();
+        var Ubutton = this.add.image(window.innerWidth/2+60,window.innerHeight/2+280,'upgradeButton').setInteractive();
         Ubutton.on('pointerdown', function(pointer){
             gameState.globalScene.scene.start('UpgradeScene');
         });
@@ -521,7 +551,7 @@ class MenuScene extends Phaser.Scene {
             Ubutton.setFrame(0);
         });
         //SettingsButton
-        var Sbutton = this.add.image(window.innerWidth/2-60,window.innerHeight/2+80,'settingsButton').setInteractive();
+        var Sbutton = this.add.image(window.innerWidth/2-60,window.innerHeight/2+280,'settingsButton').setInteractive();
         Sbutton.on('pointerdown', function(pointer){
             gameState.globalScene.scene.pause("MenuScene");
             gameState.globalScene.scene.launch('PauseScene');
@@ -536,5 +566,125 @@ class MenuScene extends Phaser.Scene {
 	}
     update(){
         //game loop that constantly runs (not needed for menu)
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class ToursMenuScene extends Phaser.Scene {
+    constructor() {
+        //parameter for phaser class to allow phaser to reference subclass
+		super({ key: 'ToursMenuScene' })
+	}
+    preload(){
+        //no preloads for this subclass
+        
+        //previews
+        this.load.image('cityTourPreview','images/cityTourPreview.png');
+    }
+    create(){
+        var selected = '';
+        //mutes menu music
+        gameState.bgM.setMute(true);
+        //create and animate background
+        var bg = this.physics.add.sprite(0,0,'background').setOrigin(0,0).setScale(window.innerHeight/675).setDepth(-100);
+        bg.anims.play('bganimate','true');
+        
+        this.physics.add.image(0,0,'background').setOrigin(0,0).setScale(window.innerHeight/675).setDepth(-100);
+        
+        //Reference scene in local variable and create a back button
+        var scene = this;
+        
+        
+        if(gameState.bossM){
+            gameState.bossM.setMute(true);
+        } if (gameState.tourM){
+            gameState.tourM.setMute(true);
+        }
+        
+        
+        var back = this.add.sprite(window.innerWidth-120,0,'homeIcon').setOrigin(0,0).setInteractive();
+        back.on('pointerup', () => {
+            //gameState.save();
+            scene.scene.stop("LoadoutScene");
+            scene.scene.start(`MenuScene`);
+		});
+        back.on('pointerover', () => {
+            back.setFrame(1);
+		});
+        back.on('pointerout', () => {
+            back.setFrame(0);
+		});
+        
+        this.add.text(window.innerWidth/2-(window.innerWidth/4), 40, `City Tour`, {
+            fill: '#000000', 
+            fontSize: `30px`,
+            fontFamily: 'Qahiri',
+            strokeThickness: 4,
+        }).setDepth(window.innerHeight+3).setOrigin(0.5);
+        this.add.image(window.innerWidth/2-(window.innerWidth/4),window.innerHeight/2-(window.innerHeight/4)+50,'cityTourPreview').setScale(0.7);
+        var tour1 = this.add.image(window.innerWidth/2-(window.innerWidth/4),window.innerHeight/2,'startButton').setInteractive();
+        tour1.on('pointerdown', function(pointer){
+            tour1.destroy();
+            var loadingBar = scene.add.sprite(window.innerWidth/2-(window.innerWidth/4),window.innerHeight/2,'loading').setScale(5);
+            loadingBar.anims.play('load',true);
+            scene.time.addEvent({
+                delay: 800,
+                callback: ()=>{
+                    gameState.tour = 'city';
+                    scene.scene.start('TourScene');
+                },  
+                startAt: 0,
+                timeScale: 1
+            });
+        });
+        tour1.on('pointerover', function(pointer){
+            scene.sound.play('click');
+            tour1.setFrame(1);
+        });
+        tour1.on('pointerout', function(pointer){
+            tour1.setFrame(0);
+        });
+        
+        //add gold icon and amound
+        this.add.image(20,20,"coin").setOrigin(0,0).setDepth(-100).setScale(2);
+        var coinsText = this.add.text(125, 40, `${gameState.thingsToSave.coins}`, {
+            fill: '#ADD8E6', 
+            fontSize: `30px`,
+            fontFamily: 'Qahiri',
+            strokeThickness: 4,
+        }).setDepth(window.innerHeight+3);
+        
+        //merchant and interact
+        
+    }
+    update(){
+        //game loop that constantly runs (not needed for upgrades)
     }
 }
