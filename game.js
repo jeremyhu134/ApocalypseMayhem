@@ -17,7 +17,7 @@ const config = {
         }
     },
     //subclass scenes 
-    scene:[MenuScene,PauseScene,ArenaScene,UpgradeScene,DeathScene,ShopScene,UnlockScene,LoadoutScene,LootboxesScene],
+    scene:[MenuScene,PauseScene,ArenaScene,UpgradeScene,DeathScene,ShopScene,UnlockScene,LoadoutScene,LootboxesScene,ToursMenuScene,TourScene],
     //phasers scale system to fit into the brower
     scale: {
         zoom: 1,
@@ -109,6 +109,13 @@ let gameState = {
             displayName: 'Burning Helmet',
             animate: true,
             rarity: 'epic'
+        },
+        {
+            owned: 0,
+            name: 'ghastlySkullHat',
+            displayName: 'Ghastly Skull',
+            animate: true,
+            rarity: 'epic'
         }
     ],
     
@@ -152,7 +159,17 @@ let gameState = {
     //loads variable values from localstorage
     loadSave: function(){
         if(JSON.parse(window.localStorage.getItem("skins")) !== null){
-            gameState.skins = JSON.parse(window.localStorage.getItem("skins"));
+            var lol = JSON.parse(window.localStorage.getItem("skins"));
+            console.log(lol);
+            if(gameState.skins.length == lol.length){
+                gameState.skins = lol;
+            }else {
+                for (var i = lol.length; i < gameState.skins.length; i++){
+                    lol.push(gameState.skins[i]);
+                }
+                gameState.skins = lol;
+                gameState.save();
+            }
         }
         if(JSON.parse(window.localStorage.getItem("thingsToSave")) !== null){
             gameState.thingsToSave = JSON.parse(window.localStorage.getItem("thingsToSave"));
@@ -164,6 +181,7 @@ let gameState = {
         if(gameState.skins[num].animate == true){
             hat.anims.play(`${gameState.skins[num].name}Animate`,true);
         }
+        console.log(gameState.skins[num].name);
         hat.on('pointerup', () => {
             gameState.display.x = 170;
             gameState.display.y = 215;
@@ -184,13 +202,16 @@ let gameState = {
     },
     loadCosmetics: function(scene,x,y){
         var count = 0;
-        for (var i = 1; i <= 1; i++){
-            for (var j = 1; j <= 6; j++){
-                if(gameState.skins[j-1].owned == 1){
-                    var hat = scene.add.sprite(x+125*j,y+100*i,`${gameState.skins[j-1].name}`).setScale(60/60).setInteractive();
-                    gameState.createSlot(scene,hat,j-1);
-                }
-                count++;
+        for (var j = 1; j <= 6; j++){
+            if(gameState.skins[j-1].owned == 1){
+                var hat = scene.add.sprite(x+125*j,y+100,`${gameState.skins[j-1].name}`).setScale(60/60).setInteractive();
+                gameState.createSlot(scene,hat,j-1);
+            }
+        }
+        for (var j = 1; j <= 1; j++){
+            if(gameState.skins[(j-1)+6].owned == 1){
+                var hat = scene.add.sprite(x+125*j,y+250,`${gameState.skins[(j-1)+6].name}`).setScale(60/60).setInteractive();
+                gameState.createSlot(scene,hat,(j-1)+6);
             }
         }
     },
@@ -722,7 +743,7 @@ let gameState = {
                 }
             });
         }
-        else if(random == 84){
+        else if(random <= 84 && random >= 82){
             var crate = scene.physics.add.sprite(x,y,'lootBox').setScale(0.15);
             crate.anims.play('lootShine','true');
             var gone = scene.time.addEvent({
@@ -736,7 +757,6 @@ let gameState = {
             scene.physics.add.overlap(gameState.character, crate,(character, crate)=>{
                 crate.destroy();
                 gameState.thingsToSave.numLootboxes++;
-                gameState.save();
             });
         }
     },
@@ -789,7 +809,7 @@ let gameState = {
     },
     cloneZombie :{
         health : 2000,
-        damage : 25,
+        damage : 20,
         grenDamage: 50,
         speed : 150,
         projectileSpeed: 200,
@@ -903,7 +923,9 @@ let gameState = {
     //buffs the stats of the zombies after every boss kill
     buffZombies: function(){
         gameState.bossM.setMute(true);
-        gameState.arenaM.setMute(false);
+        if(gameState.arenaM){
+            gameState.arenaM.setMute(false);
+        }
         gameState.bossBattle = false;
         gameState.coinsAdd++;
         if(gameState.zombie.speed <= 170){
@@ -1238,7 +1260,7 @@ let gameState = {
                             });
                             gameState.angle=Phaser.Math.Angle.Between(bullet.x,bullet.y,gameState.character.x,gameState.character.y);
                             bullet.setRotation(gameState.angle); 
-                            scene.physics.moveToObject(bullet,gameState.character,gameState.characterStats.bulletSpeed/2.25);
+                            scene.physics.moveToObject(bullet,gameState.character,gameState.characterStats.bulletSpeed/3);
                             var bulletLoop = scene.time.addEvent({
                                 delay: 5000,
                                 callback: ()=>{
@@ -1275,9 +1297,9 @@ let gameState = {
                 repeat: -1
             });
             var move = scene.time.addEvent({
-                delay: 3000,
+                delay: 5000,
                 callback: ()=>{
-                    scene.physics.moveTo(zom,Math.random()*window.innerWidth,Math.random()*window.innerHeight,0,3000);
+                    scene.physics.moveTo(zom,Math.random()*window.innerWidth,Math.random()*window.innerHeight,0,5000);
                 },  
                 startAt: 0,
                 timeScale: 1,
@@ -1287,7 +1309,7 @@ let gameState = {
                 delay: 10000,
                 callback: ()=>{
                     var gren = scene.physics.add.sprite(zom.x,zom.y,'grenadeObj');
-                    scene.physics.moveToObject(gren,gameState.character,0,1000);
+                    scene.physics.moveToObject(gren,gameState.character,0,1500);
                     scene.time.addEvent({
                         delay: 1000,
                         callback: ()=>{
