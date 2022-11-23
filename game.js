@@ -761,7 +761,7 @@ let gameState = {
                 }
             });
         }
-        else if(random <= 84 && random >= 82){
+        else if(random <= 84 && random >= 83){
             var crate = scene.physics.add.sprite(x,y,'lootBox').setScale(0.15);
             crate.anims.play('lootShine','true');
             var gone = scene.time.addEvent({
@@ -775,6 +775,7 @@ let gameState = {
             scene.physics.add.overlap(gameState.character, crate,(character, crate)=>{
                 crate.destroy();
                 gameState.thingsToSave.numLootboxes++;
+                gameState.save()
             });
         }
     },
