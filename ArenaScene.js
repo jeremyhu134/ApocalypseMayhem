@@ -220,11 +220,13 @@ class TourScene extends Phaser.Scene {
     }
     create(){
         //Variables to reference the scene globally
-        gameState.currentScene = this;
+        gameState.currentScene = 'TourScene';
         gameState.globalScene = this;
         //Background image and animation start
         if(gameState.tour == 'city'){
              var bg = this.physics.add.sprite(0,0,'backgroundCity').setOrigin(0,0).setScale(window.innerHeight/675).setDepth(-100);
+        }else if (gameState.tour == 'trampoline'){
+            var bg = this.physics.add.sprite(0,0,'backgroundTrampoline').setOrigin(0,0).setScale(window.innerWidth/1400).setDepth(-100);
         }
        
         //bg.anims.play('bganimate','true');
@@ -316,17 +318,33 @@ class TourScene extends Phaser.Scene {
         this.time.addEvent({
             delay: 3000,
             callback: ()=>{
-                gameState.createCloneZombie(this,100,window.innerHeight/2);
-                gameState.createCloneZombie(this,window.innerWidth-100,window.innerHeight/2);
+                if(gameState.tour == 'city'){
+                    gameState.createCloneZombie(this,100,window.innerHeight/2);
+                    gameState.createCloneZombie(this,window.innerWidth-100,window.innerHeight/2);
+                }else if (gameState.tour == 'trampoline'){
+                    gameState.createQuadZombie(this,window.innerWidth/2-100,window.innerHeight/2);
+                    this.time.addEvent({
+                        delay: 1500,
+                        callback: ()=>{
+                            gameState.createQuadZombie(this,window.innerWidth/2+100,window.innerHeight/2);
+                        },  
+                        startAt: 0,
+                        timeScale: 1
+                    });
+                }
                 gameState.checkBoss = this.time.addEvent({
                     delay: 10,
                     callback: ()=>{
                         killsText.setText(gameState.kills);
                         coinsText.setText(gameState.thingsToSave.coins);
                         if(gameState.zombies.getChildren().length <= 0){
-                            gameState.currentScene.scene.stop("TourScene");
-                            gameState.currentScene.scene.start('ToursMenuScene');
-                            gameState.skins[6].owned = 1;
+                            gameState.globalScene.scene.stop("TourScene");
+                            gameState.globalScene.scene.start('ToursMenuScene');
+                            if(gameState.tour == 'city'){
+                                gameState.skins[6].owned = 1;
+                            }else if (gameState.tour == 'trampoline'){
+                                gameState.skins[7].owned = 1;
+                            }
                             gameState.save();
                         }
                     },  
@@ -382,7 +400,9 @@ class TourScene extends Phaser.Scene {
     }
     update(){
         //constantly loops these functions to the keyboard input is constantly tracked
-        gameState.chracterControls(this,gameState.character,gameState.characterStats);
+        if(gameState.health !== -1000){
+            gameState.chracterControls(this,gameState.character,gameState.characterStats);
+        }
         //constantly checking for achievement completions
         gameState.achievmentTracker(this);
     }

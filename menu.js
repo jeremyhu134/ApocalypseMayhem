@@ -49,14 +49,17 @@ class MenuScene extends Phaser.Scene {
         //cosmetics
         this.load.image('susHat','images/susHat.png');
         this.load.image('satvikHat','images/satvikHat.png');
+        this.load.image('chadvikHat','images/chadvikHat.png');
         this.load.image('diegoHat','images/diegoHat.png');
         this.load.image('diego2Hat','images/diego2Hat.png');
         this.load.image('helmetHat','images/helmetHat.png');
         this.load.spritesheet('burningHelmetHat','images/burningHelmetHat.png',{frameWidth: 55,frameHeight:120});
         this.load.spritesheet('ghastlySkullHat','images/ghastlySkullHat.png',{frameWidth: 65,frameHeight:65});
+        this.load.spritesheet('roidRagePhilHat','images/roidRagePhilHat.png',{frameWidth: 60,frameHeight:60});
         
         this.load.spritesheet('background','images/background.png',{frameWidth: 1397,frameHeight:675});
         this.load.image('backgroundCity','images/backgroundCity.png');
+        this.load.image('backgroundTrampoline','images/backgroundTrampoline.png');
         this.load.spritesheet('infiniteBulletsImage','images/infiniteBulletsImage.png',{frameWidth: 35,frameHeight:35});
         this.load.spritesheet('grenadeImage','images/grenadeImage.png',{frameWidth: 35,frameHeight:35});
         this.load.spritesheet('medicImage','images/medicImage.png',{frameWidth: 35,frameHeight:35});
@@ -158,6 +161,8 @@ class MenuScene extends Phaser.Scene {
             gameState.bossM.setMute(true);
         } if (gameState.arenaM){
             gameState.arenaM.setMute(true);
+        }if (gameState.tourM){
+            gameState.tourM.setMute(true);
         }
         
         gameState.loadSave();
@@ -228,6 +233,12 @@ class MenuScene extends Phaser.Scene {
             frameRate: 20,
             repeat: -1,
             frames:this.anims.generateFrameNames('ghastlySkullHat',{start: 0,end: 11})
+        });
+        this.anims.create({
+            key: 'roidRagePhilHatAnimate',
+            frameRate: 13,
+            repeat: -1,
+            frames:this.anims.generateFrameNames('roidRagePhilHat',{start: 0,end: 2})
         });
         
         
@@ -607,6 +618,7 @@ class ToursMenuScene extends Phaser.Scene {
         
         //previews
         this.load.image('cityTourPreview','images/cityTourPreview.png');
+        this.load.image('trampolineTourPreview','images/trampolineTourPreview.png');
     }
     create(){
         var selected = '';
@@ -670,6 +682,37 @@ class ToursMenuScene extends Phaser.Scene {
         });
         tour1.on('pointerout', function(pointer){
             tour1.setFrame(0);
+        });
+        
+        
+        this.add.text(window.innerWidth/2+(window.innerWidth/4), 40, `Trampoline Tour`, {
+            fill: '#000000', 
+            fontSize: `30px`,
+            fontFamily: 'Qahiri',
+            strokeThickness: 4,
+        }).setDepth(window.innerHeight+3).setOrigin(0.5);
+        this.add.image(window.innerWidth/2+(window.innerWidth/4),window.innerHeight/2-(window.innerHeight/4)+50,'trampolineTourPreview').setScale(0.7);
+        var tour2 = this.add.image(window.innerWidth/2+(window.innerWidth/4),window.innerHeight/2,'startButton').setInteractive();
+        tour2.on('pointerdown', function(pointer){
+            tour2.destroy();
+            var loadingBar = scene.add.sprite(window.innerWidth/2+(window.innerWidth/4),window.innerHeight/2,'loading').setScale(5);
+            loadingBar.anims.play('load',true);
+            scene.time.addEvent({
+                delay: 800,
+                callback: ()=>{
+                    gameState.tour = 'trampoline';
+                    scene.scene.start('TourScene');
+                },  
+                startAt: 0,
+                timeScale: 1
+            });
+        });
+        tour2.on('pointerover', function(pointer){
+            scene.sound.play('click');
+            tour2.setFrame(1);
+        });
+        tour2.on('pointerout', function(pointer){
+            tour2.setFrame(0);
         });
         
         //add gold icon and amound

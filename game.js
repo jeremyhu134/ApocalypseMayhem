@@ -116,6 +116,20 @@ let gameState = {
             displayName: 'Ghastly Skull',
             animate: true,
             rarity: 'epic'
+        },
+        {
+            owned: 0,
+            name: 'chadvikHat',
+            displayName: 'Chadvik',
+            animate: false,
+            rarity: 'rare'
+        },
+        {
+            owned: 0,
+            name: 'roidRagePhilHat',
+            displayName: 'Roid Rage Phil',
+            animate: true,
+            rarity: 'Epic'
         }
     ],
     
@@ -208,7 +222,7 @@ let gameState = {
                 gameState.createSlot(scene,hat,j-1);
             }
         }
-        for (var j = 1; j <= 1; j++){
+        for (var j = 1; j <= 3; j++){
             if(gameState.skins[(j-1)+6].owned == 1){
                 var hat = scene.add.sprite(x+125*j,y+250,`${gameState.skins[(j-1)+6].name}`).setScale(60/60).setInteractive();
                 gameState.createSlot(scene,hat,(j-1)+6);
@@ -339,6 +353,7 @@ let gameState = {
         else {
             if(gameState.once == false){
                 gameState.once = true;
+                gameState.health = -1000;
                 gameState.character.anims.play('characterDeath',true);
                 gameState.gun.destroy();
                 if(gameState.cosmetic){
@@ -350,7 +365,9 @@ let gameState = {
                 if(gameState.bossM){
                     gameState.bossM.setMute(true);
                 }
-                gameState.arenaM.setMute(true);
+                if(gameState.arenaM){
+                    gameState.arenaM.setMute(true);
+                }
                 scene.physics.pause();
                 if(gameState.Sbutton){
                     gameState.Sbutton.destroy();
@@ -360,6 +377,7 @@ let gameState = {
                     callback: ()=>{
                         gameState.Sbutton.destroy();
                         gameState.globalScene.scene.pause("ArenaScene");
+                        gameState.globalScene.scene.pause("TourScene");
                         gameState.globalScene.scene.launch('DeathScene');
                     },  
                     startAt: 0,
@@ -1117,13 +1135,11 @@ let gameState = {
                                             zom.setVelocityX(0);
                                             zom.setVelocityY(0);
                                             targeter.destroy();
-                                            for (var i = 0; i < gameState.zombies.getChildren().length; i++){
-                                                if(Phaser.Math.Distance.BetweenPoints(zom, gameState.character)<gameState.quadZombie.damageRange){
-                                                    gameState.pDamage(gameState.quadZombie.damage);
-                                                }
+                                            if(Phaser.Math.Distance.BetweenPoints(zom, gameState.character)<gameState.quadZombie.damageRange){
+                                                gameState.pDamage(gameState.quadZombie.damage);
                                             }
                                             gameState.quake.play();
-                                            scene.cameras.main.shake(800);
+                                            scene.cameras.main.shake(400);
                                             var quake = scene.add.sprite(zom.x, zom.y,'quadZombieAbility').setDepth(0).setScale(1.7);
                                             quake.anims.play('quadZombieQuake');
                                             scene.time.addEvent({
