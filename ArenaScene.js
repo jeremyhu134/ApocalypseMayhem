@@ -61,6 +61,12 @@ class ArenaScene extends Phaser.Scene {
             gameState.ammo = Math.ceil(gameState.characterStats.ammo/4.17);
             gameState.speed = gameState.characterStats.speed*0.85;
         }
+        else if(gameState.gunType == 'uzi'){
+            gameState.fireRate = 40;
+            gameState.damage = gameState.characterStats.damage/2;
+            gameState.ammo = Math.ceil(gameState.characterStats.ammo*1.2);
+            gameState.speed = gameState.characterStats.speed*1.3;
+        }
         gameState.current = gameState.speed;
         gameState.currentRate = gameState.fireRate;
         
@@ -277,6 +283,12 @@ class TourScene extends Phaser.Scene {
             gameState.ammo = Math.ceil(gameState.characterStats.ammo/4.17);
             gameState.speed = gameState.characterStats.speed*0.85;
         }
+        else if(gameState.gunType == 'uzi'){
+            gameState.fireRate = 100;
+            gameState.damage = gameState.characterStats.damage/2;
+            gameState.ammo = Math.ceil(gameState.characterStats.ammo*1.2);
+            gameState.speed = gameState.characterStats.speed*1.3;
+        }
         gameState.current = gameState.speed;
         gameState.currentRate = gameState.fireRate;
         
@@ -324,7 +336,7 @@ class TourScene extends Phaser.Scene {
                 }else if (gameState.tour == 'trampoline'){
                     gameState.createQuadZombie(this,window.innerWidth/2-100,window.innerHeight/2);
                     this.time.addEvent({
-                        delay: 1500,
+                        delay: 2000,
                         callback: ()=>{
                             gameState.createQuadZombie(this,window.innerWidth/2+100,window.innerHeight/2);
                         },  

@@ -328,9 +328,14 @@ let gameState = {
                     gameState.speed = gameState.characterStats.speed*0.2;
                 }else if (gameState.gunType == "rocketLauncher"){
                     gameState.rocketLauncherShoot(scene);
+                }else if (gameState.gunType == "uzi"){
+                    gameState.uziShoot(scene);
                 }
             }else {
                 if(gameState.gunType == 'minigun' && !gameState.keys.SHIFT.isDown){
+                    gameState.speed = gameState.characterStats.speed*0.8;
+                    gameState.gun.setFrame(0);
+                }else if(gameState.gunType == 'uzi' && !gameState.keys.SHIFT.isDown){
                     gameState.speed = gameState.characterStats.speed*0.8;
                     gameState.gun.setFrame(0);
                 }
@@ -406,6 +411,10 @@ let gameState = {
             else if(gameState.gunType == 'rocketLauncher'){
                 gameState.ammo = Math.ceil(gameState.characterStats.ammo/4.17)
                 time = 2500
+            }
+            else if(gameState.gunType == 'uzi'){
+                gameState.ammo = Math.ceil(gameState.characterStats.ammo*1.2)
+                time = 1000;
             }
             
             scene.time.addEvent({
@@ -619,6 +628,65 @@ let gameState = {
     },
     
     
+    uziShoot: function(scene){
+        scene.sound.play('shoot');
+        gameState.ammo --;
+        gameState.ammoText.setText(gameState.ammo);
+        gameState.characterStats.fireReady = false;
+
+        var flash;
+        var bullet;
+        if (gameState.character.flipX == false){
+            bullet = gameState.bullets.create(gameState.character.x,gameState.character.y+3,`${gameState.bulletSkin}`);
+        }else {
+            bullet = gameState.bullets.create(gameState.character.x,gameState.character.y+3,`${gameState.bulletSkin}`);
+        }
+        gameState.gun.anims.play('uziflash',true);
+        //scene.physics.moveToObject(bullet,scene.input,gameState.characterStats.bulletSpeed);
+        var bx = (scene.input.x-100)+Math.ceil(Math.random()*200);
+        var by = (scene.input.y-100)+Math.ceil(Math.random()*200);
+        gameState.angle=Phaser.Math.Angle.Between(bullet.x,bullet.y,bx,by);
+        bullet.setRotation(gameState.angle); 
+        scene.physics.moveTo(bullet,bx,by,gameState.characterStats.bulletSpeed);
+        var bulletLoop = scene.time.addEvent({
+            delay: 5000,
+            callback: ()=>{
+                bullet.destroy();
+            },  
+            startAt: 0,
+            timeScale: 1
+        });
+        scene.physics.add.overlap(bullet, gameState.zombies,(bulletT, target)=>{
+            scene.sound.play('hitSound',{volume:0.2});
+            var angle = Phaser.Math.Angle.Between(bulletT.x,bulletT.y,target.x,target.y);
+            var blood = scene.physics.add.sprite(target.x+10,target.y, 'bulletBlood');
+            blood.setRotation(angle);
+            blood.anims.play('animate','true');
+            scene.time.addEvent({
+                delay: 200,
+                callback: ()=>{
+                    blood.destroy();
+                },  
+                startAt: 0,
+                timeScale: 1
+            });
+            bulletLoop.destroy();
+            if(target.health>0){
+                bulletT.destroy();
+            }
+            target.health -= gameState.damage;
+        });
+        scene.time.addEvent({
+            delay: gameState.fireRate,
+            callback: ()=>{
+                gameState.characterStats.fireReady = true;
+            },  
+            startAt: 0,
+            timeScale: 1
+        });
+    },
+    
+    
     //creates a randon powerup or item after zombie death
     createItem: function(scene,x,y){
         var random = Math.ceil(Math.random()*100);
@@ -641,7 +709,7 @@ let gameState = {
                 gone.destroy();
             });
         }
-        else if(random<=100 && random >=96){
+        else if(random<=100 && random >=98){
             var iBI = scene.physics.add.sprite(x,y,'infiniteBulletsImage');
             iBI.anims.play('shine','true');
             var gone = scene.time.addEvent({
@@ -670,6 +738,8 @@ let gameState = {
                              gameState.ammo = gameState.characterStats.ammo*8;
                         }else if(gameState.gunType == 'rocketLauncher'){
                              gameState.ammo = Math.ceil(gameState.characterStats.ammo/4.17);
+                        }else if(gameState.gunType == 'uzi'){
+                             gameState.ammo = Math.ceil(gameState.characterStats.ammo*1.2);
                         }
                         gameState.disableReload = false;
                     },  
@@ -761,7 +831,7 @@ let gameState = {
                 }
             });
         }
-        else if(random <= 84 && random >= 83){
+        else if(random == 84){
             var crate = scene.physics.add.sprite(x,y,'lootBox').setScale(0.15);
             crate.anims.play('lootShine','true');
             var gone = scene.time.addEvent({
@@ -775,7 +845,7 @@ let gameState = {
             scene.physics.add.overlap(gameState.character, crate,(character, crate)=>{
                 crate.destroy();
                 gameState.thingsToSave.numLootboxes++;
-                gameState.save()
+                gameState.save();
             });
         }
     },

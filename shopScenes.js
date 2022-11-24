@@ -100,6 +100,7 @@ class UpgradeScene extends Phaser.Scene {
             assaultB.setFrame(2);
             selected = 'assaultRifle';
             minigunB.setFrame(0);
+            uziB.setFrame(0);
             rocketLauncherB.setFrame(0);
             gameState.bulletSkin = 'bullet1';
 		});
@@ -122,6 +123,7 @@ class UpgradeScene extends Phaser.Scene {
             selected = 'minigun';
             assaultB.setFrame(0);
             rocketLauncherB.setFrame(0);
+            uziB.setFrame(0);
             gameState.bulletSkin = 'bullet1';
 		});
         minigunB.on('pointerover', () => {
@@ -143,6 +145,7 @@ class UpgradeScene extends Phaser.Scene {
             selected = 'rocketLauncher';
             assaultB.setFrame(0);
             minigunB.setFrame(0);
+            uziB.setFrame(0);
             gameState.bulletSkin = 'rocket1';
 		});
         rocketLauncherB.on('pointerover', () => {
@@ -153,6 +156,29 @@ class UpgradeScene extends Phaser.Scene {
         rocketLauncherB.on('pointerout', () => {
             if(selected !== 'rocketLauncher'){
                 rocketLauncherB.setFrame(0);
+            }
+		});
+        
+        
+        var uziB = this.add.sprite(window.innerWidth/2-100,150,'uziIcon').setOrigin(0,0).setInteractive().setScale(1);
+        uziB.on('pointerup', () => {
+            gameState.gunType = 'uzi';
+            gameState.gunSkin = 'uzi';
+            uziB.setFrame(2);
+            selected = 'uzi';
+            assaultB.setFrame(0);
+            minigunB.setFrame(0);
+            rocketLauncherB.setFrame(0);
+            gameState.bulletSkin = 'bullet2';
+		});
+        uziB.on('pointerover', () => {
+            if(selected !== 'uzi'){
+                uziB.setFrame(1);
+            }
+		});
+        uziB.on('pointerout', () => {
+            if(selected !== 'uzi'){
+                uziB.setFrame(0);
             }
 		});
     }

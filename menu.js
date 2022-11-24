@@ -28,6 +28,7 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('bulletBlood','images/bulletBlood.png',{frameWidth: 20,frameHeight:20});
         //bullets
         this.load.image('bullet1','images/bullet1.png');
+        this.load.image('bullet2','images/bullet2.png');
         this.load.image('rocket1','images/rocket1.png');
         this.load.image('bulletTrail','images/bulletTrail.png');
         this.load.image('bulletLaser','images/bulletLaser.png');
@@ -43,6 +44,7 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('assaultRifle','images/assaultRifle.png',{frameWidth: 150,frameHeight:80});
         this.load.spritesheet('minigun','images/minigun.png',{frameWidth: 190,frameHeight:75});
         this.load.spritesheet('rocketLauncher','images/rocketLauncher.png',{frameWidth: 190,frameHeight:75});
+        this.load.spritesheet('uzi','images/uzi.png',{frameWidth: 150,frameHeight:80});
         this.load.spritesheet('goldenAssaultRifle','images/goldenAssaultRifle.png',{frameWidth: 100,frameHeight:50});
         
         
@@ -60,7 +62,7 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('background','images/background.png',{frameWidth: 1397,frameHeight:675});
         this.load.image('backgroundCity','images/backgroundCity.png');
         this.load.image('backgroundTrampoline','images/backgroundTrampoline.png');
-        this.load.spritesheet('infiniteBulletsImage','images/infiniteBulletsImage.png',{frameWidth: 35,frameHeight:35});
+        this.load.spritesheet('infiniteBulletsImage','images/infiniteBulletsImage.png',{frameWidth: 35,frameHeight:40});
         this.load.spritesheet('grenadeImage','images/grenadeImage.png',{frameWidth: 35,frameHeight:35});
         this.load.spritesheet('medicImage','images/medicImage.png',{frameWidth: 35,frameHeight:35});
         this.load.image('healthBar','images/healthBar.png');
@@ -89,6 +91,7 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('assaultRifleIcon','images/assaultRifleIcon.png',{frameWidth: 100,frameHeight:100});
         this.load.spritesheet('minigunIcon','images/minigunIcon.png',{frameWidth: 100,frameHeight:100});
         this.load.spritesheet('rocketLauncherIcon','images/rocketLauncherIcon.png',{frameWidth: 100,frameHeight:100});
+        this.load.spritesheet('uziIcon','images/uziIcon.png',{frameWidth: 100,frameHeight:100});
         
         //pause menu
         this.load.image('pauseMainMenuButton','images/pauseMainMenuButton.png');
@@ -432,6 +435,11 @@ class MenuScene extends Phaser.Scene {
             frameRate: 12,
             frames:this.anims.generateFrameNames('minigun',{start: 1,end: 6})
         });
+        this.anims.create({
+            key: 'uziflash',
+            frameRate: 25,
+            frames:this.anims.generateFrameNames('uzi',{start: 1,end: 4})
+        });
         //rocketLauncher
         this.anims.create({
             key: 'rocketLauncherflash',
@@ -463,9 +471,9 @@ class MenuScene extends Phaser.Scene {
         //shine animation for powerups
         this.anims.create({
             key: 'shine',
-            frameRate: 11,
+            frameRate: 8,
             repeat: -1,
-            frames:this.anims.generateFrameNames('infiniteBulletsImage',{start: 0,end: 7})
+            frames:this.anims.generateFrameNames('infiniteBulletsImage',{start: 0,end: 9})
         });
         this.anims.create({
             key: 'shine2',
