@@ -183,7 +183,7 @@ let gameState = {
     },
     
     thingsToSave: {
-        numLootboxes: 100,
+        numLootboxes: 5,
         coins: 100,
     },
     //saves variable values to local storage
@@ -843,7 +843,7 @@ let gameState = {
                 }
             });
         }
-        else if(random == 84){
+        else if(random <= 84 && random >= 83){
             var crate = scene.physics.add.sprite(x,y,'lootBox').setScale(0.15);
             crate.anims.play('lootShine','true');
             var gone = scene.time.addEvent({
