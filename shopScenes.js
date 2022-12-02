@@ -315,6 +315,7 @@ class ShopScene extends Phaser.Scene {
         
         //skins
         gameState.selected = ' ';
+        gameState.pick = null;
         gameState.display = this.add.sprite(-1999,-1999,'character').setOrigin(0.5).setDepth(2).setScale(2.7);
         var charac = this.add.sprite(20,140,'character').setOrigin(0,0).setDepth(1).setScale(2.5);
         charac.anims.play("characterIdle");
@@ -332,6 +333,23 @@ class ShopScene extends Phaser.Scene {
         equip.on('pointerout', () => {
             
 		});
+        var deleteHat = this.add.sprite(100,window.innerHeight-100,'deleteIcon').setOrigin(0,0).setDepth(1).setScale(1).setInteractive();
+        deleteHat.on('pointerup', () => {
+            if(gameState.pick !== null){
+                var hat = gameState.inventory.indexOf(gameState.pick);
+                gameState.inventory.splice(hat,1);
+                scene.scene.restart();
+                gameState.save();
+            }
+		});
+        deleteHat.on('pointerover', () => {
+            if(gameState.pick !== null){
+                deleteHat.setFrame(1);
+            }
+		});
+        deleteHat.on('pointerout', () => {
+            deleteHat.setFrame(0);
+		});
         this.time.addEvent({
             delay: 1,
             callback: ()=>{
@@ -347,7 +365,7 @@ class ShopScene extends Phaser.Scene {
         });
         
         var frame = this.add.image(50,120,'frame').setOrigin(0,0).setDepth(0).setScale(1.2);
-        gameState.loadCosmetics(this,350,120);
+        gameState.loadCosmetics(this,350,70);
         /*
         var goldenGunIcon = this.add.image(window.innerWidth/2,250,'goldenGunShop').setInteractive();
         if(gameState.skin == gameState.weaponSkins.goldenGun.name){
@@ -625,20 +643,41 @@ class LootboxesScene extends Phaser.Scene {
                 }).setOrigin(0.5);
                 
                 var loot;
-                if(gameState.skins[rand].owned == 0){
-                    loot = this.add.sprite(window.innerWidth/2, window.innerHeight/2,`${gameState.skins[rand].name}`).setScale(2).setDepth(1);
-                    gameState.skins[rand].owned = 1;
-                    if(gameState.skins[rand].animate == true){
-                        loot.anims.play(`${gameState.skins[rand].name}Animate`);
+                if(gameState.inventory.length < 40){
+                    var rand1 = Math.ceil(Math.random()*100);
+                    var rarity = '';
+                    if(rand1 <=83){
+                        rarity = 'common'
+                    }else if(rand1 <=  93){
+                        rarity = 'rare'
+                    }else if(rand1 <= 99){
+                        rarity = 'epic'
+                    }else if(rand1 == 100){
+                        rarity = 'legendary'
                     }
-                    scene.time.addEvent({
-                        delay: 2000,
-                        callback: ()=>{
-                            prizeText.setText(`${gameState.skins[rand].displayName}`);
-                        },  
-                        startAt: 0,
-                        timeScale: 1
-                    });
+                    var found = false;
+                    while(found == false){
+                        if(gameState.skins[rand].rarity == rarity){
+                            loot = this.add.sprite(window.innerWidth/2, window.innerHeight/2,`${gameState.skins[rand].name}`).setScale(2).setDepth(1);
+                            gameState.skins[rand].owned = 1;
+                            gameState.inventory.push(gameState.skins[rand]);
+                            if(gameState.skins[rand].animate == true){
+                                loot.anims.play(`${gameState.skins[rand].name}Animate`);
+                            }
+                            scene.time.addEvent({
+                                delay: 2000,
+                                callback: ()=>{
+                                    prizeText.setText(`${gameState.skins[rand].displayName}`);
+                                },  
+                                startAt: 0,
+                                timeScale: 1
+                            });
+                            found = true;
+                        }else {
+                            rand = Math.ceil(Math.random()*gameState.skins.length)-1;
+                        }
+                    }
+                    
                 }else {
                     var rand2 = Math.ceil(Math.random()*400)+100;
                     loot = this.add.sprite(window.innerWidth/2, window.innerHeight/2,`coin`).setScale(2).setDepth(1);

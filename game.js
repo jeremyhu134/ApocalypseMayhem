@@ -91,6 +91,13 @@ let gameState = {
         },
         {
             owned: 0,
+            name: 'partyHat',
+            displayName: 'Party Helmet',
+            animate: false,
+            rarity: 'common'
+        },
+        {
+            owned: 0,
             name: 'diegoHat',
             displayName: 'Happy Diego',
             animate: false,
@@ -115,7 +122,7 @@ let gameState = {
             name: 'ghastlySkullHat',
             displayName: 'Ghastly Skull',
             animate: true,
-            rarity: 'epic'
+            rarity: 'legendary'
         },
         {
             owned: 0,
@@ -129,11 +136,25 @@ let gameState = {
             name: 'roidRagePhilHat',
             displayName: 'Roid Rage Phil',
             animate: true,
-            rarity: 'Epic'
+            rarity: 'epic'
+        },
+        {
+            owned: 0,
+            name: 'footballHat',
+            displayName: 'Football Helmet',
+            animate: false,
+            rarity: 'common'
+        },
+        {
+            owned: 0,
+            name: 'baseballHat',
+            displayName: 'Baseball Helmet',
+            animate: false,
+            rarity: 'common'
         }
     ],
     
-    
+    inventory:[],
     //calculates upgrade cost for upgrades
     upgradeCosts: function(current, max, factor){
         var cost;
@@ -162,28 +183,18 @@ let gameState = {
     },
     
     thingsToSave: {
-        numLootboxes: 3,
+        numLootboxes: 100,
         coins: 100,
     },
     //saves variable values to local storage
     save: function(){
-        window.localStorage.setItem("skins", JSON.stringify(gameState.skins));
+        window.localStorage.setItem("inventory", JSON.stringify(gameState.inventory));
         window.localStorage.setItem("thingsToSave", JSON.stringify(gameState.thingsToSave));
     },
     //loads variable values from localstorage
     loadSave: function(){
-        if(JSON.parse(window.localStorage.getItem("skins")) !== null){
-            var lol = JSON.parse(window.localStorage.getItem("skins"));
-            console.log(lol);
-            if(gameState.skins.length == lol.length){
-                gameState.skins = lol;
-            }else {
-                for (var i = lol.length; i < gameState.skins.length; i++){
-                    lol.push(gameState.skins[i]);
-                }
-                gameState.skins = lol;
-                gameState.save();
-            }
+        if(JSON.parse(window.localStorage.getItem("inventory")) !== null){
+            gameState.inventory = JSON.parse(window.localStorage.getItem("inventory"));
         }
         if(JSON.parse(window.localStorage.getItem("thingsToSave")) !== null){
             gameState.thingsToSave = JSON.parse(window.localStorage.getItem("thingsToSave"));
@@ -192,17 +203,17 @@ let gameState = {
     
     createSlot: function(scene,hat,num){
         scene.add.image(hat.x,hat.y,`frame2`).setDepth(-1);
-        if(gameState.skins[num].animate == true){
-            hat.anims.play(`${gameState.skins[num].name}Animate`,true);
+        if(gameState.inventory[num].animate == true){
+            hat.anims.play(`${gameState.inventory[num].name}Animate`,true);
         }
-        console.log(gameState.skins[num].name);
+        console.log(gameState.inventory[num].name);
         hat.on('pointerup', () => {
             gameState.display.x = 170;
             gameState.display.y = 215;
-            gameState.display.setTexture(`${gameState.skins[num].name}`);
-            gameState.pick = gameState.skins[num];
-            if(gameState.skins[num].animate == true){
-                gameState.display.anims.play(`${gameState.skins[num].name}Animate`);
+            gameState.display.setTexture(`${gameState.inventory[num].name}`);
+            gameState.pick = gameState.inventory[num];
+            if(gameState.inventory[num].animate == true){
+                gameState.display.anims.play(`${gameState.inventory[num].name}Animate`);
             }else {
                 gameState.display.anims.pause();
             }
@@ -215,18 +226,19 @@ let gameState = {
         });
     },
     loadCosmetics: function(scene,x,y){
-        var count = 0;
-        for (var j = 1; j <= 6; j++){
-            if(gameState.skins[j-1].owned == 1){
-                var hat = scene.add.sprite(x+125*j,y+100,`${gameState.skins[j-1].name}`).setScale(60/60).setInteractive();
-                gameState.createSlot(scene,hat,j-1);
+        var count = 1;
+        var row = 1;
+        for (var j = 1; j <= gameState.inventory.length; j++){
+            count++;
+            if(j == 1){
+                count = 1;
             }
-        }
-        for (var j = 1; j <= 3; j++){
-            if(gameState.skins[(j-1)+6].owned == 1){
-                var hat = scene.add.sprite(x+125*j,y+250,`${gameState.skins[(j-1)+6].name}`).setScale(60/60).setInteractive();
-                gameState.createSlot(scene,hat,(j-1)+6);
+            if(count% 9 == 0){
+                row++;
+                count = 1;
             }
+            var hat = scene.add.sprite(x+100*count,y+100*row,`${gameState.inventory[j-1].name}`).setScale(60/60).setInteractive();
+            gameState.createSlot(scene,hat,j-1);
         }
     },
     //variable to make sure the death commands happen only once

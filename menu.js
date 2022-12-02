@@ -55,6 +55,9 @@ class MenuScene extends Phaser.Scene {
         this.load.image('diegoHat','images/diegoHat.png');
         this.load.image('diego2Hat','images/diego2Hat.png');
         this.load.image('helmetHat','images/helmetHat.png');
+        this.load.image('partyHat','images/partyHat.png');
+        this.load.image('footballHat','images/footballHat.png');
+        this.load.image('baseballHat','images/baseballHat.png');
         this.load.spritesheet('burningHelmetHat','images/burningHelmetHat.png',{frameWidth: 55,frameHeight:120});
         this.load.spritesheet('ghastlySkullHat','images/ghastlySkullHat.png',{frameWidth: 65,frameHeight:65});
         this.load.spritesheet('roidRagePhilHat','images/roidRagePhilHat.png',{frameWidth: 60,frameHeight:60});
@@ -85,6 +88,7 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('cosmeticsButton','images/cosmeticsButton.png',{frameWidth: 220,frameHeight:44});
         this.load.spritesheet('lootboxesButton','images/lootboxesButton.png',{frameWidth: 150,frameHeight:45});
         this.load.spritesheet('loadoutButton','images/loadoutButton.png',{frameWidth: 120,frameHeight:45});
+        this.load.spritesheet('deleteIcon','images/deleteIcon.png',{frameWidth: 60,frameHeight:60});
         this.load.image('backButton','images/backButton.png');
         this.load.image('backButton2','images/backButton2.png');
         this.load.spritesheet('settingsButton','images/settingsButton.png',{frameWidth: 70,frameHeight:65});
