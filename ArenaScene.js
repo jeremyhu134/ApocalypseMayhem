@@ -70,6 +70,8 @@ class ArenaScene extends Phaser.Scene {
         gameState.current = gameState.speed;
         gameState.currentRate = gameState.fireRate;
         
+        gameState.gunSkin = 'assaultRifleFuture';
+        
         gameState.gun = this.add.sprite(gameState.character.x,gameState.character.y,`${gameState.gunSkin}`).setDepth(gameState.character.y+1).setScale(0.8);
         
         var sprintIcon = this.add.image(820,15,"sprintIcon").setOrigin(0,0).setDepth(-100).setScale(0.6);
