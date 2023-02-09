@@ -102,7 +102,7 @@ class UpgradeScene extends Phaser.Scene {
             minigunB.setFrame(0);
             uziB.setFrame(0);
             rocketLauncherB.setFrame(0);
-            gameState.bulletSkin = 'bullet1';
+            gameState.bulletSkin = 'assaultRiflebullet';
 		});
         assaultB.on('pointerover', () => {
             if(selected !== 'assaultRifle'){
@@ -124,7 +124,7 @@ class UpgradeScene extends Phaser.Scene {
             assaultB.setFrame(0);
             rocketLauncherB.setFrame(0);
             uziB.setFrame(0);
-            gameState.bulletSkin = 'bullet1';
+            gameState.bulletSkin = 'minigunbullet';
 		});
         minigunB.on('pointerover', () => {
             if(selected !== 'minigun'){
@@ -146,7 +146,7 @@ class UpgradeScene extends Phaser.Scene {
             assaultB.setFrame(0);
             minigunB.setFrame(0);
             uziB.setFrame(0);
-            gameState.bulletSkin = 'rocket1';
+            gameState.bulletSkin = 'rocketLauncherbullet';
 		});
         rocketLauncherB.on('pointerover', () => {
             if(selected !== 'rocketLauncher'){
@@ -169,7 +169,7 @@ class UpgradeScene extends Phaser.Scene {
             assaultB.setFrame(0);
             minigunB.setFrame(0);
             rocketLauncherB.setFrame(0);
-            gameState.bulletSkin = 'bullet2';
+            gameState.bulletSkin = 'uzibullet';
 		});
         uziB.on('pointerover', () => {
             if(selected !== 'uzi'){

@@ -304,7 +304,7 @@ let gameState = {
                 gameState.speedState = 'Run';
             }else {
                 gameState.speedState = 'Walk';
-                if(!gameState.keys.SPACE.isDown){
+                if(!gameState.mouse.isDown){
                     gameState.speed = gameState.current;
                 }
                 gameState.speed = gameState.current;
@@ -332,7 +332,7 @@ let gameState = {
             }
             gameState.gun.depth = gameState.character.y+5;
             gameState.gun.setRotation(Phaser.Math.Angle.Between(gameState.gun.x,gameState.gun.y,scene.input.x,scene.input.y)); 
-            if (gameState.keys.SPACE.isDown && gameState.ammo > 0 && gameState.characterStats.fireReady == true){
+            if (gameState.mouse.isDown && gameState.ammo > 0 && gameState.characterStats.fireReady == true){
                 if(gameState.gunType == 'assaultRifle'){
                     gameState.assaultRifleShoot(scene);
                 }else if (gameState.gunType == "minigun"){
@@ -872,7 +872,7 @@ let gameState = {
             gameState.keys.S.isDown = false;
             gameState.keys.A.isDown = false;
             gameState.keys.D.isDown = false;
-            gameState.keys.SPACE.isDown = false;
+            gameState.mouse.isDown = false;
             unlockBG.destroy();
             unlocked.destroy();
             gameState.globalScene.scene.stop('UnlockedScene');
