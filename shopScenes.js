@@ -102,6 +102,7 @@ class UpgradeScene extends Phaser.Scene {
             minigunB.setFrame(0);
             uziB.setFrame(0);
             rocketLauncherB.setFrame(0);
+            sniperRifleB.setFrame(0);
             gameState.bulletSkin = 'assaultRiflebullet';
 		});
         assaultB.on('pointerover', () => {
@@ -124,6 +125,7 @@ class UpgradeScene extends Phaser.Scene {
             assaultB.setFrame(0);
             rocketLauncherB.setFrame(0);
             uziB.setFrame(0);
+            sniperRifleB.setFrame(0);
             gameState.bulletSkin = 'minigunbullet';
 		});
         minigunB.on('pointerover', () => {
@@ -146,6 +148,7 @@ class UpgradeScene extends Phaser.Scene {
             assaultB.setFrame(0);
             minigunB.setFrame(0);
             uziB.setFrame(0);
+            sniperRifleB.setFrame(0);
             gameState.bulletSkin = 'rocketLauncherbullet';
 		});
         rocketLauncherB.on('pointerover', () => {
@@ -179,6 +182,29 @@ class UpgradeScene extends Phaser.Scene {
         uziB.on('pointerout', () => {
             if(selected !== 'uzi'){
                 uziB.setFrame(0);
+            }
+		});
+        
+        var sniperRifleB = this.add.sprite(window.innerWidth/2+50,150,'sniperRifleIcon').setOrigin(0,0).setInteractive().setScale(1);
+        sniperRifleB.on('pointerup', () => {
+            gameState.gunType = 'sniperRifle';
+            gameState.gunSkin = 'sniperRifle';
+            sniperRifleB.setFrame(2);
+            selected = 'sniperRifle';
+            assaultB.setFrame(0);
+            minigunB.setFrame(0);
+            rocketLauncherB.setFrame(0);
+            uziB.setFrame(0);
+            gameState.bulletSkin = 'sniperRiflebullet';
+		});
+        sniperRifleB.on('pointerover', () => {
+            if(selected !== 'sniperRifle'){
+                sniperRifleB.setFrame(1);
+            }
+		});
+        sniperRifleB.on('pointerout', () => {
+            if(selected !== 'sniperRifle'){
+                sniperRifleB.setFrame(0);
             }
 		});
     }
@@ -316,9 +342,14 @@ class ShopScene extends Phaser.Scene {
         //skins
         gameState.selected = ' ';
         gameState.pick = null;
-        gameState.display = this.add.sprite(-1999,-1999,'character').setOrigin(0.5).setDepth(2).setScale(2.7);
-        var charac = this.add.sprite(20,140,'character').setOrigin(0,0).setDepth(1).setScale(2.5);
-        charac.anims.play("characterIdle");
+        gameState.display = this.add.sprite(-1999,-1999,'character').setOrigin(0.5).setDepth(2).setScale(1.5);
+        gameState.itemStats = this.add.text(175, 300, ``, {
+            fill: '#000000', 
+            fontSize: `30px`,
+            fontFamily: 'Qahiri',
+            strokeThickness: 4,
+            wordWrap: { width: 250 }
+        }).setDepth(2).setOrigin(0.5);
         
         var equip = this.add.sprite(window.innerWidth/2-535,window.innerHeight/2+150,'equipButton').setOrigin(0,0).setDepth(1).setScale(1.5).setInteractive();
         equip.on('pointerup', () => {
@@ -366,124 +397,7 @@ class ShopScene extends Phaser.Scene {
         
         var frame = this.add.image(50,120,'frame').setOrigin(0,0).setDepth(0).setScale(1.2);
         gameState.loadCosmetics(this,350,70);
-        /*
-        var goldenGunIcon = this.add.image(window.innerWidth/2,250,'goldenGunShop').setInteractive();
-        if(gameState.skin == gameState.weaponSkins.goldenGun.name){
-            equipped.x = goldenGunIcon.x;
-            equipped.y = goldenGunIcon.y;
-        }
-        goldenGunIcon.on('pointerup', () => {
-            if(gameState.weaponSkins.goldenGun.owned == 1){
-                gameState.skin = gameState.weaponSkins.goldenGun.name;
-                gameState.bulletSkin = gameState.weaponSkins.goldenGun.nameB;
-                alert("Equipped"); 
-                equipped.x = goldenGunIcon.x;
-                equipped.y = goldenGunIcon.y;
-            }
-            else if(gameState.thingsToSave.coins< 10000){
-                alert("Merchant: Can't buy that lad!");
-            }else {
-                alert("Merchant: The Golden Gun is yours!");
-                gameState.globalScene.sound.play('purchased');
-                gameState.thingsToSave.coins -= 10000;
-                gameState.weaponSkins.goldenGun.owned = 1;
-                gameState.skin = gameState.weaponSkins.goldenGun.name;
-                gameState.bulletSkin = gameState.weaponSkins.goldenGun.nameB;
-            }
-		});
         
-        var susIcon = this.add.image(110,330,'susShop').setInteractive();
-        if(gameState.skin == gameState.weaponSkins.sus.name){
-            equipped.x = susIcon.x;
-            equipped.y = susIcon.y;
-        }
-        susIcon.on('pointerup', () => {
-            if(gameState.weaponSkins.sus.owned == 1){
-                gameState.skin = gameState.weaponSkins.sus.name;
-                gameState.bulletSkin = 'bullet1';
-                alert("Equipped"); 
-                equipped.x = susIcon.x;
-                equipped.y = susIcon.y;
-            }
-            else if(gameState.thingsToSave.coins < 1500){
-                alert("Merchant: Can't buy that lad!");
-            }else {
-                alert("Merchant: Your Sus now!");
-                gameState.globalScene.sound.play('purchased');
-                gameState.thingsToSave.coins -= 1500;
-                gameState.weaponSkins.sus.owned = 1;
-                gameState.skin = gameState.weaponSkins.sus.name;
-                gameState.bulletSkin = 'bullet1';
-            }
-		});
-        
-        var laserTrooperIcon = this.add.image(susIcon.x+220,330,'laserTrooperShop').setInteractive();
-        if(gameState.skin == gameState.weaponSkins.laserTrooper.name){
-            equipped.x = laserTrooperIcon.x;
-            equipped.y = laserTrooperIcon.y;
-        }
-        laserTrooperIcon.on('pointerup', () => {
-            if(gameState.weaponSkins.laserTrooper.owned == 1){
-                gameState.skin = gameState.weaponSkins.laserTrooper.name;
-                gameState.bulletSkin = 'bulletLaser';
-                alert("Equipped"); 
-                equipped.x = laserTrooperIcon.x;
-                equipped.y = laserTrooperIcon.y;
-            }
-            else if(gameState.thingsToSave.coins < 2000){
-                alert("Merchant: Can't buy that lad!");
-            }else {
-                alert("Merchant: Welcome to the Empire!");
-                gameState.globalScene.sound.play('purchased');
-                gameState.thingsToSave.coins -= 2000;
-                gameState.weaponSkins.laserTrooper.owned = 1;
-                gameState.skin = gameState.weaponSkins.laserTrooper.name;
-                gameState.bulletSkin = 'bulletLaser';
-            }
-		});
-        
-        var satvikIcon = this.add.image(laserTrooperIcon.x+220,330,'satvikShop').setInteractive();
-        if(gameState.skin == gameState.weaponSkins.satvik.name){
-            equipped.x = satvikIcon.x;
-            equipped.y = satvikIcon.y;
-        }
-        satvikIcon.on('pointerup', () => {
-            if(gameState.weaponSkins.satvik.owned == 1){
-                gameState.skin = gameState.weaponSkins.satvik.name;
-                gameState.bulletSkin = 'bulletTennis';
-                alert("Equipped"); 
-                equipped.x = satvikIcon.x;
-                equipped.y = satvikIcon.y;
-            }
-            else if(gameState.thingsToSave.coins < 1000){
-                alert("Merchant: Can't buy that lad!");
-            }else {
-                alert("Merchant: The god himself...");
-                gameState.globalScene.sound.play('purchased');
-                gameState.thingsToSave.coins -= 1000;
-                gameState.weaponSkins.satvik.owned = 1;
-                gameState.skin = gameState.weaponSkins.satvik.name;
-                gameState.bulletSkin = 'bulletTennis';
-            }
-		});
-        
-        var skeletonGunIcon = this.add.image(satvikIcon.x+220,330,'skeletonGunShop').setInteractive();
-        if(gameState.skin == gameState.weaponSkins.SkeletonGun.name){
-            equipped.x = skeletonGunIcon.x;
-            equipped.y = skeletonGunIcon.y;
-        }
-        skeletonGunIcon.on('pointerup', () => {
-            if(gameState.weaponSkins.SkeletonGun.owned == 1){
-                gameState.skin = gameState.weaponSkins.SkeletonGun.name;
-                gameState.bulletSkin = `${gameState.weaponSkins.SkeletonGun.nameB}`;
-                alert("Equipped"); 
-                equipped.x = skeletonGunIcon.x;
-                equipped.y = skeletonGunIcon.y;
-            }else {
-                alert("Merchant: Unlocks through Achievement!");
-            }
-		});
-        */
     }
     update(){
         //game loop that constantly runs (not needed for buying charcater and weapon skins)
@@ -634,7 +548,7 @@ class LootboxesScene extends Phaser.Scene {
                 count.setText(`x ${gameState.thingsToSave.numLootboxes}`);
                 
                 
-                var rand = Math.ceil(Math.random()*gameState.skins.length)-1;
+                var rand = Math.ceil(Math.random()*gameState.items.length)-1;
                 var prizeText = this.add.text(window.innerWidth/2, window.innerHeight/2+200,``,{
                     fill: 'WHITE', 
                     fontSize: `50px`,
@@ -657,24 +571,24 @@ class LootboxesScene extends Phaser.Scene {
                     }
                     var found = false;
                     while(found == false){
-                        if(gameState.skins[rand].rarity == rarity){
-                            loot = this.add.sprite(window.innerWidth/2, window.innerHeight/2,`${gameState.skins[rand].name}`).setScale(2).setDepth(1);
-                            gameState.skins[rand].owned = 1;
-                            gameState.inventory.push(gameState.skins[rand]);
-                            if(gameState.skins[rand].animate == true){
-                                loot.anims.play(`${gameState.skins[rand].name}Animate`);
+                        if(gameState.items[rand].rarity == rarity){
+                            loot = this.add.sprite(window.innerWidth/2, window.innerHeight/2,`${gameState.items[rand].name}`).setScale(2).setDepth(1);
+                            gameState.items[rand].owned = 1;
+                            gameState.inventory.push(gameState.items[rand]);
+                            if(gameState.items[rand].animate == true){
+                                loot.anims.play(`${gameState.items[rand].name}Animate`);
                             }
                             scene.time.addEvent({
                                 delay: 2000,
                                 callback: ()=>{
-                                    prizeText.setText(`${gameState.skins[rand].displayName}`);
+                                    prizeText.setText(`${gameState.items[rand].displayName}`);
                                 },  
                                 startAt: 0,
                                 timeScale: 1
                             });
                             found = true;
                         }else {
-                            rand = Math.ceil(Math.random()*gameState.skins.length)-1;
+                            rand = Math.ceil(Math.random()*gameState.items.length)-1;
                         }
                     }
                     

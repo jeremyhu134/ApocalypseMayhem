@@ -67,9 +67,10 @@ let gameState = {
     gunType: 'assaultRifle',
     gunSkin: 'assaultRifle',
     //unlocked skins and their names and bullet sprites
-    skins: [
+    items: [
         {
             owned: 0,
+            type: 'cosmetic',
             name: 'satvikHat',
             displayName: 'Satvik',
             animate: false,
@@ -77,6 +78,7 @@ let gameState = {
         },
         {
             owned: 0,
+            type: 'cosmetic',
             name: 'susHat',
             displayName: 'Sus',
             animate: false,
@@ -84,6 +86,7 @@ let gameState = {
         },
         {
             owned: 0,
+            type: 'cosmetic',
             name: 'helmetHat',
             displayName: 'Helmet',
             animate: false,
@@ -91,6 +94,7 @@ let gameState = {
         },
         {
             owned: 0,
+            type: 'cosmetic',
             name: 'partyHat',
             displayName: 'Party Helmet',
             animate: false,
@@ -98,6 +102,7 @@ let gameState = {
         },
         {
             owned: 0,
+            type: 'cosmetic',
             name: 'diegoHat',
             displayName: 'Happy Diego',
             animate: false,
@@ -105,6 +110,7 @@ let gameState = {
         },
         {
             owned: 0,
+            type: 'cosmetic',
             name: 'diego2Hat',
             displayName: 'Rambo Diego',
             animate: false,
@@ -112,6 +118,7 @@ let gameState = {
         },
         {
             owned: 0,
+            type: 'cosmetic',
             name: 'burningHelmetHat',
             displayName: 'Burning Helmet',
             animate: true,
@@ -119,6 +126,7 @@ let gameState = {
         },
         {
             owned: 0,
+            type: 'cosmetic',
             name: 'ghastlySkullHat',
             displayName: 'Ghastly Skull',
             animate: true,
@@ -126,6 +134,7 @@ let gameState = {
         },
         {
             owned: 0,
+            type: 'cosmetic',
             name: 'chadvikHat',
             displayName: 'Chadvik',
             animate: false,
@@ -133,6 +142,7 @@ let gameState = {
         },
         {
             owned: 0,
+            type: 'cosmetic',
             name: 'roidRagePhilHat',
             displayName: 'Roid Rage Phil',
             animate: true,
@@ -140,6 +150,7 @@ let gameState = {
         },
         {
             owned: 0,
+            type: 'cosmetic',
             name: 'footballHat',
             displayName: 'Football Helmet',
             animate: false,
@@ -147,10 +158,22 @@ let gameState = {
         },
         {
             owned: 0,
+            type: 'cosmetic',
             name: 'baseballHat',
             displayName: 'Baseball Helmet',
             animate: false,
             rarity: 'common'
+        },
+        
+        
+        //weapons
+        {
+            owned: 0,
+            type: 'weapon',
+            name: 'assaultRifleFuture',
+            displayName: 'Future Assault Rifle',
+            animate: false,
+            rarity: 'rare'
         }
     ],
     
@@ -208,6 +231,17 @@ let gameState = {
         }
         console.log(gameState.inventory[num].name);
         hat.on('pointerup', () => {
+            if(gameState.inventory[num].type == 'cosmetic'){
+                gameState.selected = gameState.pick;
+                if(gameState.selected == null){
+                    gameState.selected = ' ';
+                } 
+            }else if (gameState.inventory[num].type == 'weapon'){
+                gameState.gunSkin = gameState.inventory[num].name;
+                gameState.bulletSkin = gameState.inventory[num].name+'bullet';
+            }
+        });
+        hat.on('pointerover', () => {
             gameState.display.x = 170;
             gameState.display.y = 215;
             gameState.display.setTexture(`${gameState.inventory[num].name}`);
@@ -217,13 +251,14 @@ let gameState = {
             }else {
                 gameState.display.anims.pause();
             }
-        });
-        hat.on('pointerover', () => {
-            //hat.setFrame(1);
+            gameState.itemStats.setText(gameState.inventory[num].displayName);
         });
         hat.on('pointerout', () => {
-            //hat.setFrame(0);
+            gameState.display.x = -999;
+            gameState.display.y = -999;
+            gameState.itemStats.setText("");
         });
+        hat.setScale(60/hat.width)
     },
     loadCosmetics: function(scene,x,y){
         var count = 1;
@@ -342,6 +377,8 @@ let gameState = {
                     gameState.rocketLauncherShoot(scene);
                 }else if (gameState.gunType == "uzi"){
                     gameState.uziShoot(scene);
+                }else if (gameState.gunType == "sniperRifle"){
+                    gameState.sniperRifleShoot(scene);
                 }
             }else {
                 if(gameState.gunType == 'minigun' && !gameState.keys.SHIFT.isDown){
@@ -427,6 +464,10 @@ let gameState = {
             else if(gameState.gunType == 'uzi'){
                 gameState.ammo = Math.ceil(gameState.characterStats.ammo*1.2)
                 time = 1000;
+            }
+            else if(gameState.gunType == 'sniperRifle'){
+                gameState.ammo = Math.ceil(gameState.characterStats.ammo*0.4)
+                time = 1500;
             }
             
             scene.time.addEvent({
@@ -698,6 +739,62 @@ let gameState = {
         });
     },
     
+    
+    sniperRifleShoot: function(scene){
+        scene.sound.play('shoot');
+        gameState.ammo --;
+        gameState.ammoText.setText(gameState.ammo);
+        gameState.characterStats.fireReady = false;
+
+        var flash;
+        var bullet;
+        if (gameState.character.flipX == false){
+            bullet = gameState.bullets.create(gameState.character.x,gameState.character.y+3,`${gameState.gunSkin}bullet`);
+        }else {
+            bullet = gameState.bullets.create(gameState.character.x,gameState.character.y+3,`${gameState.gunSkin}bullet`);
+        }
+        gameState.gun.anims.play(`${gameState.gunSkin}flash`,true);
+        gameState.angle=Phaser.Math.Angle.Between(bullet.x,bullet.y,scene.input.x,scene.input.y);
+        bullet.setRotation(gameState.angle); 
+        scene.physics.moveToObject(bullet,scene.input,gameState.characterStats.bulletSpeed);
+        //scene.physics.moveTo(bullet,scene.input.x,scene.input.y,300);
+        var bulletLoop = scene.time.addEvent({
+            delay: 5000,
+            callback: ()=>{
+                bullet.destroy();
+            },  
+            startAt: 0,
+            timeScale: 1
+        });
+        scene.physics.add.overlap(bullet, gameState.zombies,(bulletT, target)=>{
+            scene.sound.play('hitSound',{volume:0.2});
+            var angle = Phaser.Math.Angle.Between(bulletT.x,bulletT.y,target.x,target.y);
+            var blood = scene.physics.add.sprite(target.x+10,target.y, 'bulletBlood');
+            blood.setRotation(angle);
+            blood.anims.play('animate','true');
+            scene.time.addEvent({
+                delay: 200,
+                callback: ()=>{
+                    blood.destroy();
+                },  
+                startAt: 0,
+                timeScale: 1
+            });
+            bulletLoop.destroy();
+            if(target.health>0){
+                bulletT.destroy();
+            }
+            target.health -= gameState.damage;
+        });
+        scene.time.addEvent({
+            delay: gameState.fireRate,
+            callback: ()=>{
+                gameState.characterStats.fireReady = true;
+            },  
+            startAt: 0,
+            timeScale: 1
+        });
+    },
     
     //creates a randon powerup or item after zombie death
     createItem: function(scene,x,y){
@@ -1059,7 +1156,7 @@ let gameState = {
                     zom.rage = true;
                     rageTimer.paused = true;
                     breatheLoop = scene.time.addEvent({
-                        delay: 2500,
+                        delay: 3500,
                         callback: ()=>{
                             zom.rage = false;
                             breatheTimer.paused = false;

@@ -67,10 +67,16 @@ class ArenaScene extends Phaser.Scene {
             gameState.ammo = Math.ceil(gameState.characterStats.ammo*1.2);
             gameState.speed = gameState.characterStats.speed*1.3;
         }
+        else if(gameState.gunType == 'sniperRifle'){
+            gameState.fireRate = 900;
+            gameState.damage = gameState.characterStats.damage*7;
+            gameState.ammo = Math.ceil(gameState.characterStats.ammo*0.4);
+            gameState.speed = gameState.characterStats.speed*1.0;
+        }
         gameState.current = gameState.speed;
         gameState.currentRate = gameState.fireRate;
         
-        gameState.gunSkin = 'assaultRifleFuture';
+        
         
         gameState.gun = this.add.sprite(gameState.character.x,gameState.character.y,`${gameState.gunSkin}`).setDepth(gameState.character.y+1).setScale(0.8);
         
@@ -290,6 +296,12 @@ class TourScene extends Phaser.Scene {
             gameState.damage = gameState.characterStats.damage/2;
             gameState.ammo = Math.ceil(gameState.characterStats.ammo*1.2);
             gameState.speed = gameState.characterStats.speed*1.3;
+        }
+        else if(gameState.gunType == 'sniperRifle'){
+            gameState.fireRate = 900;
+            gameState.damage = gameState.characterStats.damage*7;
+            gameState.ammo = Math.ceil(gameState.characterStats.ammo*0.4);
+            gameState.speed = gameState.characterStats.speed*1.0;
         }
         gameState.current = gameState.speed;
         gameState.currentRate = gameState.fireRate;
