@@ -649,6 +649,7 @@ class LoadoutScene extends Phaser.Scene {
             uziB.setFrame(0);
             rocketLauncherB.setFrame(0);
             sniperRifleB.setFrame(0);
+            shotgunB.setFrame(0);
             gameState.bulletSkin = 'assaultRiflebullet';
 		});
         assaultB.on('pointerover', () => {
@@ -672,6 +673,7 @@ class LoadoutScene extends Phaser.Scene {
             rocketLauncherB.setFrame(0);
             uziB.setFrame(0);
             sniperRifleB.setFrame(0);
+            shotgunB.setFrame(0);
             gameState.bulletSkin = 'minigunbullet';
 		});
         minigunB.on('pointerover', () => {
@@ -695,6 +697,7 @@ class LoadoutScene extends Phaser.Scene {
             minigunB.setFrame(0);
             uziB.setFrame(0);
             sniperRifleB.setFrame(0);
+            shotgunB.setFrame(0);
             gameState.bulletSkin = 'rocketLauncherbullet';
 		});
         rocketLauncherB.on('pointerover', () => {
@@ -719,6 +722,7 @@ class LoadoutScene extends Phaser.Scene {
             minigunB.setFrame(0);
             rocketLauncherB.setFrame(0);
             sniperRifleB.setFrame(0);
+            shotgunB.setFrame(0);
             gameState.bulletSkin = 'uzibullet';
 		});
         uziB.on('pointerover', () => {
@@ -742,6 +746,7 @@ class LoadoutScene extends Phaser.Scene {
             minigunB.setFrame(0);
             rocketLauncherB.setFrame(0);
             uziB.setFrame(0);
+            shotgunB.setFrame(0);
             gameState.bulletSkin = 'sniperRiflebullet';
 		});
         sniperRifleB.on('pointerover', () => {
@@ -752,6 +757,30 @@ class LoadoutScene extends Phaser.Scene {
         sniperRifleB.on('pointerout', () => {
             if(selected !== 'sniperRifle'){
                 sniperRifleB.setFrame(0);
+            }
+		});
+        
+        var shotgunB = this.add.sprite(window.innerWidth/2+200,150,'shotgunIcon').setOrigin(0,0).setInteractive().setScale(1);
+        shotgunB.on('pointerup', () => {
+            gameState.gunType = 'shotgun';
+            gameState.gunSkin = 'shotgun';
+            shotgunB.setFrame(2);
+            selected = 'shotgun';
+            assaultB.setFrame(0);
+            minigunB.setFrame(0);
+            rocketLauncherB.setFrame(0);
+            uziB.setFrame(0);
+            sniperRifleB.setFrame(0);
+            gameState.bulletSkin = 'shotgunbullet';
+		});
+        shotgunB.on('pointerover', () => {
+            if(selected !== 'shotgun'){
+                shotgunB.setFrame(1);
+            }
+		});
+        shotgunB.on('pointerout', () => {
+            if(selected !== 'shotgun'){
+                shotgunB.setFrame(0);
             }
 		});
     }

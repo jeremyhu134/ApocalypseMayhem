@@ -374,6 +374,8 @@ let gameState = {
                     gameState.uziShoot(scene);
                 }else if (gameState.gunType == "sniperRifle"){
                     gameState.sniperRifleShoot(scene);
+                }else if (gameState.gunType == "shotgun"){
+                    gameState.shotgunShoot(scene);
                 }
             }else {
                 if(gameState.gunType == 'minigun' && !gameState.keys.SHIFT.isDown){
@@ -463,6 +465,10 @@ let gameState = {
             else if(gameState.gunType == 'sniperRifle'){
                 gameState.ammo = Math.ceil(gameState.characterStats.ammo*0.4)
                 time = 1500;
+            }
+            else if(gameState.gunType == 'shotgun'){
+                gameState.ammo = Math.ceil(gameState.characterStats.ammo*0.24)
+                time = 1800;
             }
             
             scene.time.addEvent({
@@ -790,6 +796,72 @@ let gameState = {
             timeScale: 1
         });
     },
+    
+    shotgunShoot: function(scene){
+        scene.sound.play('shoot');
+        gameState.ammo --;
+        gameState.ammoText.setText(gameState.ammo);
+        gameState.characterStats.fireReady = false;
+
+        function shoot(scene){
+            var flash;
+            var bullet;
+            if (gameState.character.flipX == false){
+                bullet = gameState.bullets.create(gameState.character.x,gameState.character.y+3,`${gameState.bulletSkin}`);
+            }else {
+                bullet = gameState.bullets.create(gameState.character.x,gameState.character.y+3,`${gameState.bulletSkin}`);
+            }
+            gameState.gun.anims.play(`${gameState.gunSkin}flash`,true);
+            gameState.angle=Phaser.Math.Angle.Between(bullet.x,bullet.y,scene.input.x,scene.input.y);
+            bullet.setRotation(gameState.angle); 
+            //scene.physics.moveToObject(bullet,scene.input,gameState.characterStats.bulletSpeed);
+            scene.physics.moveTo(bullet,(scene.input.x-50)+Math.ceil(Math.random()*100),(scene.input.y-50)+Math.ceil(Math.random()*100),gameState.characterStats.bulletSpeed);
+            var bulletLoop = scene.time.addEvent({
+                delay: 150,
+                callback: ()=>{
+                    bullet.destroy();
+                },  
+                startAt: 0,
+                timeScale: 1
+            });
+            scene.physics.add.overlap(bullet, gameState.zombies,(bulletT, target)=>{
+                scene.sound.play('hitSound',{volume:0.2});
+                var angle = Phaser.Math.Angle.Between(bulletT.x,bulletT.y,target.x,target.y);
+                var blood = scene.physics.add.sprite(target.x+10,target.y, 'bulletBlood');
+                blood.setRotation(angle);
+                blood.anims.play('animate','true');
+                scene.time.addEvent({
+                    delay: 200,
+                    callback: ()=>{
+                        blood.destroy();
+                    },  
+                    startAt: 0,
+                    timeScale: 1
+                });
+                bulletLoop.destroy();
+                if(target.health>0){
+                    bulletT.destroy();
+                }
+                target.health -= gameState.damage;
+            });
+        }
+        for (var i = 0; i< 7;i++){
+            shoot(scene)
+        }
+        
+        scene.time.addEvent({
+            delay: gameState.fireRate,
+            callback: ()=>{
+                gameState.characterStats.fireReady = true;
+            },  
+            startAt: 0,
+            timeScale: 1
+        });
+    },
+    
+    
+    
+    
     
     //creates a randon powerup or item after zombie death
     createItem: function(scene,x,y){

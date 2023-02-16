@@ -71,7 +71,13 @@ class ArenaScene extends Phaser.Scene {
             gameState.fireRate = 900;
             gameState.damage = gameState.characterStats.damage*7;
             gameState.ammo = Math.ceil(gameState.characterStats.ammo*0.4);
-            gameState.speed = gameState.characterStats.speed*1.0;
+            gameState.speed = gameState.characterStats.speed*0.9;
+        }
+        else if(gameState.gunType == 'shotgun'){
+            gameState.fireRate = 800;
+            gameState.damage = gameState.characterStats.damage*0.7;
+            gameState.ammo = Math.ceil(gameState.characterStats.ammo*0.24);
+            gameState.speed = gameState.characterStats.speed*1.1;
         }
         gameState.current = gameState.speed;
         gameState.currentRate = gameState.fireRate;
@@ -302,6 +308,12 @@ class TourScene extends Phaser.Scene {
             gameState.damage = gameState.characterStats.damage*7;
             gameState.ammo = Math.ceil(gameState.characterStats.ammo*0.4);
             gameState.speed = gameState.characterStats.speed*1.0;
+        }
+        else if(gameState.gunType == 'shotgun'){
+            gameState.fireRate = 800;
+            gameState.damage = gameState.characterStats.damage*0.5;
+            gameState.ammo = Math.ceil(gameState.characterStats.ammo*0.24);
+            gameState.speed = gameState.characterStats.speed*1.1;
         }
         gameState.current = gameState.speed;
         gameState.currentRate = gameState.fireRate;
