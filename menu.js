@@ -30,6 +30,7 @@ class MenuScene extends Phaser.Scene {
         this.load.image('minigunbullet','images/bullet1.png');
         this.load.image('assaultRiflebullet','images/bullet1.png');
         this.load.image('uzibullet','images/bullet2.png');
+        this.load.image('shotgunbullet','images/bullet2.png');
         this.load.image('rocketLauncherbullet','images/rocket1.png');
         this.load.image('sniperRiflebullet','images/bullet1.png');
         this.load.image('assaultRifleFuturebullet','images/assaultRifleFuturebullet.png');
@@ -50,6 +51,7 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('rocketLauncher','images/rocketLauncher.png',{frameWidth: 190,frameHeight:75});
         this.load.spritesheet('sniperRifle','images/sniperRifle.png',{frameWidth: 150,frameHeight:80});
         this.load.spritesheet('uzi','images/uzi.png',{frameWidth: 150,frameHeight:80});
+        this.load.spritesheet('shotgun','images/shotgun.png',{frameWidth: 150,frameHeight:80});
         this.load.spritesheet('goldenAssaultRifle','images/goldenAssaultRifle.png',{frameWidth: 100,frameHeight:50});
         
         
@@ -104,6 +106,7 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('rocketLauncherIcon','images/rocketLauncherIcon.png',{frameWidth: 100,frameHeight:100});
         this.load.spritesheet('uziIcon','images/uziIcon.png',{frameWidth: 100,frameHeight:100});
         this.load.spritesheet('sniperRifleIcon','images/sniperRifleIcon.png',{frameWidth: 100,frameHeight:100});
+        this.load.spritesheet('shotgunIcon','images/shotgunIcon.png',{frameWidth: 100,frameHeight:100});
         
         //pause menu
         this.load.image('pauseMainMenuButton','images/pauseMainMenuButton.png');
@@ -464,6 +467,13 @@ class MenuScene extends Phaser.Scene {
             frameRate: 40,
             frames:this.anims.generateFrameNames('sniperRifle',{start: 0,end: 2})
         });
+        //shotgun
+        this.anims.create({
+            key: 'shotgunflash',
+            frameRate: 30,
+            frames:this.anims.generateFrameNames('shotgun',{start: 0,end: 2})
+        });
+        
         
         
         
