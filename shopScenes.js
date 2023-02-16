@@ -93,120 +93,7 @@ class UpgradeScene extends Phaser.Scene {
         
         
         //Upgrade Buttons
-        var assaultB = this.add.sprite(window.innerWidth/2-550,150,'assaultRifleIcon').setOrigin(0,0).setInteractive().setScale(1);
-        assaultB.on('pointerup', () => {
-            gameState.gunType = 'assaultRifle';
-            gameState.gunSkin = 'assaultRifle';
-            assaultB.setFrame(2);
-            selected = 'assaultRifle';
-            minigunB.setFrame(0);
-            uziB.setFrame(0);
-            rocketLauncherB.setFrame(0);
-            sniperRifleB.setFrame(0);
-            gameState.bulletSkin = 'assaultRiflebullet';
-		});
-        assaultB.on('pointerover', () => {
-            if(selected !== 'assaultRifle'){
-                assaultB.setFrame(1);
-            }
-		});
-        assaultB.on('pointerout', () => {
-            if(selected !== 'assaultRifle'){
-                assaultB.setFrame(0);
-            }
-		});
-         
-        var minigunB = this.add.sprite(window.innerWidth/2-400,150,'minigunIcon').setOrigin(0,0).setInteractive().setScale(1);
-        minigunB.on('pointerup', () => {
-            gameState.gunType = 'minigun';
-            gameState.gunSkin = 'minigun';
-            minigunB.setFrame(2);
-            selected = 'minigun';
-            assaultB.setFrame(0);
-            rocketLauncherB.setFrame(0);
-            uziB.setFrame(0);
-            sniperRifleB.setFrame(0);
-            gameState.bulletSkin = 'minigunbullet';
-		});
-        minigunB.on('pointerover', () => {
-            if(selected !== 'minigun'){
-                minigunB.setFrame(1);
-            }
-		});
-        minigunB.on('pointerout', () => {
-            if(selected !== 'minigun'){
-                minigunB.setFrame(0);
-            }
-		});
         
-        var rocketLauncherB = this.add.sprite(window.innerWidth/2-250,150,'rocketLauncherIcon').setOrigin(0,0).setInteractive().setScale(1);
-        rocketLauncherB.on('pointerup', () => {
-            gameState.gunType = 'rocketLauncher';
-            gameState.gunSkin = 'rocketLauncher';
-            rocketLauncherB.setFrame(2);
-            selected = 'rocketLauncher';
-            assaultB.setFrame(0);
-            minigunB.setFrame(0);
-            uziB.setFrame(0);
-            sniperRifleB.setFrame(0);
-            gameState.bulletSkin = 'rocketLauncherbullet';
-		});
-        rocketLauncherB.on('pointerover', () => {
-            if(selected !== 'rocketLauncher'){
-                rocketLauncherB.setFrame(1);
-            }
-		});
-        rocketLauncherB.on('pointerout', () => {
-            if(selected !== 'rocketLauncher'){
-                rocketLauncherB.setFrame(0);
-            }
-		});
-        
-        
-        var uziB = this.add.sprite(window.innerWidth/2-100,150,'uziIcon').setOrigin(0,0).setInteractive().setScale(1);
-        uziB.on('pointerup', () => {
-            gameState.gunType = 'uzi';
-            gameState.gunSkin = 'uzi';
-            uziB.setFrame(2);
-            selected = 'uzi';
-            assaultB.setFrame(0);
-            minigunB.setFrame(0);
-            rocketLauncherB.setFrame(0);
-            gameState.bulletSkin = 'uzibullet';
-		});
-        uziB.on('pointerover', () => {
-            if(selected !== 'uzi'){
-                uziB.setFrame(1);
-            }
-		});
-        uziB.on('pointerout', () => {
-            if(selected !== 'uzi'){
-                uziB.setFrame(0);
-            }
-		});
-        
-        var sniperRifleB = this.add.sprite(window.innerWidth/2+50,150,'sniperRifleIcon').setOrigin(0,0).setInteractive().setScale(1);
-        sniperRifleB.on('pointerup', () => {
-            gameState.gunType = 'sniperRifle';
-            gameState.gunSkin = 'sniperRifle';
-            sniperRifleB.setFrame(2);
-            selected = 'sniperRifle';
-            assaultB.setFrame(0);
-            minigunB.setFrame(0);
-            rocketLauncherB.setFrame(0);
-            uziB.setFrame(0);
-            gameState.bulletSkin = 'sniperRiflebullet';
-		});
-        sniperRifleB.on('pointerover', () => {
-            if(selected !== 'sniperRifle'){
-                sniperRifleB.setFrame(1);
-            }
-		});
-        sniperRifleB.on('pointerout', () => {
-            if(selected !== 'sniperRifle'){
-                sniperRifleB.setFrame(0);
-            }
-		});
     }
     update(){
         //game loop that constantly runs (not needed for upgrades)
@@ -248,12 +135,57 @@ class ShopScene extends Phaser.Scene {
     }
     create(){
         //create and animate background
-        var bg = this.physics.add.sprite(0,0,'background').setOrigin(0,0).setScale(window.innerHeight/675).setDepth(-100);
+        var bg = this.physics.add.sprite(0,0,'background').setOrigin(0,0).setScale(window.innerHeight/675).setDepth(-100).setInteractive();
         bg.anims.play('bganimate','true');
-        
+        bg.on('pointerdown', () => {
+            gameState.equipButton.x = 6000;
+            gameState.deleteButton.y = 6000;
+		});
+        gameState.input = this.input;
         
         //Reference scene in local variable and create a back button
         var scene = this;
+        
+        gameState.equipButton = this.add.sprite(6000,600,'menuB1').setOrigin(0,0).setInteractive().setDepth(5);
+        gameState.equipButton.on('pointerup', () => {
+            //gameState.save();
+            if(gameState.pick.type == 'cosmetic'){
+                gameState.selected = gameState.pick;
+                if(gameState.selected == null){
+                    gameState.selected = ' ';
+                } 
+            }else if (gameState.pick.type == 'weapon'){
+                gameState.gunSkin = gameState.pick.name;
+                gameState.bulletSkin = gameState.pick.name+'bullet';
+            }
+            gameState.deleteButton.x = 6000;
+            gameState.equipButton.x = 6000;
+		});
+        gameState.equipButton.on('pointerover', () => {
+            gameState.equipButton.setFrame(1);
+		});
+        gameState.equipButton.on('pointerout', () => {
+            gameState.equipButton.setFrame(0);
+		});
+        gameState.deleteButton = this.add.sprite(6000,600,'menuB2').setOrigin(0,0).setInteractive().setDepth(5);
+        gameState.deleteButton.on('pointerup', () => {
+            //gameState.save();
+            var hat = gameState.inventory.indexOf(gameState.pick);
+                gameState.inventory.splice(hat,1);
+                scene.scene.restart();
+                gameState.save();
+                gameState.pick = null;
+                gameState.selected = '';
+            gameState.deleteButton.x = 6000;
+            gameState.equipButton.x = 6000;
+		});
+        gameState.deleteButton.on('pointerover', () => {
+            gameState.deleteButton.setFrame(1);
+		});
+        gameState.deleteButton.on('pointerout', () => {
+            gameState.deleteButton.setFrame(0);
+		});
+        
         
         var back = this.add.sprite(window.innerWidth/2-50,0,'homeIcon').setOrigin(0,0).setInteractive();
         back.on('pointerup', () => {
@@ -351,49 +283,8 @@ class ShopScene extends Phaser.Scene {
             wordWrap: { width: 250 }
         }).setDepth(2).setOrigin(0.5);
         
-        var equip = this.add.sprite(window.innerWidth/2-535,window.innerHeight/2+150,'equipButton').setOrigin(0,0).setDepth(1).setScale(1.5).setInteractive();
-        equip.on('pointerup', () => {
-            gameState.selected = gameState.pick;
-            if(gameState.selected == null){
-                gameState.selected = ' ';
-            }
-		});
-        equip.on('pointerover', () => {
-            
-		});
-        equip.on('pointerout', () => {
-            
-		});
-        var deleteHat = this.add.sprite(100,window.innerHeight-100,'deleteIcon').setOrigin(0,0).setDepth(1).setScale(1).setInteractive();
-        deleteHat.on('pointerup', () => {
-            if(gameState.pick !== null){
-                var hat = gameState.inventory.indexOf(gameState.pick);
-                gameState.inventory.splice(hat,1);
-                scene.scene.restart();
-                gameState.save();
-            }
-		});
-        deleteHat.on('pointerover', () => {
-            if(gameState.pick !== null){
-                deleteHat.setFrame(1);
-            }
-		});
-        deleteHat.on('pointerout', () => {
-            deleteHat.setFrame(0);
-		});
-        this.time.addEvent({
-            delay: 1,
-            callback: ()=>{
-                if(gameState.selected == gameState.pick){
-                    equip.setFrame(1);
-                }else {
-                    equip.setFrame(0);
-                }
-            },  
-            startAt: 0,
-            repeat: -1,
-            timeScale: 1,
-        });
+        
+        
         
         var frame = this.add.image(50,120,'frame').setOrigin(0,0).setDepth(0).setScale(1.2);
         gameState.loadCosmetics(this,350,70);
@@ -748,7 +639,121 @@ class LoadoutScene extends Phaser.Scene {
         }).setDepth(window.innerHeight+3);
         
         //merchant and interact
+        var assaultB = this.add.sprite(window.innerWidth/2-550,150,'assaultRifleIcon').setOrigin(0,0).setInteractive().setScale(1);
+        assaultB.on('pointerup', () => {
+            gameState.gunType = 'assaultRifle';
+            gameState.gunSkin = 'assaultRifle';
+            assaultB.setFrame(2);
+            selected = 'assaultRifle';
+            minigunB.setFrame(0);
+            uziB.setFrame(0);
+            rocketLauncherB.setFrame(0);
+            sniperRifleB.setFrame(0);
+            gameState.bulletSkin = 'assaultRiflebullet';
+		});
+        assaultB.on('pointerover', () => {
+            if(selected !== 'assaultRifle'){
+                assaultB.setFrame(1);
+            }
+		});
+        assaultB.on('pointerout', () => {
+            if(selected !== 'assaultRifle'){
+                assaultB.setFrame(0);
+            }
+		});
+         
+        var minigunB = this.add.sprite(window.innerWidth/2-400,150,'minigunIcon').setOrigin(0,0).setInteractive().setScale(1);
+        minigunB.on('pointerup', () => {
+            gameState.gunType = 'minigun';
+            gameState.gunSkin = 'minigun';
+            minigunB.setFrame(2);
+            selected = 'minigun';
+            assaultB.setFrame(0);
+            rocketLauncherB.setFrame(0);
+            uziB.setFrame(0);
+            sniperRifleB.setFrame(0);
+            gameState.bulletSkin = 'minigunbullet';
+		});
+        minigunB.on('pointerover', () => {
+            if(selected !== 'minigun'){
+                minigunB.setFrame(1);
+            }
+		});
+        minigunB.on('pointerout', () => {
+            if(selected !== 'minigun'){
+                minigunB.setFrame(0);
+            }
+		});
         
+        var rocketLauncherB = this.add.sprite(window.innerWidth/2-250,150,'rocketLauncherIcon').setOrigin(0,0).setInteractive().setScale(1);
+        rocketLauncherB.on('pointerup', () => {
+            gameState.gunType = 'rocketLauncher';
+            gameState.gunSkin = 'rocketLauncher';
+            rocketLauncherB.setFrame(2);
+            selected = 'rocketLauncher';
+            assaultB.setFrame(0);
+            minigunB.setFrame(0);
+            uziB.setFrame(0);
+            sniperRifleB.setFrame(0);
+            gameState.bulletSkin = 'rocketLauncherbullet';
+		});
+        rocketLauncherB.on('pointerover', () => {
+            if(selected !== 'rocketLauncher'){
+                rocketLauncherB.setFrame(1);
+            }
+		});
+        rocketLauncherB.on('pointerout', () => {
+            if(selected !== 'rocketLauncher'){
+                rocketLauncherB.setFrame(0);
+            }
+		});
+        
+        
+        var uziB = this.add.sprite(window.innerWidth/2-100,150,'uziIcon').setOrigin(0,0).setInteractive().setScale(1);
+        uziB.on('pointerup', () => {
+            gameState.gunType = 'uzi';
+            gameState.gunSkin = 'uzi';
+            uziB.setFrame(2);
+            selected = 'uzi';
+            assaultB.setFrame(0);
+            minigunB.setFrame(0);
+            rocketLauncherB.setFrame(0);
+            sniperRifleB.setFrame(0);
+            gameState.bulletSkin = 'uzibullet';
+		});
+        uziB.on('pointerover', () => {
+            if(selected !== 'uzi'){
+                uziB.setFrame(1);
+            }
+		});
+        uziB.on('pointerout', () => {
+            if(selected !== 'uzi'){
+                uziB.setFrame(0);
+            }
+		});
+        
+        var sniperRifleB = this.add.sprite(window.innerWidth/2+50,150,'sniperRifleIcon').setOrigin(0,0).setInteractive().setScale(1);
+        sniperRifleB.on('pointerup', () => {
+            gameState.gunType = 'sniperRifle';
+            gameState.gunSkin = 'sniperRifle';
+            sniperRifleB.setFrame(2);
+            selected = 'sniperRifle';
+            assaultB.setFrame(0);
+            minigunB.setFrame(0);
+            rocketLauncherB.setFrame(0);
+            uziB.setFrame(0);
+            gameState.bulletSkin = 'sniperRiflebullet';
+		});
+        sniperRifleB.on('pointerover', () => {
+            if(selected !== 'sniperRifle'){
+                sniperRifleB.setFrame(1);
+            }
+		});
+        sniperRifleB.on('pointerout', () => {
+            if(selected !== 'sniperRifle'){
+                sniperRifleB.setFrame(0);
+            }
+		});
     }
     update(){
         //game loop that constantly runs (not needed for upgrades)

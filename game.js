@@ -229,17 +229,11 @@ let gameState = {
         if(gameState.inventory[num].animate == true){
             hat.anims.play(`${gameState.inventory[num].name}Animate`,true);
         }
-        console.log(gameState.inventory[num].name);
         hat.on('pointerup', () => {
-            if(gameState.inventory[num].type == 'cosmetic'){
-                gameState.selected = gameState.pick;
-                if(gameState.selected == null){
-                    gameState.selected = ' ';
-                } 
-            }else if (gameState.inventory[num].type == 'weapon'){
-                gameState.gunSkin = gameState.inventory[num].name;
-                gameState.bulletSkin = gameState.inventory[num].name+'bullet';
-            }
+            gameState.equipButton.x = gameState.input.x;
+            gameState.equipButton.y = gameState.input.y;
+            gameState.deleteButton.x = gameState.input.x;
+            gameState.deleteButton.y = gameState.input.y+19;
         });
         hat.on('pointerover', () => {
             gameState.display.x = 170;
@@ -260,6 +254,7 @@ let gameState = {
         });
         hat.setScale(60/hat.width)
     },
+    
     loadCosmetics: function(scene,x,y){
         var count = 1;
         var row = 1;

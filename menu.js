@@ -94,6 +94,8 @@ class MenuScene extends Phaser.Scene {
         this.load.spritesheet('lootboxesButton','images/lootboxesButton.png',{frameWidth: 150,frameHeight:45});
         this.load.spritesheet('loadoutButton','images/loadoutButton.png',{frameWidth: 120,frameHeight:45});
         this.load.spritesheet('deleteIcon','images/deleteIcon.png',{frameWidth: 60,frameHeight:60});
+        this.load.spritesheet('menuB1','images/menuB1.png',{frameWidth: 80,frameHeight:20});
+        this.load.spritesheet('menuB2','images/menuB2.png',{frameWidth: 80,frameHeight:20});
         this.load.image('backButton','images/backButton.png');
         this.load.image('backButton2','images/backButton2.png');
         this.load.spritesheet('settingsButton','images/settingsButton.png',{frameWidth: 70,frameHeight:65});
@@ -436,7 +438,7 @@ class MenuScene extends Phaser.Scene {
         this.anims.create({
             key: 'assaultRifleFutureflash',
             frameRate: 40,
-            frames:this.anims.generateFrameNames('assaultRifleFuture',{start: 0,end: 4})
+            frames:this.anims.generateFrameNames('assaultRifleFuture',{start: 1,end: 5})
         });
         
         //minigun
